@@ -1,9 +1,5 @@
 # PUConnect 🫂
 
-![GitHub repo size](https://img.shields.io/github/repo-size/iuricode/README-template?style=for-the-badge)
-![GitHub language count](https://img.shields.io/github/languages/count/iuricode/README-template?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/iuricode/README-template?style=for-the-badge)
-
 ## 🤝 Sobre o projeto
 
 Este projeto foi desenvolvido para a disciplina INF1039 - Aplicações Interativas da PUC-Rio. O site tem como objetivo divulgar eventos da universidade de forma mais clara e atrativa, facilitando a inscrição dos alunos e incentivando a participação. A plataforma permite visualizar, se inscrever e divulgar eventos, ajudando a aumentar o público nas atividades da PUC-Rio.
