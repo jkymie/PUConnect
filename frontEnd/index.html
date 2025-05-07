@@ -1,11 +1,93 @@
+  <!-- Página inicial - Apresentação de eventos -->
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PUConnect</title>
+
+  <link rel="stylesheet" href="/PUConnect/frontEnd/css/style.css">
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
+
 </head>
 <body>
-    
+
+  <!-- Header dinâmico -->
+  <header id="header"></header>
+
+  <div class="all">
+    <!-- Hero/banner -->
+    <section class="hero">
+        <div class="container-main">
+        <h2 class="banner">Participe, descubra e divulgue eventos na PUC-Rio</h2>
+        
+        </div>
+    </section>
+
+    <!-- Lista de eventos -->
+    <section id="eventos" class="eventos">
+        <div class="eventos-container">
+          <h3>Eventos em destaque</h3>
+          <a href="#eventos" class="btn">Ver todos os eventos</a>
+        </div>
+        <div class="lista-eventos" id="listaEventos">
+          <!-- Os eventos serão carregados via JS -->
+        </div>
+      </section>
+
+
+  </div>
+  <!-- Footer dinâmico -->
+  <footer id="footer"></footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script src="js/eventos.js"></script>
+  <script>
+    const container = document.getElementById("event-cards-container");
+    const loading = document.getElementById("loading");
+    const error = document.getElementById("error");
+
+    // Altere a URL abaixo para o endpoint da sua API
+    const API_URL = 'https://seuservidor.com/api/eventos';
+
+    fetch(API_URL)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Erro na resposta da API");
+        }
+        return response.json();
+      })
+      .then(eventos => {
+        loading.style.display = 'none';
+
+        if (eventos.length === 0) {
+          container.innerHTML = '<p>Nenhum evento encontrado.</p>';
+          return;
+        }
+
+        eventos.forEach(evento => {
+          const card = document.createElement("div");
+          card.classList.add("card");
+          card.innerHTML = `
+            <h3>${evento.nome}</h3>
+            <p><strong>Data:</strong> ${evento.data}</p>
+            <p><strong>Local:</strong> ${evento.local}</p>
+            <a href="evento.html?id=${evento.id}">Ver mais</a>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        loading.style.display = 'none';
+        error.style.display = 'block';
+      });
+  </script>
 </body>
 </html>
