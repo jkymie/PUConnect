@@ -15,6 +15,32 @@
                     <p><strong>Data/Hora:</strong> {{ evento.data_hora|date:'d/m/Y H:i' }}</p>
                     <p><strong>Local:</strong> {{ evento.local }}</p>
                     <p><strong>Organizador:</strong> {{ evento.organizador.username }}</p>
+                    
+                    {% if user.is_authenticated %}
+                        {% if evento.id in inscricoes %}
+                            <div class="mt-3">
+                                <a href="{% url 'marcar_presenca' evento.id %}" class="btn {% if inscricoes.evento.id.presente %}btn-success{% else %}btn-warning{% endif %}">
+                                    {% if inscricoes.evento.id.presente %}
+                                        <i class="bi bi-check-circle"></i> Presente
+                                    {% else %}
+                                        <i class="bi bi-x-circle"></i> Ausente
+                                    {% endif %}
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="mt-3">
+                                <a href="{% url 'inscrever_evento' evento.id %}" class="btn btn-primary">
+                                    <i class="bi bi-calendar-plus"></i> Inscrever-se
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="mt-3">
+                            <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-box-arrow-in-right"></i> Faça login para se inscrever
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User, Evento
+from .models import User, Evento, SolicitarOrganizador
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
@@ -72,4 +72,15 @@ class EventoForm(forms.ModelForm):
 
     class Meta:
         model = Evento
-        fields = ['titulo', 'descricao', 'data_hora', 'local'] 
+        fields = ['titulo', 'descricao', 'data_hora', 'local']
+        widgets = {
+            'data_hora': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+class SolicitarOrganizadorForm(forms.ModelForm):
+    class Meta:
+        model = SolicitarOrganizador
+        fields = ['motivo']
+        widgets = {
+            'motivo': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Explique por que você gostaria de se tornar um organizador de eventos...'}),
+        } 
