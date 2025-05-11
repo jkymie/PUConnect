@@ -10,6 +10,16 @@
                 <h2 class="text-center mb-4">Criar Conta</h2>
                 <form method="post">
                     {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="id_tipo_usuario" class="form-label">Tipo de Usuário</label>
+                        {{ form.tipo_usuario }}
+                        {% if form.tipo_usuario.errors %}
+                            <div class="text-danger">
+                                {{ form.tipo_usuario.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="id_username" class="form-label">Usuário</label>
@@ -30,36 +40,31 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="id_matricula" class="form-label">Matrícula</label>
-                            {{ form.matricula }}
-                            {% if form.matricula.errors %}
-                                <div class="text-danger">
-                                    {{ form.matricula.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="id_curso" class="form-label">Curso</label>
-                            {{ form.curso }}
-                            {% if form.curso.errors %}
-                                <div class="text-danger">
-                                    {{ form.curso.errors }}
-                                </div>
-                            {% endif %}
+
+                    <div id="campos-aluno" class="d-none">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_matricula" class="form-label">Matrícula</label>
+                                {{ form.matricula }}
+                                {% if form.matricula.errors %}
+                                    <div class="text-danger">
+                                        {{ form.matricula.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_curso" class="form-label">Curso</label>
+                                {{ form.curso }}
+                                {% if form.curso.errors %}
+                                    <div class="text-danger">
+                                        {{ form.curso.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
+
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="id_tipo_usuario" class="form-label">Tipo de Usuário</label>
-                            {{ form.tipo_usuario }}
-                            {% if form.tipo_usuario.errors %}
-                                <div class="text-danger">
-                                    {{ form.tipo_usuario.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
                         <div class="col-md-6 mb-3">
                             <label for="id_telefone" class="form-label">Telefone (opcional)</label>
                             {{ form.telefone }}
@@ -69,7 +74,17 @@
                                 </div>
                             {% endif %}
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_cpf" class="form-label">CPF (opcional)</label>
+                            {{ form.cpf }}
+                            {% if form.cpf.errors %}
+                                <div class="text-danger">
+                                    {{ form.cpf.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="id_password1" class="form-label">Senha</label>
@@ -90,6 +105,7 @@
                             {% endif %}
                         </div>
                     </div>
+
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Registrar</button>
                     </div>
@@ -101,4 +117,28 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tipoUsuarioSelect = document.getElementById('id_tipo_usuario');
+    const camposAluno = document.getElementById('campos-aluno');
+    const matriculaInput = document.getElementById('id_matricula');
+    const cursoInput = document.getElementById('id_curso');
+
+    function toggleCamposAluno() {
+        if (tipoUsuarioSelect.value === 'aluno') {
+            camposAluno.classList.remove('d-none');
+            matriculaInput.required = true;
+            cursoInput.required = true;
+        } else {
+            camposAluno.classList.add('d-none');
+            matriculaInput.required = false;
+            cursoInput.required = false;
+        }
+    }
+
+    tipoUsuarioSelect.addEventListener('change', toggleCamposAluno);
+    toggleCamposAluno(); // Executa no carregamento da página
+});
+</script>
 {% endblock %}

@@ -4,8 +4,8 @@ from .models import User, Evento
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    matricula = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    curso = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    matricula = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    curso = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     telefone = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     tipo_usuario = forms.ChoiceField(
         choices=[('aluno', 'Aluno'), ('organizador', 'Organizador de Eventos')],
@@ -23,6 +23,20 @@ class UserRegistrationForm(UserCreationForm):
         self.fields['username'].widget.attrs.update({'class': 'form-control'})
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo_usuario = cleaned_data.get('tipo_usuario')
+        matricula = cleaned_data.get('matricula')
+        curso = cleaned_data.get('curso')
+
+        if tipo_usuario == 'aluno':
+            if not matricula:
+                self.add_error('matricula', 'Matrícula é obrigatória para alunos')
+            if not curso:
+                self.add_error('curso', 'Curso é obrigatório para alunos')
+
+        return cleaned_data
 
     def save(self, commit=True):
         user = super().save(commit=False)
