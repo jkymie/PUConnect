@@ -52,6 +52,26 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
+                            <label for="id_tipo_usuario" class="form-label">Tipo de Usuário</label>
+                            {{ form.tipo_usuario }}
+                            {% if form.tipo_usuario.errors %}
+                                <div class="text-danger">
+                                    {{ form.tipo_usuario.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_telefone" class="form-label">Telefone (opcional)</label>
+                            {{ form.telefone }}
+                            {% if form.telefone.errors %}
+                                <div class="text-danger">
+                                    {{ form.telefone.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
                             <label for="id_password1" class="form-label">Senha</label>
                             {{ form.password1 }}
                             {% if form.password1.errors %}

@@ -3,16 +3,26 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import User, Evento
 
 class UserRegistrationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    matricula = forms.CharField(max_length=20, required=True)
-    curso = forms.CharField(max_length=100, required=True)
-    telefone = forms.CharField(max_length=20, required=False)
-    tipo_usuario = forms.ChoiceField(choices=User.TIPO_USUARIO_CHOICES, required=True)
-    cpf = forms.CharField(max_length=14, required=False)
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    matricula = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    curso = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    telefone = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    tipo_usuario = forms.ChoiceField(
+        choices=[('aluno', 'Aluno'), ('organizador', 'Organizador de Eventos')],
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    cpf = forms.CharField(max_length=14, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = User
         fields = ('username', 'email', 'matricula', 'curso', 'telefone', 'tipo_usuario', 'cpf', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -31,6 +41,21 @@ class UserLoginForm(AuthenticationForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
 class EventoForm(forms.ModelForm):
+    titulo = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    descricao = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
+    )
+    data_hora = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'})
+    )
+    local = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = Evento
         fields = ['titulo', 'descricao', 'data_hora', 'local'] 
