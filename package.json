@@ -1,0 +1,25 @@
+{
+  "name": "puconnect",
+  "version": "1.0.0",
+  "description": "Sistema de gerenciamento de eventos da PUC-Rio",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "@popperjs/core": "^2.11.8"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seu-usuario/PUConnect.git"
+  },
+  "keywords": [
+    "django",
+    "events",
+    "puc-rio"
+  ],
+  "author": "",
+  "license": "MIT"
+} 
