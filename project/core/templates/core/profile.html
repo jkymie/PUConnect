@@ -1,0 +1,99 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Meu Perfil - PUConnect{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                {% if user_profile.foto %}
+                    <img src="{{ user_profile.foto.url }}" alt="Foto de perfil" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <img src="https://via.placeholder.com/150" alt="Foto de perfil" class="rounded-circle img-fluid mb-3">
+                {% endif %}
+                <h5 class="card-title">{{ user_profile.user.get_full_name|default:user_profile.user.username }}</h5>
+                <p class="text-muted">@{{ user_profile.user.username }}</p>
+                {% if user_profile.curso %}
+                    <p class="card-text"><i class="bi bi-book"></i> {{ user_profile.curso }}</p>
+                {% endif %}
+                {% if user_profile.matricula %}
+                    <p class="card-text"><i class="bi bi-card-text"></i> {{ user_profile.matricula }}</p>
+                {% endif %}
+                <a href="{% url 'profile_edit' %}" class="btn btn-primary">Editar Perfil</a>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="card-title">Estatísticas</h6>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4>{{ total_participados }}</h4>
+                        <p class="text-muted">Eventos Participados</p>
+                    </div>
+                    <div class="col-6">
+                        <h4>{{ total_organizados }}</h4>
+                        <p class="text-muted">Eventos Organizados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if user_profile.bio %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h6 class="card-title">Sobre</h6>
+                <p class="card-text">{{ user_profile.bio }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Eventos Organizados</h5>
+                {% if eventos_organizados %}
+                    <div class="list-group">
+                        {% for evento in eventos_organizados %}
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ evento.titulo }}</h6>
+                                    <small>{{ evento.data_hora|date:"d/m/Y H:i" }}</small>
+                                </div>
+                                <p class="mb-1">{{ evento.descricao|truncatewords:20 }}</p>
+                                <small>{{ evento.local }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">Nenhum evento organizado ainda.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Eventos Participados</h5>
+                {% if eventos_participados %}
+                    <div class="list-group">
+                        {% for evento in eventos_participados %}
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ evento.titulo }}</h6>
+                                    <small>{{ evento.data_hora|date:"d/m/Y H:i" }}</small>
+                                </div>
+                                <p class="mb-1">{{ evento.descricao|truncatewords:20 }}</p>
+                                <small>{{ evento.local }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">Nenhum evento participado ainda.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

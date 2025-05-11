@@ -17,5 +17,8 @@ urlpatterns = [
     path('solicitar-organizador/', views.solicitar_organizador, name='solicitar_organizador'),
     path('solicitacoes/', views.minhas_solicitacoes, name='minhas_solicitacoes'),
     path('solicitacoes/<int:solicitacao_id>/responder/', views.responder_solicitacao, name='responder_solicitacao'),
+    path('profile/', views.profile_view, name='profile'),
+    path('profile/edit/', views.profile_edit, name='profile_edit'),
+    path('profile/<str:username>/', views.profile_view_other, name='profile_other'),
 ]
 

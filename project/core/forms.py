@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User, Evento, SolicitarOrganizador
+from django.contrib.auth.models import User
+from .models import User, Evento, SolicitarOrganizador, UserProfile
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
@@ -69,10 +70,14 @@ class EventoForm(forms.ModelForm):
         max_length=200,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
+    vagas = forms.IntegerField(
+        min_value=0,
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )
 
     class Meta:
         model = Evento
-        fields = ['titulo', 'descricao', 'data_hora', 'local']
+        fields = ['titulo', 'descricao', 'data_hora', 'local', 'vagas']
         widgets = {
             'data_hora': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
@@ -83,4 +88,13 @@ class SolicitarOrganizadorForm(forms.ModelForm):
         fields = ['motivo']
         widgets = {
             'motivo': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Explique por que você gostaria de se tornar um organizador de eventos...'}),
+        }
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'foto', 'curso', 'matricula', 'data_nascimento', 'telefone']
+        widgets = {
+            'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
+            'bio': forms.Textarea(attrs={'rows': 4}),
         } 

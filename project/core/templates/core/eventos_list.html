@@ -1,51 +1,76 @@
 {% extends 'core/base.html' %}
-{% block title %}Eventos{% endblock %}
+
+{% block title %}Eventos - PUConnect{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Eventos</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Eventos</h2>
     {% if user.is_authenticated and user.tipo_usuario == 'organizador' %}
-        <a href="{% url 'evento_create' %}" class="btn btn-primary mb-3">Cadastrar novo evento</a>
+        <a href="{% url 'evento_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Novo Evento
+        </a>
     {% endif %}
-    {% if eventos %}
-        <div class="list-group">
-            {% for evento in eventos %}
-                <div class="list-group-item mb-3">
-                    <h4>{{ evento.titulo }}</h4>
-                    <p>{{ evento.descricao }}</p>
-                    <p><strong>Data/Hora:</strong> {{ evento.data_hora|date:'d/m/Y H:i' }}</p>
-                    <p><strong>Local:</strong> {{ evento.local }}</p>
-                    <p><strong>Organizador:</strong> {{ evento.organizador.username }}</p>
+</div>
+
+<div class="row">
+    {% for evento in eventos %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ evento.titulo }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <i class="bi bi-calendar-event"></i> {{ evento.data_hora|date:"d/m/Y H:i" }}
+                    </h6>
+                    <p class="card-text">{{ evento.descricao|truncatewords:30 }}</p>
+                    <p class="card-text">
+                        <i class="bi bi-geo-alt"></i> {{ evento.local }}
+                    </p>
+                    <p class="card-text">
+                        <i class="bi bi-person"></i> Organizador: {{ evento.organizador.get_full_name|default:evento.organizador.username }}
+                    </p>
+                    <p class="card-text">
+                        <i class="bi bi-people"></i> Vagas: {{ evento.vagas_disponiveis }} de {{ evento.vagas }} disponíveis
+                    </p>
                     
                     {% if user.is_authenticated %}
-                        {% if evento.id in inscricoes %}
-                            <div class="mt-3">
-                                <a href="{% url 'marcar_presenca' evento.id %}" class="btn {% if inscricoes.evento.id.presente %}btn-success{% else %}btn-warning{% endif %}">
-                                    {% if inscricoes.evento.id.presente %}
-                                        <i class="bi bi-check-circle"></i> Presente
-                                    {% else %}
-                                        <i class="bi bi-x-circle"></i> Ausente
-                                    {% endif %}
+                        {% if evento.esta_inscrito %}
+                            <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-success disabled">
+                                    <i class="bi bi-check-circle"></i> Inscrito
                                 </a>
+                                <form method="post" action="{% url 'marcar_presenca' evento.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        <i class="bi bi-clipboard-check"></i> Marcar Presença
+                                    </button>
+                                </form>
                             </div>
+                        {% elif evento.tem_vagas_disponiveis %}
+                            <form method="post" action="{% url 'inscrever_evento' evento.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle"></i> Inscrever-se
+                                </button>
+                            </form>
                         {% else %}
-                            <div class="mt-3">
-                                <a href="{% url 'inscrever_evento' evento.id %}" class="btn btn-primary">
-                                    <i class="bi bi-calendar-plus"></i> Inscrever-se
-                                </a>
-                            </div>
+                            <button class="btn btn-secondary disabled">
+                                <i class="bi bi-x-circle"></i> Vagas Esgotadas
+                            </button>
                         {% endif %}
                     {% else %}
-                        <div class="mt-3">
-                            <a href="{% url 'login' %}" class="btn btn-outline-primary">
-                                <i class="bi bi-box-arrow-in-right"></i> Faça login para se inscrever
-                            </a>
-                        </div>
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Faça login para se inscrever
+                        </a>
                     {% endif %}
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    {% else %}
-        <p>Nenhum evento cadastrado ainda.</p>
-    {% endif %}
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                Nenhum evento cadastrado ainda.
+            </div>
+        </div>
+    {% endfor %}
 </div>
 {% endblock %} 

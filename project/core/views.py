@@ -3,8 +3,8 @@ from django.contrib.auth import login as auth_login, authenticate, logout as aut
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils import timezone
-from .forms import UserRegistrationForm, UserLoginForm, EventoForm, SolicitarOrganizadorForm
-from .models import Evento, Inscricao, SolicitarOrganizador
+from .forms import UserRegistrationForm, UserLoginForm, EventoForm, SolicitarOrganizadorForm, UserProfileForm
+from .models import Evento, Inscricao, SolicitarOrganizador, UserProfile
 
 def index(request):
     return render(request, 'core/index.html')
@@ -59,12 +59,10 @@ def home(request):
 
 def eventos_list(request):
     eventos = Evento.objects.all().order_by('-data_hora')
-    inscricoes = {}
-    if request.user.is_authenticated:
-        inscricoes = {insc.evento_id: insc for insc in Inscricao.objects.filter(usuario=request.user)}
+    for evento in eventos:
+        evento._current_user = request.user
     return render(request, 'core/eventos_list.html', {
-        'eventos': eventos,
-        'inscricoes': inscricoes
+        'eventos': eventos
     })
 
 def is_organizador(user):
@@ -87,14 +85,24 @@ def evento_create(request):
 @login_required
 def inscrever_evento(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
-    inscricao, created = Inscricao.objects.get_or_create(
+    
+    # Verifica se o usuário já está inscrito
+    if evento.esta_inscrito(request.user):
+        messages.info(request, f'Você já está inscrito neste evento.')
+        return redirect('eventos_list')
+    
+    # Verifica se há vagas disponíveis
+    if not evento.tem_vagas_disponiveis():
+        messages.error(request, f'Desculpe, não há mais vagas disponíveis para este evento.')
+        return redirect('eventos_list')
+    
+    # Cria a inscrição
+    inscricao = Inscricao.objects.create(
         evento=evento,
         usuario=request.user
     )
-    if created:
-        messages.success(request, f'Inscrição realizada com sucesso para o evento {evento.titulo}!')
-    else:
-        messages.info(request, f'Você já está inscrito neste evento.')
+    
+    messages.success(request, f'Inscrição realizada com sucesso para o evento {evento.titulo}!')
     return redirect('eventos_list')
 
 @login_required
@@ -169,5 +177,49 @@ def responder_solicitacao(request, solicitacao_id):
             return redirect('minhas_solicitacoes')
     
     return render(request, 'core/responder_solicitacao.html', {'solicitacao': solicitacao})
+
+@login_required
+def profile_view(request):
+    user_profile = request.user.profile
+    eventos_participados = user_profile.get_eventos_participados()
+    eventos_organizados = user_profile.get_eventos_organizados()
+    
+    context = {
+        'user_profile': user_profile,
+        'eventos_participados': eventos_participados,
+        'eventos_organizados': eventos_organizados,
+        'total_participados': user_profile.get_total_eventos_participados(),
+        'total_organizados': user_profile.get_total_eventos_organizados(),
+    }
+    return render(request, 'core/profile.html', context)
+
+@login_required
+def profile_edit(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Perfil atualizado com sucesso!')
+            return redirect('profile')
+    else:
+        form = UserProfileForm(instance=request.user.profile)
+    
+    return render(request, 'core/profile_edit.html', {'form': form})
+
+@login_required
+def profile_view_other(request, username):
+    user = get_object_or_404(User, username=username)
+    user_profile = user.profile
+    eventos_participados = user_profile.get_eventos_participados()
+    eventos_organizados = user_profile.get_eventos_organizados()
+    
+    context = {
+        'user_profile': user_profile,
+        'eventos_participados': eventos_participados,
+        'eventos_organizados': eventos_organizados,
+        'total_participados': user_profile.get_total_eventos_participados(),
+        'total_organizados': user_profile.get_total_eventos_organizados(),
+    }
+    return render(request, 'core/profile_other.html', context)
 
  
