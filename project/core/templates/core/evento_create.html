@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{% block title %}Cadastrar Evento{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Cadastrar Novo Evento</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Salvar Evento</button>
+        <a href="{% url 'eventos_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %} 

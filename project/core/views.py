@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, authenticate
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from .forms import UserRegistrationForm, UserLoginForm
+from .forms import UserRegistrationForm, UserLoginForm, EventoForm
+from .models import Evento
 
 def index(request):
     return render(request, 'core/index.html')
@@ -42,5 +43,26 @@ def login_view(request):
 @login_required
 def home(request):
     return render(request, 'core/home.html')
+
+def eventos_list(request):
+    eventos = Evento.objects.all().order_by('-data_hora')
+    return render(request, 'core/eventos_list.html', {'eventos': eventos})
+
+def is_organizador(user):
+    return user.is_authenticated and user.tipo_usuario == 'organizador'
+
+@user_passes_test(is_organizador)
+def evento_create(request):
+    if request.method == 'POST':
+        form = EventoForm(request.POST)
+        if form.is_valid():
+            evento = form.save(commit=False)
+            evento.organizador = request.user
+            evento.save()
+            messages.success(request, 'Evento cadastrado com sucesso!')
+            return redirect('eventos_list')
+    else:
+        form = EventoForm()
+    return render(request, 'core/evento_create.html', {'form': form})
 
  

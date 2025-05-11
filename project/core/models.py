@@ -19,3 +19,14 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class Evento(models.Model):
+    titulo = models.CharField(max_length=200)
+    descricao = models.TextField()
+    data_hora = models.DateTimeField()
+    local = models.CharField(max_length=200)
+    organizador = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'tipo_usuario': 'organizador'})
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.titulo

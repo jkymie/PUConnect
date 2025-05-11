@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+{% block title %}Eventos{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Eventos</h2>
+    {% if user.is_authenticated and user.tipo_usuario == 'organizador' %}
+        <a href="{% url 'evento_create' %}" class="btn btn-primary mb-3">Cadastrar novo evento</a>
+    {% endif %}
+    {% if eventos %}
+        <div class="list-group">
+            {% for evento in eventos %}
+                <div class="list-group-item mb-3">
+                    <h4>{{ evento.titulo }}</h4>
+                    <p>{{ evento.descricao }}</p>
+                    <p><strong>Data/Hora:</strong> {{ evento.data_hora|date:'d/m/Y H:i' }}</p>
+                    <p><strong>Local:</strong> {{ evento.local }}</p>
+                    <p><strong>Organizador:</strong> {{ evento.organizador.username }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Nenhum evento cadastrado ainda.</p>
+    {% endif %}
+</div>
+{% endblock %} 
