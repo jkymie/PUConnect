@@ -1,20 +1,38 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Registro - PUConnect{% endblock %}
+{% block title %}Registrar - PUConnect{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
-        <div class="card">
-            <div class="card-body p-4">
-                <h2 class="text-center mb-4">Criar Conta</h2>
-                <form method="post">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-plus" style="font-size: 3rem; color: #0d6efd;"></i>
+                    <h1 class="h3 mt-3">Criar Conta</h1>
+                    <p class="text-muted">Preencha os dados abaixo para se registrar</p>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <form method="post" class="needs-validation" novalidate>
                     {% csrf_token %}
+                    
                     <div class="mb-4">
-                        <label for="id_tipo_usuario" class="form-label">Tipo de Usuário</label>
+                        <label for="{{ form.tipo_usuario.id_for_label }}" class="form-label">
+                            <i class="bi bi-person-badge"></i> Tipo de Usuário
+                        </label>
                         {{ form.tipo_usuario }}
                         {% if form.tipo_usuario.errors %}
-                            <div class="text-danger">
+                            <div class="invalid-feedback d-block">
                                 {{ form.tipo_usuario.errors }}
                             </div>
                         {% endif %}
@@ -22,41 +40,78 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="id_username" class="form-label">Usuário</label>
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Nome de Usuário
+                            </label>
                             {{ form.username }}
                             {% if form.username.errors %}
-                                <div class="text-danger">
+                                <div class="invalid-feedback d-block">
                                     {{ form.username.errors }}
                                 </div>
                             {% endif %}
                         </div>
+
                         <div class="col-md-6 mb-3">
-                            <label for="id_email" class="form-label">Email</label>
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="bi bi-envelope"></i> E-mail
+                            </label>
                             {{ form.email }}
                             {% if form.email.errors %}
-                                <div class="text-danger">
+                                <div class="invalid-feedback d-block">
                                     {{ form.email.errors }}
                                 </div>
                             {% endif %}
                         </div>
                     </div>
 
-                    <div id="campos-aluno" class="d-none">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Nome
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Sobrenome
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Campos específicos para Alunos -->
+                    <div id="campos-aluno" style="display: none;">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="id_matricula" class="form-label">Matrícula</label>
+                                <label for="{{ form.matricula.id_for_label }}" class="form-label">
+                                    <i class="bi bi-card-text"></i> Matrícula
+                                </label>
                                 {{ form.matricula }}
                                 {% if form.matricula.errors %}
-                                    <div class="text-danger">
+                                    <div class="invalid-feedback d-block">
                                         {{ form.matricula.errors }}
                                     </div>
                                 {% endif %}
                             </div>
+
                             <div class="col-md-6 mb-3">
-                                <label for="id_curso" class="form-label">Curso</label>
+                                <label for="{{ form.curso.id_for_label }}" class="form-label">
+                                    <i class="bi bi-book"></i> Curso
+                                </label>
                                 {{ form.curso }}
                                 {% if form.curso.errors %}
-                                    <div class="text-danger">
+                                    <div class="invalid-feedback d-block">
                                         {{ form.curso.errors }}
                                     </div>
                                 {% endif %}
@@ -64,42 +119,55 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="id_telefone" class="form-label">Telefone (opcional)</label>
-                            {{ form.telefone }}
-                            {% if form.telefone.errors %}
-                                <div class="text-danger">
-                                    {{ form.telefone.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="id_cpf" class="form-label">CPF (opcional)</label>
-                            {{ form.cpf }}
-                            {% if form.cpf.errors %}
-                                <div class="text-danger">
-                                    {{ form.cpf.errors }}
-                                </div>
-                            {% endif %}
+                    <!-- Campos específicos para Organizadores -->
+                    <div id="campos-organizador" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.cpf.id_for_label }}" class="form-label">
+                                    <i class="bi bi-upc"></i> CPF
+                                </label>
+                                {{ form.cpf }}
+                                {% if form.cpf.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.cpf.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.telefone.id_for_label }}" class="form-label">
+                                    <i class="bi bi-telephone"></i> Telefone
+                                </label>
+                                {{ form.telefone }}
+                                {% if form.telefone.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.telefone.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="id_password1" class="form-label">Senha</label>
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                <i class="bi bi-key"></i> Senha
+                            </label>
                             {{ form.password1 }}
                             {% if form.password1.errors %}
-                                <div class="text-danger">
+                                <div class="invalid-feedback d-block">
                                     {{ form.password1.errors }}
                                 </div>
                             {% endif %}
                         </div>
+
                         <div class="col-md-6 mb-3">
-                            <label for="id_password2" class="form-label">Confirmar Senha</label>
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                <i class="bi bi-key"></i> Confirmar Senha
+                            </label>
                             {{ form.password2 }}
                             {% if form.password2.errors %}
-                                <div class="text-danger">
+                                <div class="invalid-feedback d-block">
                                     {{ form.password2.errors }}
                                 </div>
                             {% endif %}
@@ -107,38 +175,68 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> Registrar
+                        </button>
                     </div>
                 </form>
-                <div class="text-center mt-3">
-                    <p class="mb-0">Já tem uma conta? <a href="{% url 'login' %}" class="text-decoration-none">Faça login</a></p>
+
+                <div class="text-center mt-4">
+                    <p class="mb-0">Já tem uma conta? 
+                        <a href="{% url 'login' %}" class="text-decoration-none">Entre aqui</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    .form-control {
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+    }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const tipoUsuarioSelect = document.getElementById('id_tipo_usuario');
+    const tipoUsuarioSelect = document.querySelector('#{{ form.tipo_usuario.id_for_label }}');
     const camposAluno = document.getElementById('campos-aluno');
-    const matriculaInput = document.getElementById('id_matricula');
-    const cursoInput = document.getElementById('id_curso');
+    const camposOrganizador = document.getElementById('campos-organizador');
 
-    function toggleCamposAluno() {
-        if (tipoUsuarioSelect.value === 'aluno') {
-            camposAluno.classList.remove('d-none');
-            matriculaInput.required = true;
-            cursoInput.required = true;
+    function atualizarCampos() {
+        const tipoUsuario = tipoUsuarioSelect.value;
+        
+        if (tipoUsuario === 'aluno') {
+            camposAluno.style.display = 'block';
+            camposOrganizador.style.display = 'none';
+        } else if (tipoUsuario === 'organizador') {
+            camposAluno.style.display = 'none';
+            camposOrganizador.style.display = 'block';
         } else {
-            camposAluno.classList.add('d-none');
-            matriculaInput.required = false;
-            cursoInput.required = false;
+            camposAluno.style.display = 'none';
+            camposOrganizador.style.display = 'none';
         }
     }
 
-    tipoUsuarioSelect.addEventListener('change', toggleCamposAluno);
-    toggleCamposAluno(); // Executa no carregamento da página
+    // Atualiza os campos quando a página carrega
+    atualizarCampos();
+
+    // Atualiza os campos quando o tipo de usuário muda
+    tipoUsuarioSelect.addEventListener('change', atualizarCampos);
 });
 </script>
 {% endblock %}

@@ -44,7 +44,7 @@ class Evento(models.Model):
         """Verifica se o evento ainda tem vagas disponíveis"""
         return self.vagas_disponiveis() > 0
     
-    def esta_inscrito(self, usuario):
+    def verificar_inscricao(self, usuario):
         """Verifica se um usuário está inscrito no evento"""
         return self.inscricoes.filter(usuario=usuario).exists()
     

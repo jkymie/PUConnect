@@ -1,42 +1,96 @@
 {% extends 'core/base.html' %}
-{% block title %}Responder Solicitação{% endblock %}
+
+{% block title %}Responder Solicitação - PUConnect{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0">Responder Solicitação</h3>
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'minhas_solicitacoes' %}">Solicitações</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Responder Solicitação</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-chat-dots" style="font-size: 3rem; color: #0d6efd;"></i>
+                    <h1 class="h3 mt-3">Responder Solicitação</h1>
+                    <p class="text-muted">Avalie a solicitação de {{ solicitacao.usuario.username }}</p>
                 </div>
-                <div class="card-body">
-                    <div class="mb-4">
-                        <h5>Solicitação de {{ solicitacao.usuario.username }}</h5>
-                        <p class="text-muted">Data: {{ solicitacao.data_solicitacao|date:"d/m/Y H:i" }}</p>
-                        <p><strong>Motivo:</strong></p>
-                        <p class="border p-3 bg-light">{{ solicitacao.motivo }}</p>
+
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-info-circle"></i> Detalhes da Solicitação
+                        </h5>
+                        <p class="mb-2">
+                            <strong>Usuário:</strong> {{ solicitacao.usuario.username }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>E-mail:</strong> {{ solicitacao.usuario.email }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Motivo:</strong> {{ solicitacao.motivo }}
+                        </p>
+                        <p class="mb-0">
+                            <strong>Data:</strong> {{ solicitacao.data_solicitacao|date:"d/m/Y H:i" }}
+                        </p>
                     </div>
-                    
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="resposta" class="form-label">Resposta:</label>
-                            <textarea name="resposta" id="resposta" class="form-control" rows="4" required></textarea>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button type="submit" name="acao" value="aprovar" class="btn btn-success">
-                                <i class="bi bi-check-circle"></i> Aprovar
-                            </button>
-                            <button type="submit" name="acao" value="rejeitar" class="btn btn-danger">
-                                <i class="bi bi-x-circle"></i> Rejeitar
-                            </button>
-                            <a href="{% url 'minhas_solicitacoes' %}" class="btn btn-outline-secondary">
-                                Cancelar
-                            </a>
-                        </div>
-                    </form>
                 </div>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="resposta" class="form-label">
+                            <i class="bi bi-chat-left-text"></i> Resposta
+                        </label>
+                        <textarea name="resposta" id="resposta" class="form-control" rows="4" required></textarea>
+                        <div class="form-text">
+                            Forneça uma resposta detalhada para o solicitante.
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" name="acao" value="aprovar" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Aprovar
+                        </button>
+                        <button type="submit" name="acao" value="rejeitar" class="btn btn-danger">
+                            <i class="bi bi-x-circle"></i> Rejeitar
+                        </button>
+                        <a href="{% url 'minhas_solicitacoes' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .form-control {
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+    }
+</style>
 {% endblock %} 

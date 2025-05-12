@@ -22,7 +22,6 @@ def register(request):
             auth_login(request, user)
             messages.success(request, 'Registration successful!')
             return redirect('home')
-        messages.error(request, 'Unsuccessful registration. Invalid information.')
     else:
         form = UserRegistrationForm()
     return render(request, 'core/register.html', {'form': form})
@@ -59,10 +58,20 @@ def home(request):
 
 def eventos_list(request):
     eventos = Evento.objects.all().order_by('-data_hora')
+    if request.user.is_authenticated:
+        inscricoes_usuario = set(
+            Inscricao.objects.filter(usuario=request.user).values_list('evento_id', flat=True)
+        )
+    else:
+        inscricoes_usuario = set()
+    eventos_info = []
     for evento in eventos:
-        evento._current_user = request.user
+        eventos_info.append({
+            'evento': evento,
+            'inscrito': evento.id in inscricoes_usuario,
+        })
     return render(request, 'core/eventos_list.html', {
-        'eventos': eventos
+        'eventos_info': eventos_info
     })
 
 def is_organizador(user):
@@ -87,7 +96,7 @@ def inscrever_evento(request, evento_id):
     evento = get_object_or_404(Evento, id=evento_id)
     
     # Verifica se o usuário já está inscrito
-    if evento.esta_inscrito(request.user):
+    if evento.verificar_inscricao(request.user):
         messages.info(request, f'Você já está inscrito neste evento.')
         return redirect('eventos_list')
     
@@ -221,5 +230,46 @@ def profile_view_other(request, username):
         'total_organizados': user_profile.get_total_eventos_organizados(),
     }
     return render(request, 'core/profile_other.html', context)
+
+@user_passes_test(is_organizador)
+def evento_edit(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    
+    # Verifica se o usuário é o organizador do evento
+    if evento.organizador != request.user:
+        messages.error(request, 'Você não tem permissão para editar este evento.')
+        return redirect('eventos_list')
+    
+    # Verifica se já existem inscrições
+    if evento.inscricoes.exists():
+        messages.error(request, 'Não é possível editar um evento que já possui inscrições.')
+        return redirect('eventos_list')
+    
+    if request.method == 'POST':
+        form = EventoForm(request.POST, instance=evento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Evento atualizado com sucesso!')
+            return redirect('eventos_list')
+    else:
+        form = EventoForm(instance=evento)
+    
+    return render(request, 'core/evento_edit.html', {
+        'form': form,
+        'evento': evento
+    })
+
+@login_required
+def evento_detail(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    inscrito = evento.verificar_inscricao(request.user) if request.user.is_authenticated else False
+    inscricoes = evento.inscricoes.all().select_related('usuario')
+    
+    context = {
+        'evento': evento,
+        'inscrito': inscrito,
+        'inscricoes': inscricoes,
+    }
+    return render(request, 'core/evento_detail.html', context)
 
  

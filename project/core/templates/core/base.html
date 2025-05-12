@@ -5,96 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PUConnect{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root {
-            --primary-color: #1a237e;
-            --secondary-color: #0d47a1;
-        }
-        body {
-            background-color: #f5f5f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .navbar {
-            background-color: var(--primary-color);
-        }
         .navbar-brand {
-            color: white !important;
             font-weight: bold;
+            font-size: 1.5rem;
         }
         .nav-link {
-            color: rgba(255, 255, 255, 0.8) !important;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            margin: 0 0.2rem;
+            border-radius: 0.3rem;
         }
         .nav-link:hover {
-            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
         }
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
         }
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+        .navbar {
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .btn-primary:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
+        .user-menu {
+            margin-left: auto;
         }
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(26, 35, 126, 0.25);
+        .dropdown-menu {
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+        }
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">PUConnect</a>
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="bi bi-calendar-event"></i> PUConnect
+            </a>
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'eventos_list' %}">Eventos</a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'eventos_list' %}active{% endif %}" 
+                           href="{% url 'eventos_list' %}">
+                            <i class="bi bi-calendar3"></i> Eventos
+                        </a>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home' %}">Home</a>
+                            <a class="nav-link {% if request.resolver_match.url_name == 'inscricoes' %}active{% endif %}" 
+                               href="{% url 'inscricoes' %}">
+                                <i class="bi bi-ticket-perforated"></i> Minhas Inscrições
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'inscricoes' %}">Minhas Inscrições</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'profile' %}">Meu Perfil</a>
-                        </li>
-                        {% if user.tipo_usuario == 'admin' %}
+                        {% if user.tipo_usuario == 'organizador' %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'minhas_solicitacoes' %}">Solicitações</a>
-                            </li>
-                        {% elif user.tipo_usuario == 'aluno' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'solicitar_organizador' %}">Ser Organizador</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'evento_create' %}active{% endif %}" 
+                                   href="{% url 'evento_create' %}">
+                                    <i class="bi bi-plus-circle"></i> Criar Evento
+                                </a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Sair</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Entrar</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">Registrar</a>
-                        </li>
                     {% endif %}
                 </ul>
+
+                <div class="user-menu">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'profile' %}">
+                                        <i class="bi bi-person"></i> Meu Perfil
+                                    </a>
+                                </li>
+                                {% if user.tipo_usuario == 'admin' %}
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'minhas_solicitacoes' %}">
+                                            <i class="bi bi-gear"></i> Administração
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                        <i class="bi bi-box-arrow-right"></i> Sair
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-light me-2">
+                            <i class="bi bi-box-arrow-in-right"></i> Entrar
+                        </a>
+                        <a href="{% url 'register' %}" class="btn btn-outline-light">
+                            <i class="bi bi-person-plus"></i> Registrar
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container mt-4">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -104,8 +129,7 @@
             {% endfor %}
         {% endif %}
 
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

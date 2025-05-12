@@ -3,97 +3,180 @@
 {% block title %}Meu Perfil - PUConnect{% endblock %}
 
 {% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-5 mb-4">
+            <i class="bi bi-person-circle"></i> Meu Perfil
+        </h1>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-4">
-        <div class="card mb-4">
+        <div class="card shadow-sm mb-4">
             <div class="card-body text-center">
-                {% if user_profile.foto %}
-                    <img src="{{ user_profile.foto.url }}" alt="Foto de perfil" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                {% else %}
-                    <img src="https://via.placeholder.com/150" alt="Foto de perfil" class="rounded-circle img-fluid mb-3">
-                {% endif %}
-                <h5 class="card-title">{{ user_profile.user.get_full_name|default:user_profile.user.username }}</h5>
-                <p class="text-muted">@{{ user_profile.user.username }}</p>
-                {% if user_profile.curso %}
-                    <p class="card-text"><i class="bi bi-book"></i> {{ user_profile.curso }}</p>
-                {% endif %}
-                {% if user_profile.matricula %}
-                    <p class="card-text"><i class="bi bi-card-text"></i> {{ user_profile.matricula }}</p>
-                {% endif %}
-                <a href="{% url 'profile_edit' %}" class="btn btn-primary">Editar Perfil</a>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <h6 class="card-title">Estatísticas</h6>
-                <div class="row text-center">
-                    <div class="col-6">
-                        <h4>{{ total_participados }}</h4>
-                        <p class="text-muted">Eventos Participados</p>
-                    </div>
-                    <div class="col-6">
-                        <h4>{{ total_organizados }}</h4>
-                        <p class="text-muted">Eventos Organizados</p>
-                    </div>
+                <div class="mb-3">
+                    <i class="bi bi-person-circle" style="font-size: 5rem; color: #0d6efd;"></i>
                 </div>
+                <h5 class="card-title">{{ user.username }}</h5>
+                <p class="text-muted">
+                    <i class="bi bi-envelope"></i> {{ user.email }}
+                </p>
+                <p class="text-muted">
+                    <i class="bi bi-person-badge"></i> {{ user.get_tipo_usuario_display }}
+                </p>
+                <a href="{% url 'profile_edit' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-pencil"></i> Editar Perfil
+                </a>
             </div>
         </div>
 
-        {% if user_profile.bio %}
-        <div class="card mb-4">
+        <div class="card shadow-sm">
             <div class="card-body">
-                <h6 class="card-title">Sobre</h6>
-                <p class="card-text">{{ user_profile.bio }}</p>
+                <h5 class="card-title">
+                    <i class="bi bi-info-circle"></i> Informações
+                </h5>
+                <p class="card-text">
+                    Aqui você pode gerenciar suas informações pessoais e ver seu histórico de atividades.
+                </p>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="bi bi-calendar-check text-primary"></i> 
+                        <a href="{% url 'inscricoes' %}" class="text-decoration-none">Minhas Inscrições</a>
+                    </li>
+                    {% if user.tipo_usuario == 'organizador' %}
+                        <li class="mb-2">
+                            <i class="bi bi-calendar-plus text-primary"></i>
+                            <a href="{% url 'evento_create' %}" class="text-decoration-none">Criar Evento</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
-        {% endif %}
     </div>
 
     <div class="col-md-8">
-        <div class="card mb-4">
+        <div class="card shadow-sm">
             <div class="card-body">
-                <h5 class="card-title">Eventos Organizados</h5>
-                {% if eventos_organizados %}
-                    <div class="list-group">
-                        {% for evento in eventos_organizados %}
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">{{ evento.titulo }}</h6>
-                                    <small>{{ evento.data_hora|date:"d/m/Y H:i" }}</small>
-                                </div>
-                                <p class="mb-1">{{ evento.descricao|truncatewords:20 }}</p>
-                                <small>{{ evento.local }}</small>
-                            </a>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-muted">Nenhum evento organizado ainda.</p>
-                {% endif %}
-            </div>
-        </div>
+                <h5 class="card-title mb-4">
+                    <i class="bi bi-gear"></i> Configurações
+                </h5>
 
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Eventos Participados</h5>
-                {% if eventos_participados %}
-                    <div class="list-group">
-                        {% for evento in eventos_participados %}
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">{{ evento.titulo }}</h6>
-                                    <small>{{ evento.data_hora|date:"d/m/Y H:i" }}</small>
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Nome de Usuário
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.username.errors }}
                                 </div>
-                                <p class="mb-1">{{ evento.descricao|truncatewords:20 }}</p>
-                                <small>{{ evento.local }}</small>
-                            </a>
-                        {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="bi bi-envelope"></i> E-mail
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                {% else %}
-                    <p class="text-muted">Nenhum evento participado ainda.</p>
-                {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Nome
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Sobrenome
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h6 class="mb-3">Alterar Senha</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                <i class="bi bi-key"></i> Nova Senha
+                            </label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password1.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                <i class="bi bi-key"></i> Confirmar Nova Senha
+                            </label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password2.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Salvar Alterações
+                        </button>
+                        <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .form-control {
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+    }
+</style>
 {% endblock %} 

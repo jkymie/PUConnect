@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Excluir Todas as Solicitações - PUConnect{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'friends' %}">Amigos</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Excluir Todas</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: #dc3545;"></i>
+                    <h1 class="h3 mt-3">Excluir Todas as Solicitações</h1>
+                    <p class="text-muted">Tem certeza que deseja excluir todas as suas solicitações de amizade?</p>
+                </div>
+
+                <div class="alert alert-danger mb-4">
+                    <h5 class="alert-heading">
+                        <i class="bi bi-exclamation-circle"></i> Atenção!
+                    </h5>
+                    <p class="mb-0">
+                        Esta ação não pode ser desfeita. Todas as suas solicitações de amizade serão permanentemente excluídas.
+                    </p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Confirmar Exclusão
+                        </button>
+                        <a href="{% url 'friends' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 0.5rem;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+    }
+</style>
+{% endblock %} 

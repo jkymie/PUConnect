@@ -1,37 +1,82 @@
 {% extends 'core/base.html' %}
-{% block title %}Solicitar ser Organizador{% endblock %}
+
+{% block title %}Solicitar Organizador - PUConnect{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0">Solicitar ser Organizador</h3>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-plus" style="font-size: 3rem; color: #0d6efd;"></i>
+                    <h1 class="h3 mt-3">Solicitar Acesso como Organizador</h1>
+                    <p class="text-muted">Preencha o formulário abaixo para solicitar acesso como organizador de eventos</p>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted mb-4">
-                        Como organizador, você poderá criar e gerenciar eventos na plataforma.
-                        Por favor, explique por que você gostaria de se tornar um organizador.
-                    </p>
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            {{ form.motivo.label_tag }}
-                            {{ form.motivo }}
-                            {% if form.motivo.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.motivo.errors }}
-                                </div>
-                            {% endif %}
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.motivo.id_for_label }}" class="form-label">
+                            <i class="bi bi-chat-text"></i> Motivo da Solicitação
+                        </label>
+                        {{ form.motivo }}
+                        {% if form.motivo.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.motivo.errors }}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Explique por que você deseja se tornar um organizador de eventos.
                         </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Enviar Solicitação</button>
-                            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.experiencia.id_for_label }}" class="form-label">
+                            <i class="bi bi-briefcase"></i> Experiência
+                        </label>
+                        {{ form.experiencia }}
+                        {% if form.experiencia.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.experiencia.errors }}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Descreva sua experiência em organização de eventos, se houver.
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Enviar Solicitação
+                        </button>
+                        <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .form-control {
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+    }
+</style>
 {% endblock %} 

@@ -1,51 +1,79 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Entrar - PUConnect{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0">Login</h3>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-circle" style="font-size: 3rem; color: #0d6efd;"></i>
+                    <h1 class="h3 mt-3">Bem-vindo de volta!</h1>
+                    <p class="text-muted">Entre com suas credenciais para acessar sua conta</p>
                 </div>
-                <div class="card-body">
-                    {% if user.is_authenticated %}
-                        <div class="alert alert-info">
-                            Você já está logado como {{ user.username }}.
-                            <a href="{% url 'home' %}" class="alert-link">Ir para Home</a>
-                        </div>
-                    {% else %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                {{ form.username.label_tag }}
-                                {{ form.username }}
-                                {% if form.username.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.username.errors }}
-                                    </div>
-                                {% endif %}
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            <i class="bi bi-person"></i> Nome de Usuário
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.username.errors }}
                             </div>
-                            <div class="mb-3">
-                                {{ form.password.label_tag }}
-                                {{ form.password }}
-                                {% if form.password.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.password.errors }}
-                                    </div>
-                                {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">
+                            <i class="bi bi-key"></i> Senha
+                        </label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.password.errors }}
                             </div>
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Entrar</button>
-                                <a href="{% url 'register' %}" class="btn btn-outline-secondary">Registrar</a>
-                            </div>
-                        </form>
-                    {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Entrar
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="mb-0">Não tem uma conta? 
+                        <a href="{% url 'register' %}" class="text-decoration-none">Registre-se</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .form-control {
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+    }
+</style>
 {% endblock %}
