@@ -20,5 +20,6 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('profile/edit/', views.profile_edit, name='profile_edit'),
     path('profile/<str:username>/', views.profile_view_other, name='profile_other'),
+    path('meus-eventos/', views.meus_eventos_view, name='meus-eventos'),
 ]
 

@@ -20,9 +20,9 @@ def register(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            messages.success(request, 'Registration successful!')
+            messages.success(request, 'Registrado com sucesso!')
             return redirect('home')
-        messages.error(request, 'Unsuccessful registration. Invalid information.')
+        messages.error(request, 'Informações inválidas, registro inválido.')
     else:
         form = UserRegistrationForm()
     return render(request, 'core/register.html', {'form': form})
@@ -42,7 +42,7 @@ def login_view(request):
                 auth_login(request, user)
                 messages.success(request, f'Welcome back, {username}!')
                 return redirect('home')
-        messages.error(request, 'Invalid username or password.')
+        messages.error(request, 'Username ou senha inválida.')
     else:
         form = UserLoginForm()
     return render(request, 'core/login.html', {'form': form})
@@ -222,4 +222,7 @@ def profile_view_other(request, username):
     }
     return render(request, 'core/profile_other.html', context)
 
+@login_required
+def meus_eventos_view(request):
+    return render(request, 'meus-eventos.html')
  

@@ -5,6 +5,9 @@
   <div class="nav-links">
     {% if user.is_authenticated %}
       <a href="{% url 'inscricoes' %}">Histórico</a>
+      {% if user.tipo_usuario == 'organizador' %}
+      <a href="{% url 'meus-eventos' %}">Meus Eventos</a> 
+      {% endif %}
       <a href="{% url 'logout' %}">Sair</a>
     {% else %}
       <a href="{% url 'login' %}">Login/Registrar</a>
