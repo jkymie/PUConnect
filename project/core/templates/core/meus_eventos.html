@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Meus Eventos{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Meus Eventos</h2>
+                <a href="{% url 'evento_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Criar Novo Evento
+                </a>
+            </div>
+
+            {% if eventos %}
+                <div class="row">
+                    {% for evento in eventos %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                {% if evento.imagem %}
+                                    <img src="{{ evento.imagem.url }}" class="card-img-top" alt="{{ evento.titulo }}">
+                                {% else %}
+                                    <div class="card-img-top bg-light text-center py-5">
+                                        <i class="fas fa-calendar-alt fa-3x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ evento.titulo }}</h5>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar"></i> {{ evento.data_hora|date:"d/m/Y H:i" }}
+                                        </small>
+                                    </p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="fas fa-map-marker-alt"></i> {{ evento.local }}
+                                        </small>
+                                    </p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="fas fa-users"></i> {{ evento.vagas_disponiveis }} vagas disponíveis
+                                        </small>
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="btn-group w-100">
+                                        <a href="{% url 'evento_detail' evento.pk %}" class="btn btn-outline-primary">
+                                            <i class="fas fa-eye"></i> Ver Detalhes
+                                        </a>
+                                        <a href="{% url 'evento_edit' evento.pk %}" class="btn btn-outline-secondary">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <a href="{% url 'evento_delete' evento.pk %}" class="btn btn-outline-danger">
+                                            <i class="fas fa-trash"></i> Excluir
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Você ainda não criou nenhum evento.
+                    <a href="{% url 'evento_create' %}" class="alert-link">Criar seu primeiro evento</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

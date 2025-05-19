@@ -1,0 +1,83 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ evento.titulo }}{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body p-4">
+                    {% if evento.imagem %}
+                        <img src="{{ evento.imagem.url }}" alt="{{ evento.titulo }}" class="img-fluid rounded mb-4">
+                    {% endif %}
+                    <h1 class="mb-3">{{ evento.titulo }}</h1>
+                    <div class="mb-4">
+                        <p class="text-muted">
+                            <i class="fas fa-calendar"></i> {{ evento.data_hora|date:"d/m/Y H:i" }}
+                        </p>
+                        <p class="text-muted">
+                            <i class="fas fa-map-marker-alt"></i> {{ evento.local }}
+                        </p>
+                        <p class="text-muted">
+                            <i class="fas fa-users"></i> {{ evento.vagas }} vagas
+                            ({{ evento.vagas_disponiveis }} disponíveis)
+                        </p>
+                    </div>
+                    <div class="mb-4">
+                        <h4>Descrição</h4>
+                        <p>{{ evento.descricao }}</p>
+                    </div>
+                    <div class="mb-4">
+                        <h4>Organizador</h4>
+                        <p>{{ evento.organizador.get_full_name|default:evento.organizador.username }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h4 class="mb-3">Inscrição</h4>
+                    {% if user.is_authenticated %}
+                        {% if user in evento.inscritos.all %}
+                            <div class="alert alert-success">
+                                Você está inscrito neste evento!
+                            </div>
+                            <form method="post" action="{% url 'evento_cancelar_inscricao' evento.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger w-100">Cancelar Inscrição</button>
+                            </form>
+                        {% else %}
+                            {% if evento.vagas_disponiveis > 0 %}
+                                <form method="post" action="{% url 'evento_inscrever' evento.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary w-100">Inscrever-se</button>
+                                </form>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    Este evento está com as vagas esgotadas.
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            Faça login para se inscrever neste evento.
+                        </div>
+                        <a href="{% url 'login' %}" class="btn btn-primary w-100">Fazer Login</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% if user == evento.organizador %}
+                <div class="card mt-3">
+                    <div class="card-body p-4">
+                        <h4 class="mb-3">Ações do Organizador</h4>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'evento_edit' evento.id %}" class="btn btn-warning">Editar Evento</a>
+                            <a href="{% url 'evento_delete' evento.id %}" class="btn btn-danger">Excluir Evento</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

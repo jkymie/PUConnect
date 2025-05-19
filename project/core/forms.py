@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from .models import User, Evento, SolicitarOrganizador, UserProfile
+from django.utils import timezone
 
 class UserRegistrationForm(UserCreationForm):
     tipo_usuario = forms.ChoiceField(
@@ -60,36 +61,69 @@ class UserLoginForm(AuthenticationForm):
 class EventoForm(forms.ModelForm):
     titulo = forms.CharField(
         max_length=200,
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Digite o título do evento'
+        })
     )
     descricao = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 4,
+            'placeholder': 'Descreva o evento...'
+        })
     )
     data_hora = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'})
+        widget=forms.DateTimeInput(attrs={
+            'class': 'form-control',
+            'type': 'datetime-local'
+        })
     )
     local = forms.CharField(
         max_length=200,
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Digite o local do evento'
+        })
     )
     vagas = forms.IntegerField(
         min_value=0,
-        widget=forms.NumberInput(attrs={'class': 'form-control'})
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Número de vagas disponíveis'
+        })
+    )
+    imagem = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={
+            'class': 'form-control',
+            'accept': 'image/*'
+        })
     )
 
     class Meta:
         model = Evento
-        fields = ['titulo', 'descricao', 'data_hora', 'local', 'vagas']
-        widgets = {
-            'data_hora': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-        }
+        fields = ['titulo', 'descricao', 'data_hora', 'local', 'vagas', 'imagem']
         labels = {
             'titulo': _('Título'),
             'descricao': _('Descrição'),
             'data_hora': _('Data e Hora'),
             'local': _('Local'),
             'vagas': _('Número de Vagas'),
+            'imagem': _('Imagem do Evento'),
         }
+
+    def clean_data_hora(self):
+        data_hora = self.cleaned_data.get('data_hora')
+        if data_hora and data_hora < timezone.now():
+            raise forms.ValidationError('A data e hora do evento não podem ser no passado.')
+        return data_hora
+
+    def clean_vagas(self):
+        vagas = self.cleaned_data.get('vagas')
+        if vagas < 0:
+            raise forms.ValidationError('O número de vagas não pode ser negativo.')
+        return vagas
 
 class SolicitarOrganizadorForm(forms.ModelForm):
     class Meta:

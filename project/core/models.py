@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 # Create your models here.
 
@@ -76,10 +77,8 @@ class User(AbstractUser):
 
     def clean(self):
         super().clean()
-        if self.tipo_usuario == 'aluno' and not self.matricula:
-            raise ValidationError({'matricula': 'Matrícula é obrigatória para alunos'})
-        if self.tipo_usuario == 'organizador' and not self.cpf:
-            raise ValidationError({'cpf': 'CPF é obrigatório para organizadores'})
+        if not self.matricula:
+            raise ValidationError({'matricula': 'Matrícula é obrigatória para todos os usuários'})
 
 class Evento(models.Model):
     titulo = models.CharField(max_length=200, verbose_name=_('título'))
@@ -93,6 +92,12 @@ class Evento(models.Model):
         verbose_name=_('organizador')
     )
     vagas = models.PositiveIntegerField(default=0, verbose_name=_('vagas'))
+    imagem = models.ImageField(
+        upload_to='eventos/',
+        null=True,
+        blank=True,
+        verbose_name=_('imagem')
+    )
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name=_('criado em'))
 
     class Meta:
@@ -102,6 +107,11 @@ class Evento(models.Model):
 
     def __str__(self):
         return self.titulo
+    
+    def clean(self):
+        super().clean()
+        if self.data_hora and self.data_hora < timezone.now():
+            raise ValidationError({'data_hora': 'A data e hora do evento não podem ser no passado.'})
     
     def vagas_disponiveis(self):
         """Retorna o número de vagas disponíveis no evento"""
