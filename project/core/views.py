@@ -3,16 +3,12 @@ from django.contrib.auth import login as auth_login, authenticate, logout as aut
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils import timezone
-from .forms import UserRegistrationForm, UserLoginForm, EventoForm, SolicitarOrganizadorForm, UserProfileForm
-from .models import Evento, Inscricao, SolicitarOrganizador, UserProfile
+from django.core.exceptions import ValidationError
+from .forms import UserRegistrationForm, UserLoginForm, EventoForm, UserProfileForm
+from .models import Evento, Inscricao, UserProfile
 
 def index(request):
     return render(request, 'core/index.html')
-
-@login_required
-def inscricoes(request):
-    inscricoes = Inscricao.objects.filter(usuario=request.user).select_related('evento').order_by('-data_inscricao')
-    return render(request, 'core/inscricoes.html', {'inscricoes': inscricoes})
 
 def register(request):
     if request.method == 'POST':
@@ -20,54 +16,46 @@ def register(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            messages.success(request, 'Registrado com sucesso!')
+            messages.success(request, 'Conta criada com sucesso!')
             return redirect('home')
-        messages.error(request, 'Informações inválidas, registro inválido.')
+        else:
+            messages.error(request, 'Por favor, corrija os erros abaixo.')
     else:
         form = UserRegistrationForm()
     return render(request, 'core/register.html', {'form': form})
 
-def login_view(request):
-    # Se o usuário já estiver logado, redireciona para home
-    if request.user.is_authenticated:
-        return redirect('home')
-        
+def login(request):
     if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
+        form = UserLoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                messages.success(request, f'Welcome back, {username}!')
+                messages.success(request, 'Login realizado com sucesso!')
                 return redirect('home')
-        messages.error(request, 'Username ou senha inválida.')
+            else:
+                messages.error(request, 'Usuário ou senha inválidos.')
     else:
         form = UserLoginForm()
     return render(request, 'core/login.html', {'form': form})
 
-def logout_view(request):
-    if request.user.is_authenticated:
-        auth_logout(request)
-        messages.success(request, 'Você foi desconectado com sucesso.')
+@login_required
+def logout(request):
+    auth_logout(request)
+    messages.success(request, 'Logout realizado com sucesso!')
     return redirect('index')
 
 @login_required
 def home(request):
-    return render(request, 'core/home.html')
-
-def eventos_list(request):
     eventos = Evento.objects.all().order_by('-data_hora')
-    for evento in eventos:
-        evento._current_user = request.user
-    return render(request, 'core/eventos_list.html', {
-        'eventos': eventos
-    })
+    return render(request, 'core/home.html', {'eventos': eventos})
 
 def is_organizador(user):
     return user.is_authenticated and user.tipo_usuario == 'organizador'
 
+@login_required
 @user_passes_test(is_organizador)
 def evento_create(request):
     if request.method == 'POST':
@@ -76,107 +64,77 @@ def evento_create(request):
             evento = form.save(commit=False)
             evento.organizador = request.user
             evento.save()
-            messages.success(request, 'Evento cadastrado com sucesso!')
+            messages.success(request, 'Evento criado com sucesso!')
             return redirect('eventos_list')
     else:
         form = EventoForm()
-    return render(request, 'core/evento_create.html', {'form': form})
+    return render(request, 'core/evento_form.html', {'form': form})
 
 @login_required
-def inscrever_evento(request, evento_id):
-    evento = get_object_or_404(Evento, id=evento_id)
-    
-    # Verifica se o usuário já está inscrito
-    if evento.esta_inscrito(request.user):
-        messages.info(request, f'Você já está inscrito neste evento.')
-        return redirect('eventos_list')
-    
-    # Verifica se há vagas disponíveis
-    if not evento.tem_vagas_disponiveis():
-        messages.error(request, f'Desculpe, não há mais vagas disponíveis para este evento.')
-        return redirect('eventos_list')
-    
-    # Cria a inscrição
-    inscricao = Inscricao.objects.create(
-        evento=evento,
-        usuario=request.user
-    )
-    
-    messages.success(request, f'Inscrição realizada com sucesso para o evento {evento.titulo}!')
-    return redirect('eventos_list')
-
-@login_required
-def marcar_presenca(request, evento_id):
-    evento = get_object_or_404(Evento, id=evento_id)
-    inscricao = get_object_or_404(Inscricao, evento=evento, usuario=request.user)
-    inscricao.presente = not inscricao.presente
-    inscricao.save()
-    status = "presente" if inscricao.presente else "ausente"
-    messages.success(request, f'Presença marcada como {status} no evento {evento.titulo}.')
-    return redirect('eventos_list')
-
-@login_required
-def solicitar_organizador(request):
-    # Verifica se já existe uma solicitação pendente
-    if SolicitarOrganizador.objects.filter(usuario=request.user, status='pendente').exists():
-        messages.warning(request, 'Você já possui uma solicitação pendente.')
-        return redirect('home')
-    
-    # Verifica se já é organizador
-    if request.user.tipo_usuario == 'organizador':
-        messages.info(request, 'Você já é um organizador.')
-        return redirect('home')
-    
+@user_passes_test(is_organizador)
+def evento_edit(request, pk):
+    evento = get_object_or_404(Evento, pk=pk, organizador=request.user)
     if request.method == 'POST':
-        form = SolicitarOrganizadorForm(request.POST)
+        form = EventoForm(request.POST, instance=evento)
         if form.is_valid():
-            solicitacao = form.save(commit=False)
-            solicitacao.usuario = request.user
-            solicitacao.save()
-            messages.success(request, 'Sua solicitação foi enviada com sucesso!')
-            return redirect('home')
+            form.save()
+            messages.success(request, 'Evento atualizado com sucesso!')
+            return redirect('eventos_list')
     else:
-        form = SolicitarOrganizadorForm()
-    
-    return render(request, 'core/solicitar_organizador.html', {'form': form})
+        form = EventoForm(instance=evento)
+    return render(request, 'core/evento_form.html', {'form': form})
 
 @login_required
-def minhas_solicitacoes(request):
-    if request.user.tipo_usuario != 'admin':
-        messages.error(request, 'Acesso não autorizado.')
-        return redirect('home')
-    
-    solicitacoes = SolicitarOrganizador.objects.all().select_related('usuario')
-    return render(request, 'core/minhas_solicitacoes.html', {'solicitacoes': solicitacoes})
-
-@login_required
-def responder_solicitacao(request, solicitacao_id):
-    if request.user.tipo_usuario != 'admin':
-        messages.error(request, 'Acesso não autorizado.')
-        return redirect('home')
-    
-    solicitacao = get_object_or_404(SolicitarOrganizador, id=solicitacao_id)
-    
+@user_passes_test(is_organizador)
+def evento_delete(request, pk):
+    evento = get_object_or_404(Evento, pk=pk, organizador=request.user)
     if request.method == 'POST':
-        acao = request.POST.get('acao')
-        resposta = request.POST.get('resposta', '')
-        
-        if acao in ['aprovar', 'rejeitar']:
-            solicitacao.status = 'aprovado' if acao == 'aprovar' else 'rejeitado'
-            solicitacao.resposta = resposta
-            solicitacao.data_resposta = timezone.now()
-            solicitacao.save()
-            
-            if acao == 'aprovar':
-                solicitacao.usuario.tipo_usuario = 'organizador'
-                solicitacao.usuario.save()
-                messages.success(request, f'Solicitação aprovada. {solicitacao.usuario.username} agora é um organizador.')
-            else:
-                messages.success(request, 'Solicitação rejeitada.')
-            
-            return redirect('minhas_solicitacoes')
+        evento.delete()
+        messages.success(request, 'Evento excluído com sucesso!')
+        return redirect('eventos_list')
+    return render(request, 'core/evento_confirm_delete.html', {'evento': evento})
+
+@login_required
+def evento_detail(request, pk):
+    evento = get_object_or_404(Evento, pk=pk)
+    inscrito = evento.esta_inscrito(request.user)
+    return render(request, 'core/evento_detail.html', {
+        'evento': evento,
+        'inscrito': inscrito
+    })
+
+@login_required
+def eventos_list(request):
+    eventos = Evento.objects.all().order_by('-data_hora')
+    return render(request, 'core/eventos_list.html', {'eventos': eventos})
+
+@login_required
+def inscrever_evento(request, pk):
+    evento = get_object_or_404(Evento, pk=pk)
+    if not evento.tem_vagas_disponiveis():
+        messages.error(request, 'Desculpe, não há mais vagas disponíveis para este evento.')
+        return redirect('evento_detail', pk=pk)
     
-    return render(request, 'core/responder_solicitacao.html', {'solicitacao': solicitacao})
+    if evento.esta_inscrito(request.user):
+        messages.warning(request, 'Você já está inscrito neste evento.')
+        return redirect('evento_detail', pk=pk)
+    
+    Inscricao.objects.create(evento=evento, usuario=request.user)
+    messages.success(request, 'Inscrição realizada com sucesso!')
+    return redirect('evento_detail', pk=pk)
+
+@login_required
+def cancelar_inscricao(request, pk):
+    evento = get_object_or_404(Evento, pk=pk)
+    inscricao = get_object_or_404(Inscricao, evento=evento, usuario=request.user)
+    inscricao.delete()
+    messages.success(request, 'Inscrição cancelada com sucesso!')
+    return redirect('evento_detail', pk=pk)
+
+@login_required
+def inscricoes(request):
+    inscricoes = Inscricao.objects.filter(usuario=request.user).select_related('evento')
+    return render(request, 'core/inscricoes.html', {'inscricoes': inscricoes})
 
 @login_required
 def profile_view(request):

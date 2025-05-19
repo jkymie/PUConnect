@@ -91,5 +91,4 @@ python manage.py runserver
 - PostgreSQL (psycopg2-binary 2.9.9)
 
 ### Frontend (JavaScript)
-- Bootstrap 5.3.3
 - Popper.js 2.11.8
