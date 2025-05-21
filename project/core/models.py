@@ -99,6 +99,7 @@ class Evento(models.Model):
         verbose_name=_('imagem')
     )
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name=_('criado em'))
+    destaque = models.BooleanField(default=False, verbose_name=_('evento em destaque'))
 
     class Meta:
         verbose_name = _('evento')
@@ -207,3 +208,15 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+class Categoria(models.Model):
+    nome = models.CharField(max_length=100, unique=True)
+    descricao = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name = 'Categoria'
+        verbose_name_plural = 'Categorias'
+        ordering = ['nome']
+
+    def __str__(self):
+        return self.nome

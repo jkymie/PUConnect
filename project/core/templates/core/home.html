@@ -1,26 +1,65 @@
 {% extends 'core/base.html' %}
 {% load static %}
-
-{% block title %}Home - PUConnect{% endblock %}
-
+{% block title %}PUConnect{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-body text-center">
-                    <h1 class="display-4 mb-4">Welcome to PUConnect!</h1>
-                    <p class="lead">Hello, {{ user.username }}!</p>
-                    <p class="text-muted">You are now logged in to your account.</p>
-                    
-                    <div class="mt-4">
-                        <a href="{% url 'logout' %}" class="btn btn-danger">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="home-hero" style="background:#e3edfc;padding:40px 0 30px 0;text-align:center;">
+    <h1 style="font-size:2.2rem;font-weight:700;line-height:1.2;">
+        <span class="amarelo-puc">Participe</span><span class="azul-puc">,</span> <span class="amarelo-puc">descubra</span> <span class="azul-puc">e</span> <span class="amarelo-puc">divulgue</span><br>
+        <span class="azul-puc">eventos na PUC-Rio</span>
+    </h1>
+    <form class="home-search-bar" method="get" action="#" style="margin:30px auto 0 auto;max-width:600px;">
+        <input type="text" name="q" placeholder="Pesquise por eventos, assuntos, áreas" style="width:80%;padding:12px 16px;border-radius:20px;border:1px solid #ccc;">
+    </form>
 </div>
+<section class="home-section" style="margin-top:30px;background:#F5F5F0;padding:24px 0 8px 0;border-radius:18px;">
+    <div class="home-section-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="color:#2563eb;font-weight:600;font-size:1.2rem;"><img src="{% static 'core/icons/estrelinha.png' %}" style="width:22px;vertical-align:middle;"> Eventos em destaque</span>
+        <a href="#" class="btn btn-primary" style="background:#2563eb;color:#fff;padding:8px 18px;border-radius:8px;">Ver todos os eventos</a>
+    </div>
+    <div class="home-eventos-lista" style="display:flex;gap:20px;overflow-x:auto;margin-top:15px;background:#DAE6FB;padding:18px 0 18px 18px;border-radius:16px;">
+        {% for evento in eventos_destaque %}
+            {% include 'core/components/card-evento.html' with evento=evento %}
+        {% empty %}
+            <p>Nenhum evento em destaque.</p>
+        {% endfor %}
+    </div>
+</section>
+<section class="home-section home-colecoes" style="margin-top:30px;background:#F5F5F0;padding:24px 0 8px 0;border-radius:18px;">
+    <div class="home-section-title" style="color:#2563eb;font-weight:600;font-size:1.2rem;"><img src="{% static 'core/icons/estrelinha.png' %}" style="width:22px;vertical-align:middle;"> Explore nossas coleções</div>
+    <div class="home-colecoes-lista" style="display:flex;gap:24px;justify-content:center;margin-top:18px;flex-wrap:wrap;background:#DAE6FB;padding:18px 0 18px 18px;border-radius:16px;">
+        {% for categoria in categorias %}
+        <div class="colecao-card" style="background:#fff;border-radius:16px;box-shadow:0 2px 8px #0001;padding:24px 18px;display:flex;flex-direction:column;align-items:center;width:160px;border:2px solid #2563eb;">
+            <div class="icone-placeholder" style="width:48px;height:48px;background:#e3edfc;border-radius:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;">
+                {% if categoria.nome == 'Comunitários' %}
+                    <img src="{% static 'core/icons/Heart_02.svg' %}" style="width:32px;height:32px;">
+                {% elif categoria.nome == 'Centro Técnico Científico' %}
+                    <img src="{% static 'core/icons/Settings.svg' %}" style="width:32px;height:32px;">
+                {% elif categoria.nome == 'Centro de Ciências Sociais' %}
+                    <img src="{% static 'core/icons/Chat_Conversation.svg' %}" style="width:32px;height:32px;">
+                {% elif categoria.nome == 'Centro de Teologia e Ciências Humanas' %}
+                    <img src="{% static 'core/icons/Chat_Conversation.svg' %}" style="width:32px;height:32px;">
+                {% elif categoria.nome == 'Centro de Ciências Biológicas e da Saúde' %}
+                    <img src="{% static 'core/icons/First_Aid.svg' %}" style="width:32px;height:32px;">
+                {% else %}
+                    <img src="{% static 'core/icons/Heart_02.svg' %}" style="width:32px;height:32px;">
+                {% endif %}
+            </div>
+            <span style="color:#155DE2;font-weight:600;font-size:1rem;text-align:center;">{{ categoria.nome }}</span>
+        </div>
+        {% empty %}
+            <p>Nenhuma coleção cadastrada.</p>
+        {% endfor %}
+    </div>
+</section>
+<section class="home-section" style="margin-top:30px;background:#F5F5F0;padding:24px 0 8px 0;border-radius:18px;">
+    <div class="home-section-title" style="color:#2563eb;font-weight:600;font-size:1.2rem;"><img src="{% static 'core/icons/estrelinha.png' %}" style="width:22px;vertical-align:middle;"> Eventos desse mês</div>
+    <div class="home-eventos-lista" style="display:flex;gap:20px;overflow-x:auto;margin-top:15px;background:#DAE6FB;padding:18px 0 18px 18px;border-radius:16px;">
+        {% for evento in eventos_mes %}
+            {% include 'core/components/card-evento.html' with evento=evento %}
+        {% empty %}
+            <p>Nenhum evento neste mês.</p>
+        {% endfor %}
+    </div>
+</section>
+{% include 'core/components/footer.html' %}
 {% endblock %} 

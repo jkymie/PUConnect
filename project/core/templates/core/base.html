@@ -25,6 +25,8 @@
             --radius-lg: 12px;
             --transition: all 0.3s ease;
         }
+        .amarelo-puc { color: #EFBC06 !important; }
+        .azul-puc { color: #2563eb !important; }
 
         * {
             margin: 0;
@@ -329,48 +331,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-content">
-                <a class="navbar-brand" href="{% url 'index' %}">PUConnect</a>
-                <button class="navbar-toggler" onclick="toggleMenu()" aria-label="Toggle navigation">
-                    ☰
-                </button>
-                <ul class="navbar-nav" id="navbarNav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'eventos_list' %}">Eventos</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home' %}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'inscricoes' %}">Minhas Inscrições</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'profile' %}">Meu Perfil</a>
-                        </li>
-                        {% if user.tipo_usuario == 'admin' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
-                            </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Sair</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Entrar</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">Registrar</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    {% include 'core/components/header.html' %}
     <div class="container">
         {% if messages %}
             {% for message in messages %}

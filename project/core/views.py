@@ -1,11 +1,20 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib import messages
+from django.shortcuts import render
 from django.utils import timezone
-from django.core.exceptions import ValidationError
-from .forms import UserRegistrationForm, UserLoginForm, EventoForm, UserProfileForm
-from .models import Evento, Inscricao, UserProfile
+from .models import Evento, Categoria, Inscricao
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+def home(request):
+    agora = timezone.now()
+    eventos_destaque = Evento.objects.filter(destaque=True, data_hora__gte=agora).order_by('data_hora')[:3]
+    if not eventos_destaque:
+        eventos_destaque = Evento.objects.filter(data_hora__gte=agora).order_by('data_hora')[:3]
+    eventos_mes = Evento.objects.filter(data_hora__year=agora.year, data_hora__month=agora.month, data_hora__gte=agora).order_by('data_hora')[:3]
+    categorias = Categoria.objects.all()
+    return render(request, 'core/home.html', {
+        'eventos_destaque': eventos_destaque,
+        'eventos_mes': eventos_mes,
+        'categorias': categorias,
+    })
 
 def index(request):
     return render(request, 'core/index.html')
@@ -47,71 +56,114 @@ def logout(request):
     messages.success(request, 'Logout realizado com sucesso!')
     return redirect('index')
 
-@login_required
-def home(request):
-    eventos = Evento.objects.all().order_by('-data_hora')
-    return render(request, 'core/home.html', {'eventos': eventos})
-
 def is_organizador(user):
-    return user.is_authenticated and user.tipo_usuario == 'organizador'
+    return user.is_authenticated and getattr(user, 'tipo_usuario', None) == 'organizador'
 
 @login_required
 @user_passes_test(is_organizador)
 def evento_create(request):
+    if not is_organizador(request.user):
+        messages.error(request, 'Apenas organizadores podem criar eventos.')
+        return redirect('home')
+    
     if request.method == 'POST':
         form = EventoForm(request.POST, request.FILES)
         if form.is_valid():
             evento = form.save(commit=False)
             evento.organizador = request.user
+            
+            # Processa a imagem se foi enviada
+            if 'imagem' in request.FILES:
+                imagem = request.FILES['imagem']
+                # Gera um nome único para o arquivo
+                ext = os.path.splitext(imagem.name)[1]
+                filename = f'eventos/{evento.titulo}_{timezone.now().strftime("%Y%m%d_%H%M%S")}{ext}'
+                # Salva a imagem
+                path = default_storage.save(filename, ContentFile(imagem.read()))
+                evento.imagem = path
+            
             evento.save()
             messages.success(request, 'Evento criado com sucesso!')
-            return redirect('eventos_list')
-        else:
-            messages.error(request, 'Por favor, corrija os erros abaixo.')
+            return redirect('evento_detail', pk=evento.pk)
     else:
         form = EventoForm()
-    return render(request, 'core/evento_form.html', {'form': form, 'action': 'Criar'})
+    
+    return render(request, 'core/evento_form.html', {
+        'form': form,
+        'action': 'Criar'
+    })
 
 @login_required
 @user_passes_test(is_organizador)
 def evento_edit(request, pk):
-    evento = get_object_or_404(Evento, pk=pk, organizador=request.user)
+    evento = get_object_or_404(Evento, pk=pk)
+    
+    if not is_organizador(request.user) or evento.organizador != request.user:
+        messages.error(request, 'Você não tem permissão para editar este evento.')
+        return redirect('evento_detail', pk=pk)
+    
     if request.method == 'POST':
         form = EventoForm(request.POST, request.FILES, instance=evento)
         if form.is_valid():
+            # Processa a imagem se foi enviada
+            if 'imagem' in request.FILES:
+                # Remove a imagem antiga se existir
+                if evento.imagem:
+                    default_storage.delete(evento.imagem.path)
+                
+                imagem = request.FILES['imagem']
+                # Gera um nome único para o arquivo
+                ext = os.path.splitext(imagem.name)[1]
+                filename = f'eventos/{evento.titulo}_{timezone.now().strftime("%Y%m%d_%H%M%S")}{ext}'
+                # Salva a nova imagem
+                path = default_storage.save(filename, ContentFile(imagem.read()))
+                evento.imagem = path
+            
             form.save()
             messages.success(request, 'Evento atualizado com sucesso!')
-            return redirect('eventos_list')
-        else:
-            messages.error(request, 'Por favor, corrija os erros abaixo.')
+            return redirect('evento_detail', pk=pk)
     else:
         form = EventoForm(instance=evento)
-    return render(request, 'core/evento_form.html', {'form': form, 'action': 'Editar'})
+    
+    return render(request, 'core/evento_form.html', {
+        'form': form,
+        'action': 'Editar'
+    })
 
 @login_required
 @user_passes_test(is_organizador)
 def evento_delete(request, pk):
-    evento = get_object_or_404(Evento, pk=pk, organizador=request.user)
+    evento = get_object_or_404(Evento, pk=pk)
+    
+    if not is_organizador(request.user) or evento.organizador != request.user:
+        messages.error(request, 'Você não tem permissão para excluir este evento.')
+        return redirect('evento_detail', pk=pk)
+    
     if request.method == 'POST':
-        # Verifica se há inscrições
-        if evento.inscricoes.exists():
-            messages.error(request, 'Não é possível excluir um evento que possui inscrições.')
-            return redirect('eventos_list')
+        # Remove a imagem se existir
+        if evento.imagem:
+            default_storage.delete(evento.imagem.path)
+        
         evento.delete()
         messages.success(request, 'Evento excluído com sucesso!')
         return redirect('eventos_list')
+    
     return render(request, 'core/evento_confirm_delete.html', {'evento': evento})
 
 @login_required
 def evento_detail(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
-    inscrito = evento.esta_inscrito(request.user)
+    inscrito = evento.verificar_inscricao(request.user)
     vagas_disponiveis = evento.vagas_disponiveis()
-    return render(request, 'core/evento_detail.html', {
+    
+    context = {
         'evento': evento,
         'inscrito': inscrito,
-        'vagas_disponiveis': vagas_disponiveis
-    })
+        'vagas_disponiveis': vagas_disponiveis,
+        'form': InscricaoForm() if not inscrito and vagas_disponiveis > 0 else None
+    }
+    
+    return render(request, 'core/evento_detail.html', context)
 
 @login_required
 def eventos_list(request):
@@ -119,27 +171,47 @@ def eventos_list(request):
     return render(request, 'core/eventos_list.html', {'eventos': eventos})
 
 @login_required
-def inscrever_evento(request, pk):
+def evento_inscrever(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
-    if not evento.tem_vagas_disponiveis():
-        messages.error(request, 'Desculpe, não há mais vagas disponíveis para este evento.')
+    
+    if evento.verificar_inscricao(request.user):
+        messages.error(request, 'Você já está inscrito neste evento.')
         return redirect('evento_detail', pk=pk)
     
-    if evento.esta_inscrito(request.user):
-        messages.warning(request, 'Você já está inscrito neste evento.')
+    if evento.vagas_disponiveis <= 0:
+        messages.error(request, 'Não há mais vagas disponíveis para este evento.')
         return redirect('evento_detail', pk=pk)
     
-    Inscricao.objects.create(evento=evento, usuario=request.user)
-    messages.success(request, 'Inscrição realizada com sucesso!')
-    return redirect('evento_detail', pk=pk)
+    if request.method == 'POST':
+        form = InscricaoForm(request.POST)
+        if form.is_valid():
+            inscricao = form.save(commit=False)
+            inscricao.evento = evento
+            inscricao.usuario = request.user
+            inscricao.save()
+            messages.success(request, 'Inscrição realizada com sucesso!')
+            return redirect('evento_detail', pk=pk)
+    else:
+        form = InscricaoForm()
+    
+    return render(request, 'core/evento_inscrever.html', {
+        'form': form,
+        'evento': evento
+    })
 
 @login_required
-def cancelar_inscricao(request, pk):
+def evento_cancelar_inscricao(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     inscricao = get_object_or_404(Inscricao, evento=evento, usuario=request.user)
-    inscricao.delete()
-    messages.success(request, 'Inscrição cancelada com sucesso!')
-    return redirect('evento_detail', pk=pk)
+    
+    if request.method == 'POST':
+        inscricao.delete()
+        messages.success(request, 'Inscrição cancelada com sucesso!')
+        return redirect('evento_detail', pk=pk)
+    
+    return render(request, 'core/evento_cancelar_inscricao.html', {
+        'evento': evento
+    })
 
 @login_required
 def inscricoes(request):
@@ -197,6 +269,10 @@ def meus_eventos_view(request):
 @login_required
 @user_passes_test(is_organizador)
 def meus_eventos(request):
+    if not is_organizador(request.user):
+        messages.error(request, 'Apenas organizadores podem acessar esta página.')
+        return redirect('home')
+    
     eventos = Evento.objects.filter(organizador=request.user).order_by('-data_hora')
     return render(request, 'core/meus_eventos.html', {'eventos': eventos})
  
