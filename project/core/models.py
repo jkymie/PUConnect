@@ -14,7 +14,6 @@ class User(AbstractUser):
     TIPO_USUARIO_CHOICES = [
         ('aluno', 'Aluno'),
         ('organizador', 'Organizador de Eventos'),
-        ('admin', 'Administrador'),
     ]
 
     # Campos obrigatórios para todos os usuários
@@ -26,28 +25,11 @@ class User(AbstractUser):
         verbose_name=_('tipo de usuário')
     )
 
-    # Campos específicos para alunos
+    # Campo de identificação único para todos os usuários
     matricula = models.CharField(
         max_length=20,
         unique=True,
-        null=True,
-        blank=True,
         verbose_name=_('matrícula')
-    )
-
-    # Campos específicos para organizadores
-    cpf = models.CharField(
-        max_length=14,
-        unique=True,
-        null=True,
-        blank=True,
-        validators=[
-            RegexValidator(
-                regex=r'^\d{3}\.\d{3}\.\d{3}-\d{2}$',
-                message='CPF deve estar no formato XXX.XXX.XXX-XX'
-            )
-        ],
-        verbose_name=_('CPF')
     )
 
     # Campos opcionais para todos
@@ -73,7 +55,7 @@ class User(AbstractUser):
         ordering = ['-date_joined']
 
     def __str__(self):
-        return self.username
+        return self.matricula
 
     def clean(self):
         super().clean()

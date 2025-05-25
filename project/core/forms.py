@@ -24,17 +24,10 @@ class UserRegistrationForm(UserCreationForm):
         label=_('Matrícula')
     )
 
-    email = forms.EmailField(
-        required=True,
-        widget=forms.EmailInput(attrs={'class': 'form-control'}),
-        label=_('E-mail')
-    )
-
     class Meta:
         model = User
-        fields = ('username', 'tipo_usuario', 'matricula', 'email', 'password1', 'password2')
+        fields = ('matricula', 'tipo_usuario', 'password1', 'password2')
         labels = {
-            'username': _('Nome de usuário'),
             'password1': _('Senha'),
             'password2': _('Confirmação de senha'),
         }
@@ -47,16 +40,22 @@ class UserRegistrationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
         user.matricula = self.cleaned_data['matricula']
         user.tipo_usuario = self.cleaned_data.get('tipo_usuario')
+        # Set username to matricula for compatibility
+        user.username = user.matricula
         if commit:
             user.save()
         return user
 
 class UserLoginForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    matricula = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label=_('Matrícula'))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].label = _('Matrícula')
+        self.fields['username'].widget = forms.TextInput(attrs={'class': 'form-control'})
 
 class EventoForm(forms.ModelForm):
     titulo = forms.CharField(
