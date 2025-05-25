@@ -15,6 +15,7 @@ def register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            user.backend = 'core.backends.MatriculaBackend'
             auth_login(request, user)
             messages.success(request, 'Conta criada com sucesso!')
             return redirect('home')
