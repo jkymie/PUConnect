@@ -24,9 +24,15 @@ class UserRegistrationForm(UserCreationForm):
         label=_('Matrícula')
     )
 
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu e-mail'}),
+        label=_('E-mail')
+    )
+
     class Meta:
         model = User
-        fields = ('matricula', 'tipo_usuario', 'password1', 'password2')
+        fields = ('matricula', 'tipo_usuario', 'email', 'password1', 'password2')
         labels = {
             'password1': _('Senha'),
             'password2': _('Confirmação de senha'),
@@ -42,6 +48,7 @@ class UserRegistrationForm(UserCreationForm):
         user = super().save(commit=False)
         user.matricula = self.cleaned_data['matricula']
         user.tipo_usuario = self.cleaned_data.get('tipo_usuario')
+        user.email = self.cleaned_data['email']
         # Set username to matricula for compatibility
         user.username = user.matricula
         if commit:
