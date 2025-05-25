@@ -67,6 +67,7 @@ html, body {
     padding: 16px 32px;
     color: #155de2;
     padding: 30px;
+    border-left: 40px;
   }
   
   .navbar .logo {
@@ -86,13 +87,111 @@ html, body {
   .navbar .nav-links a:hover {
     text-decoration: underline;
   }
-  
+
+  .login {
+    display: inline-flex;          /* use flex for center alignment */
+    align-items: center;
+    justify-content: center;
+    background-color: #EFBC064D;
+    width: 40px;                  /* fixed width */
+    height: 40px;                 /* fixed height */
+    border-radius: 50%;           /* circle */
+    text-decoration: none;
+    padding: 0;                   /* no padding needed */
+  }
+
+  .login img {
+    width: 24px;                  /* control image size */
+    height: 24px;
+    border-radius: 8px;
+    display: block;
+  }
+
+
   /* main */
   .all {
     flex: 1;
-    background-color: rgb(241, 247, 252);
     padding-bottom: 40px;
   }
+
+  .hero-section b {
+    color: #EFBC06;
+  }
+
+  .hero {
+    background-color: #DAE6FB;
+    padding-bottom: 80px;
+  }
+  
+.container-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centers children horizontally */
+  }
+
+  /* pesquisa */
+  .search-icon {
+    transform: scale(0.8);
+    opacity: 0.6;
+    margin-right: 10px;
+  }
+
+  .search-container {
+    background: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px; /* optional: set max width */
+  }
+
+  .search-container i {
+    color: #888;
+    font-size: 16px;
+    margin-right: 10px;
+  }
+
+  .search-container input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    padding: 8px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif; /* apply to input */
+  }
+
+  input::placeholder {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #aaa;
+  }
+
+  #searchButton {
+    display: none; /* hidden by default */
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: text-decoration 0.3s ease;
+  }
+
+  #searchButton:hover {
+    text-decoration: underline;
+  }
+
 
   .banner {
     font-size: 50px;
@@ -101,13 +200,25 @@ html, body {
     color: #155de2;
   }
 
-    /* lista de eventos */
+  /* lista de eventos */
+
   .eventos-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: #155de2;
     padding: 16px 32px;
+  }
+
+  .eventos-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* space between icon and title */
+  }
+
+  .eventos-titulo img {
+    width: 24px; /* adjust as needed */
+    height: auto;
   }
 
   .btn {
@@ -127,6 +238,88 @@ html, body {
 
   .eventos-container h3 {
     font-size: 25px;
+  }
+
+  .lista-eventos {
+    background-color: #DAE6FB;
+    border-radius: 12px;
+    padding: 20px;/* espaçamento ao redor */
+    min-height: 250px; /* altura mínima para mostrar a área */
+    box-sizing: border-box;
+    color: white; /* texto branco caso tenha mensagens */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .eventos-container-mes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #155de2;
+    padding: 16px 32px;
+  }
+
+  .eventos-titulo-mes {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* space between icon and title */
+  }
+
+  .eventos-titulo-mes img {
+    width: 24px; /* adjust as needed */
+    height: auto;
+  }
+
+  .eventos-container-mes h3 {
+    font-size: 25px;
+  }
+
+  .lista-eventos-mes {
+    background-color: #DAE6FB;
+    border-radius: 12px;
+    padding: 20px;/* espaçamento ao redor */
+    min-height: 250px; /* altura mínima para mostrar a área */
+    box-sizing: border-box;
+    color: white; /* texto branco caso tenha mensagens */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .colecao-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #155de2;
+    padding: 16px 32px;
+  }
+
+  .colecao-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* space between icon and title */
+  }
+
+  .colecao-titulo img {
+    width: 24px; /* adjust as needed */
+    height: auto;
+  }
+
+  .colecao-container h3 {
+    font-size: 25px;
+  }
+
+  .lista-colecao {
+    background-color: #DAE6FB;
+    border-radius: 12px;
+    padding: 20px;/* espaçamento ao redor */
+    min-height: 250px; /* altura mínima para mostrar a área */
+    box-sizing: border-box;
+    color: white; /* texto branco caso tenha mensagens */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
   }
 
 /* footer */
