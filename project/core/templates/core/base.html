@@ -337,12 +337,7 @@
                     ☰
                 </button>
                 <ul class="navbar-nav" id="navbarNav">
-                    <li class="nav-item">
-                        <!-- Removido: <a class="nav-link" href="{% url 'eventos_list' %}">Eventos</a> -->
-                    </li>
                     {% if user.is_authenticated %}
-                        <!-- Removido: <a class="nav-link" href="{% url 'inscricoes' %}">Minhas Inscrições</a> -->
-                        <!-- Removido: <a class="nav-link" href="{% url 'profile' %}">Meu Perfil</a> -->
                         {% if user.tipo_usuario == 'admin' %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>

@@ -67,19 +67,15 @@ class Evento(models.Model):
     descricao = models.TextField(verbose_name=_('descrição'))
     data_hora = models.DateTimeField(verbose_name=_('data e hora'))
     local = models.CharField(max_length=200, verbose_name=_('local'))
+    vagas = models.PositiveIntegerField(default=0, verbose_name=_('vagas'))
+    imagem = models.ImageField(upload_to='eventos/', null=True, blank=True, verbose_name=_('imagem'))
     organizador = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         limit_choices_to={'tipo_usuario': 'organizador'},
         verbose_name=_('organizador')
     )
-    vagas = models.PositiveIntegerField(default=0, verbose_name=_('vagas'))
-    imagem = models.ImageField(
-        upload_to='eventos/',
-        null=True,
-        blank=True,
-        verbose_name=_('imagem')
-    )
+    inscritos = models.ManyToManyField(User, through='Inscricao', related_name='eventos_inscritos')
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name=_('criado em'))
 
     class Meta:

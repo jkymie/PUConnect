@@ -10,11 +10,10 @@ urlpatterns = [
     path('preferencias/', views.preferencias, name='preferencias'),
     
     # Eventos
-    path('eventos/<int:pk>/', views.evento_detail, name='evento_detail'),
-    path('eventos/criar/', views.evento_create, name='evento_create'),
-    path('eventos/<int:pk>/editar/', views.evento_edit, name='evento_edit'),
-    path('eventos/<int:pk>/excluir/', views.evento_delete, name='evento_delete'),
-    path('meus-eventos/', views.meus_eventos, name='meus-eventos'),
+    path('eventos/criar/', views.criar_evento, name='criar_evento'),
+    path('eventos/<int:pk>/editar/', views.editar_evento, name='editar_evento'),
+    path('eventos/<int:pk>/excluir/', views.excluir_evento, name='excluir_evento'),
+    path('meus-eventos/', views.meus_eventos, name='meus_eventos'),
     
     # Inscrições
     path('eventos/<int:pk>/inscrever/', views.inscrever_evento, name='inscrever_evento'),

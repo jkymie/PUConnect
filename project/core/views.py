@@ -62,7 +62,7 @@ def evento_create(request):
             evento.organizador = request.user
             evento.save()
             messages.success(request, 'Evento criado com sucesso!')
-            return redirect('eventos_list')
+            return redirect('meus-eventos')
         else:
             messages.error(request, 'Por favor, corrija os erros abaixo.')
     else:
@@ -78,7 +78,7 @@ def evento_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Evento atualizado com sucesso!')
-            return redirect('eventos_list')
+            return redirect('meus-eventos')
         else:
             messages.error(request, 'Por favor, corrija os erros abaixo.')
     else:
@@ -93,22 +93,11 @@ def evento_delete(request, pk):
         # Verifica se há inscrições
         if evento.inscricoes.exists():
             messages.error(request, 'Não é possível excluir um evento que possui inscrições.')
-            return redirect('eventos_list')
+            return redirect('meus-eventos')
         evento.delete()
         messages.success(request, 'Evento excluído com sucesso!')
-        return redirect('eventos_list')
+        return redirect('meus-eventos')
     return render(request, 'core/evento_confirm_delete.html', {'evento': evento})
-
-@login_required
-def evento_detail(request, pk):
-    evento = get_object_or_404(Evento, pk=pk)
-    inscrito = evento.esta_inscrito(request.user)
-    vagas_disponiveis = evento.vagas_disponiveis()
-    return render(request, 'core/evento_detail.html', {
-        'evento': evento,
-        'inscrito': inscrito,
-        'vagas_disponiveis': vagas_disponiveis
-    })
 
 @login_required
 def inscrever_evento(request, pk):
@@ -167,10 +156,67 @@ def meus_eventos_view(request):
     return render(request, 'meus-eventos.html')
 
 @login_required
-@user_passes_test(is_organizador)
 def meus_eventos(request):
+    if request.user.tipo_usuario != 'organizador':
+        return redirect('index')
+    
     eventos = Evento.objects.filter(organizador=request.user).order_by('-data_hora')
-    return render(request, 'core/meus_eventos.html', {'eventos': eventos})
+    return render(request, 'core/meus_eventos.html', {
+        'eventos': eventos
+    })
+
+@login_required
+def criar_evento(request):
+    if request.user.tipo_usuario != 'organizador':
+        return redirect('index')
+    
+    if request.method == 'POST':
+        form = EventoForm(request.POST, request.FILES)
+        if form.is_valid():
+            evento = form.save(commit=False)
+            evento.organizador = request.user
+            evento.save()
+            messages.success(request, 'Evento criado com sucesso!')
+            return redirect('meus_eventos')
+    else:
+        form = EventoForm()
+    
+    return render(request, 'core/evento_form.html', {
+        'form': form,
+        'action': 'Criar'
+    })
+
+@login_required
+def editar_evento(request, pk):
+    evento = get_object_or_404(Evento, pk=pk, organizador=request.user)
+    
+    if request.method == 'POST':
+        form = EventoForm(request.POST, request.FILES, instance=evento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Evento atualizado com sucesso!')
+            return redirect('meus_eventos')
+    else:
+        form = EventoForm(instance=evento)
+    
+    return render(request, 'core/evento_form.html', {
+        'form': form,
+        'evento': evento,
+        'action': 'Editar'
+    })
+
+@login_required
+def excluir_evento(request, pk):
+    evento = get_object_or_404(Evento, pk=pk, organizador=request.user)
+    
+    if request.method == 'POST':
+        evento.delete()
+        messages.success(request, 'Evento excluído com sucesso!')
+        return redirect('meus_eventos')
+    
+    return render(request, 'core/evento_confirm_delete.html', {
+        'evento': evento
+    })
 
 @login_required
 def preferencias(request):
