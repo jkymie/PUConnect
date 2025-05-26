@@ -103,16 +103,6 @@ class Evento(models.Model):
     def esta_inscrito(self, usuario):
         """Verifica se um usuário está inscrito no evento"""
         return self.inscricoes.filter(usuario=usuario).exists()
-    
-    @property
-    def esta_inscrito(self):
-        """Propriedade que verifica se o usuário atual está inscrito no evento"""
-        from django.contrib.auth.models import AnonymousUser
-        if not hasattr(self, '_current_user'):
-            return False
-        if isinstance(self._current_user, AnonymousUser):
-            return False
-        return self.inscricoes.filter(usuario=self._current_user).exists()
 
 class Inscricao(models.Model):
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='inscricoes')

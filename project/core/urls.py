@@ -22,5 +22,8 @@ urlpatterns = [
     # Perfil
     path('perfil/editar/', views.profile_edit, name='profile_edit'),
     path('perfil/<str:username>/', views.profile_view_other, name='profile_other'),
+    
+    path('meus-eventos-aluno/', views.meus_eventos_aluno, name='meus_eventos_aluno'),
+    path('eventos/', views.eventos_list, name='eventos_list'),
 ]
 

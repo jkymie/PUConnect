@@ -104,23 +104,23 @@ def inscrever_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     if not evento.tem_vagas_disponiveis():
         messages.error(request, 'Desculpe, não há mais vagas disponíveis para este evento.')
-        return redirect('evento_detail', pk=pk)
+        return redirect('eventos_list')
     
     if evento.esta_inscrito(request.user):
-        messages.warning(request, 'Você já está inscrito neste evento.')
-        return redirect('evento_detail', pk=pk)
+        messages.warning(request, 'Você já está seguindo este evento.')
+        return redirect('eventos_list')
     
     Inscricao.objects.create(evento=evento, usuario=request.user)
-    messages.success(request, 'Inscrição realizada com sucesso!')
-    return redirect('evento_detail', pk=pk)
+    messages.success(request, 'Agora você está seguindo este evento!')
+    return redirect('eventos_list')
 
 @login_required
 def cancelar_inscricao(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     inscricao = get_object_or_404(Inscricao, evento=evento, usuario=request.user)
     inscricao.delete()
-    messages.success(request, 'Inscrição cancelada com sucesso!')
-    return redirect('evento_detail', pk=pk)
+    messages.success(request, 'Você deixou de seguir este evento.')
+    return redirect('eventos_list')
 
 @login_required
 def profile_edit(request):
@@ -252,4 +252,15 @@ def preferencias(request):
         'email_success': email_success,
         'password_success': password_success,
     })
+
+@login_required
+def meus_eventos_aluno(request):
+    if request.user.tipo_usuario != 'aluno':
+        return redirect('index')
+    eventos = request.user.eventos_inscritos.all().order_by('-data_hora')
+    return render(request, 'core/meus_eventos_aluno.html', {'eventos': eventos})
+
+def eventos_list(request):
+    eventos = Evento.objects.all().order_by('-data_hora')
+    return render(request, 'core/eventos_list.html', {'eventos': eventos})
  

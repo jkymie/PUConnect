@@ -44,7 +44,7 @@
             <img src="{% static 'core/assets/img/estrelinha.png' %}" alt="Estrela" class="estrela">
             <h3>Eventos em destaque</h3>
           </div>
-          <a href="#eventos" class="btn">Ver todos os eventos</a>
+          <a href="{% url 'eventos_list' %}" class="btn">Ver todos os eventos</a>
         </div>
         <div class="lista-eventos" id="listaEventos">
           <!-- Os eventos serão carregados via JS -->

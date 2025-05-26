@@ -11,7 +11,7 @@
         <div id="userDropdown" class="dropdown-content" style="display:none; position:absolute; right:0; background:#fff; min-width:180px; box-shadow:0 8px 16px rgba(0,0,0,0.2); z-index:1000; border-radius:8px;">
           <a href="{% url 'preferencias' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Preferências</a>
           {% if user.tipo_usuario == 'aluno' %}
-            <a href="{% url 'meus_eventos' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Meus Eventos</a>
+            <a href="{% url 'meus_eventos_aluno' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Meus Eventos</a>
           {% elif user.tipo_usuario == 'organizador' %}
             <a href="{% url 'meus_eventos' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Gerenciar Eventos</a>
           {% endif %}
