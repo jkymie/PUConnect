@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% block title %}Preferências{% endblock %}
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4 text-center">Preferências</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="mb-3">Alterar E-mail</h5>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="update_email" value="1">
+                <div class="mb-3">{{ email_form.password.label_tag }}{{ email_form.password }}</div>
+                <div class="mb-3">{{ email_form.new_email.label_tag }}{{ email_form.new_email }}</div>
+                <div class="mb-3">{{ email_form.confirm_email.label_tag }}{{ email_form.confirm_email }}</div>
+                {% if email_form.errors %}
+                    <div class="alert alert-danger">{{ email_form.errors }}</div>
+                {% endif %}
+                {% if email_success %}
+                    <div class="alert alert-success">{{ email_success }}</div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Salvar E-mail</button>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="mb-3">Alterar Senha</h5>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="update_password" value="1">
+                <div class="mb-3">{{ password_form.old_password.label_tag }}{{ password_form.old_password }}</div>
+                <div class="mb-3">{{ password_form.new_password1.label_tag }}{{ password_form.new_password1 }}</div>
+                <div class="mb-3">{{ password_form.new_password2.label_tag }}{{ password_form.new_password2 }}</div>
+                {% if password_form.errors %}
+                    <div class="alert alert-danger">{{ password_form.errors }}</div>
+                {% endif %}
+                {% if password_success %}
+                    <div class="alert alert-success">{{ password_success }}</div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Salvar Senha</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

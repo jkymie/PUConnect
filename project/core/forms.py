@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
@@ -158,4 +159,30 @@ class UserProfileForm(forms.ModelForm):
             'bio': _('Biografia'),
             'foto': _('Foto de perfil'),
             'data_nascimento': _('Data de nascimento'),
-        } 
+        }
+
+class EmailChangeForm(forms.Form):
+    password = forms.CharField(label=_('Senha Atual'), required=True, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Digite sua senha atual'}))
+    new_email = forms.EmailField(label=_('Novo E-mail'), required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Digite o novo e-mail'}))
+    confirm_email = forms.EmailField(label=_('Confirme o Novo E-mail'), required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Confirme o novo e-mail'}))
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        new_email = cleaned_data.get('new_email')
+        confirm_email = cleaned_data.get('confirm_email')
+        if not self.user.check_password(password):
+            raise forms.ValidationError('Senha atual incorreta.')
+        if new_email and confirm_email and new_email != confirm_email:
+            raise forms.ValidationError('Os e-mails não coincidem.')
+        return cleaned_data
+
+    def save(self):
+        new_email = self.cleaned_data['new_email']
+        self.user.email = new_email
+        self.user.save()
+        return self.user 

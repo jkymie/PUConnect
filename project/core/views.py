@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
+from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from .forms import UserRegistrationForm, UserLoginForm, EventoForm, UserProfileForm
+from .forms import UserRegistrationForm, UserLoginForm, EventoForm, UserProfileForm, EmailChangeForm
 from .models import Evento, Inscricao, UserProfile
+from django.contrib.auth.forms import PasswordChangeForm
 
 def index(request):
     return render(request, 'core/index.html')
@@ -110,11 +111,6 @@ def evento_detail(request, pk):
     })
 
 @login_required
-def eventos_list(request):
-    eventos = Evento.objects.all().order_by('-data_hora')
-    return render(request, 'core/eventos_list.html', {'eventos': eventos})
-
-@login_required
 def inscrever_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     if not evento.tem_vagas_disponiveis():
@@ -136,26 +132,6 @@ def cancelar_inscricao(request, pk):
     inscricao.delete()
     messages.success(request, 'Inscrição cancelada com sucesso!')
     return redirect('evento_detail', pk=pk)
-
-@login_required
-def inscricoes(request):
-    inscricoes = Inscricao.objects.filter(usuario=request.user).select_related('evento')
-    return render(request, 'core/inscricoes.html', {'inscricoes': inscricoes})
-
-@login_required
-def profile_view(request):
-    user_profile = request.user.profile
-    eventos_participados = user_profile.get_eventos_participados()
-    eventos_organizados = user_profile.get_eventos_organizados()
-    
-    context = {
-        'user_profile': user_profile,
-        'eventos_participados': eventos_participados,
-        'eventos_organizados': eventos_organizados,
-        'total_participados': user_profile.get_total_eventos_participados(),
-        'total_organizados': user_profile.get_total_eventos_organizados(),
-    }
-    return render(request, 'core/profile.html', context)
 
 @login_required
 def profile_edit(request):
@@ -195,4 +171,39 @@ def meus_eventos_view(request):
 def meus_eventos(request):
     eventos = Evento.objects.filter(organizador=request.user).order_by('-data_hora')
     return render(request, 'core/meus_eventos.html', {'eventos': eventos})
+
+@login_required
+def preferencias(request):
+    user = request.user
+    email_form = EmailChangeForm(user, request.POST or None, prefix='email') if request.method == 'POST' and 'update_email' in request.POST else EmailChangeForm(user, prefix='email')
+    password_form = PasswordChangeForm(user, request.POST or None, prefix='password') if request.method == 'POST' and 'update_password' in request.POST else PasswordChangeForm(user, prefix='password')
+
+    # Uniformizar os campos do PasswordChangeForm
+    for field in password_form.fields.values():
+        field.widget.attrs['class'] = 'form-control'
+    password_form.fields['old_password'].label = 'Senha atual'
+    password_form.fields['new_password1'].label = 'Senha nova'
+    password_form.fields['new_password2'].label = 'Confirme a senha nova'
+
+    email_success = None
+    password_success = None
+
+    if request.method == 'POST':
+        if 'update_email' in request.POST:
+            if email_form.is_valid():
+                email_form.save()
+                email_success = 'E-mail atualizado com sucesso.'
+        elif 'update_password' in request.POST:
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, user)
+                password_success = 'Senha alterada com sucesso.'
+
+    return render(request, 'core/preferencias.html', {
+        'user': user,
+        'email_form': email_form,
+        'password_form': password_form,
+        'email_success': email_success,
+        'password_success': password_success,
+    })
  
