@@ -18,7 +18,7 @@ def register(request):
             user.backend = 'core.backends.MatriculaBackend'
             auth_login(request, user)
             messages.success(request, 'Conta criada com sucesso!')
-            return redirect('home')
+            return redirect('index')
         else:
             messages.error(request, 'Por favor, corrija os erros abaixo.')
     else:
@@ -35,7 +35,7 @@ def login(request):
             if user is not None:
                 auth_login(request, user)
                 messages.success(request, 'Login realizado com sucesso!')
-                return redirect('home')
+                return redirect('index')
             else:
                 messages.error(request, 'Usuário ou senha inválidos.')
     else:
@@ -47,11 +47,6 @@ def logout(request):
     auth_logout(request)
     messages.success(request, 'Logout realizado com sucesso!')
     return redirect('index')
-
-@login_required
-def home(request):
-    eventos = Evento.objects.all().order_by('-data_hora')
-    return render(request, 'core/home.html', {'eventos': eventos})
 
 def is_organizador(user):
     return user.is_authenticated and user.tipo_usuario == 'organizador'

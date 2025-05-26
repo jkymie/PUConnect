@@ -4,15 +4,43 @@
   <a href="{% url 'index' %}" class="logo">PUConnect</a>
   <div class="nav-links">
     {% if user.is_authenticated %}
-      <a href="{% url 'inscricoes' %}">Histórico</a>
-      {% if user.tipo_usuario == 'organizador' %}
-      <a href="{% url 'meus-eventos' %}">Meus Eventos</a> 
-      {% endif %}
-      <a href="{% url 'logout' %}">Sair</a>
+      <div class="dropdown" style="position: relative; display: inline-block;">
+        <a href="#" class="login" onclick="toggleDropdown(event)">
+          <img src="{% static 'core/assets/img/user.png' %}" alt="Menu do usuário" style="width:32px; height:32px; border-radius:50%;" />
+        </a>
+        <div id="userDropdown" class="dropdown-content" style="display:none; position:absolute; right:0; background:#fff; min-width:180px; box-shadow:0 8px 16px rgba(0,0,0,0.2); z-index:1000; border-radius:8px;">
+          <a href="{% url 'profile' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Preferências</a>
+          {% if user.tipo_usuario == 'aluno' %}
+            <a href="{% url 'meus-eventos' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Meus Eventos</a>
+          {% elif user.tipo_usuario == 'organizador' %}
+            <a href="{% url 'meus-eventos' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Gerenciar Eventos</a>
+          {% endif %}
+          <a href="{% url 'logout' %}" style="display:block; padding:10px 16px; color:#c00; text-decoration:none;">Sair</a>
+        </div>
+      </div>
     {% else %}
-      <a href="{% url 'login' %}" class="login">
-        <img src="{% static 'core/assets/img/user.png' %}" alt="Logar/Cadastrar" />
-      </a>
+      <div class="dropdown" style="position: relative; display: inline-block;">
+        <a href="#" class="login" onclick="toggleDropdown(event)">
+          <img src="{% static 'core/assets/img/user.png' %}" alt="Logar/Cadastrar" style="width:32px; height:32px; border-radius:50%;" />
+        </a>
+        <div id="userDropdown" class="dropdown-content" style="display:none; position:absolute; right:0; background:#fff; min-width:180px; box-shadow:0 8px 16px rgba(0,0,0,0.2); z-index:1000; border-radius:8px;">
+          <a href="{% url 'login' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Entrar</a>
+          <a href="{% url 'register' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Registrar</a>
+        </div>
+      </div>
     {% endif %}
   </div>
 </nav>
+<script>
+function toggleDropdown(event) {
+  event.preventDefault();
+  var dropdown = document.getElementById('userDropdown');
+  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  document.addEventListener('click', function handler(e) {
+    if (!event.target.closest('.dropdown')) {
+      dropdown.style.display = 'none';
+      document.removeEventListener('click', handler);
+    }
+  });
+}
+</script>
