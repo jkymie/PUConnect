@@ -7,6 +7,9 @@ from django.core.exceptions import ValidationError
 from .forms import UserRegistrationForm, UserLoginForm, EventoForm, UserProfileForm, EmailChangeForm
 from .models import Evento, Inscricao, UserProfile
 from django.contrib.auth.forms import PasswordChangeForm
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import EventoSerializer
 
 def index(request):
     return render(request, 'core/index.html')
@@ -263,4 +266,10 @@ def meus_eventos_aluno(request):
 def eventos_list(request):
     eventos = Evento.objects.all().order_by('-data_hora')
     return render(request, 'core/eventos_list.html', {'eventos': eventos})
+
+@api_view(['GET'])
+def eventos_api(request):
+    eventos = Evento.objects.all()
+    serializer = EventoSerializer(eventos, many=True, context={'request': request})
+    return Response(serializer.data)
  

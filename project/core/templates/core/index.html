@@ -46,7 +46,7 @@
           </div>
           <a href="{% url 'eventos_list' %}" class="btn">Ver todos os eventos</a>
         </div>
-        <div class="lista-eventos" id="listaEventos">
+        <div class="lista-eventos" id="listaEventosDestaque">
           <!-- Os eventos serão carregados via JS -->
         </div>
       </section>
@@ -70,7 +70,7 @@
             <h3>Eventos desse mês</h3>
           </div>
         </div>
-        <div class="lista-eventos" id="listaEventos">
+        <div class="lista-eventos" id="listaEventosMes">
           <!-- Os eventos serão carregados via JS -->
         </div>
       </section>
@@ -80,48 +80,6 @@
 
   <!-- Scripts -->
   <script src="{% static 'core/js/main.js' %}"></script>
-  <script src="js/main.js"></script>
-  <script src="js/eventos.js"></script>
-  <script>
-    const container = document.getElementById("event-cards-container");
-    const loading = document.getElementById("loading");
-    const error = document.getElementById("error");
-
-    // Altere a URL abaixo para o endpoint da sua API
-    const API_URL = 'https://seuservidor.com/api/eventos';
-
-    fetch(API_URL)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("Erro na resposta da API");
-        }
-        return response.json();
-      })
-      .then(eventos => {
-        loading.style.display = 'none';
-
-        if (eventos.length === 0) {
-          container.innerHTML = '<p>Nenhum evento encontrado.</p>';
-          return;
-        }
-
-        eventos.forEach(evento => {
-          const card = document.createElement("div");
-          card.classList.add("card");
-          card.innerHTML = `
-            <h3>${evento.nome}</h3>
-            <p><strong>Data:</strong> ${evento.data}</p>
-            <p><strong>Local:</strong> ${evento.local}</p>
-            <a href="evento.html?id=${evento.id}">Ver mais</a>
-          `;
-          container.appendChild(card);
-        });
-      })
-      .catch(err => {
-        console.error(err);
-        loading.style.display = 'none';
-        error.style.display = 'block';
-      });
-  </script>
+  <script src="{% static 'core/js/eventos.js' %}"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 # project/core/urls.py
 from django.urls import path
 from . import views
+from .views import eventos_api
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -25,5 +26,6 @@ urlpatterns = [
     
     path('meus-eventos-aluno/', views.meus_eventos_aluno, name='meus_eventos_aluno'),
     path('eventos/', views.eventos_list, name='eventos_list'),
+    path('api/eventos/', eventos_api, name='eventos_api'),
 ]
 
