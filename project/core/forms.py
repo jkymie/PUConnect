@@ -57,9 +57,6 @@ class UserRegistrationForm(UserCreationForm):
         return user
 
 class UserLoginForm(AuthenticationForm):
-    matricula = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label=_('Matrícula'))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].label = _('Matrícula')

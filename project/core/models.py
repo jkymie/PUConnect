@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-# Create your models here.
+# Modelos principais do sistema de eventos e usuários customizados
 
 class User(AbstractUser):
     TIPO_USUARIO_CHOICES = [
@@ -16,7 +16,7 @@ class User(AbstractUser):
         ('organizador', 'Organizador de Eventos'),
     ]
 
-    # Campos obrigatórios para todos os usuários
+    #e-mail é obrigatório e único para cada usuário
     email = models.EmailField(_('email address'), unique=True)
     tipo_usuario = models.CharField(
         max_length=20,
@@ -25,14 +25,14 @@ class User(AbstractUser):
         verbose_name=_('tipo de usuário')
     )
 
-    # Campo de identificação único para todos os usuários
+    #matrícula é o identificador principal do usuário
     matricula = models.CharField(
         max_length=20,
         unique=True,
         verbose_name=_('matrícula')
     )
 
-    # Campos opcionais para todos
+    #telefone é opcional, mas segue o padrão brasileiro
     telefone = models.CharField(
         max_length=20,
         blank=True,
@@ -88,20 +88,21 @@ class Evento(models.Model):
     
     def clean(self):
         super().clean()
+        # Não deixa criar evento no passado
         if self.data_hora and self.data_hora < timezone.now():
             raise ValidationError({'data_hora': 'A data e hora do evento não podem ser no passado.'})
     
     def vagas_disponiveis(self):
-        """Retorna o número de vagas disponíveis no evento"""
+        """Retorna quantas vagas ainda estão disponíveis para o evento."""
         inscritos = self.inscricoes.count()
         return max(0, self.vagas - inscritos)
     
     def tem_vagas_disponiveis(self):
-        """Verifica se o evento ainda tem vagas disponíveis"""
+        """True se ainda há vagas para o evento."""
         return self.vagas_disponiveis() > 0
     
     def esta_inscrito(self, usuario):
-        """Verifica se um usuário está inscrito no evento"""
+        """Verifica se o usuário já está inscrito neste evento."""
         return self.inscricoes.filter(usuario=usuario).exists()
 
 class Inscricao(models.Model):
@@ -156,9 +157,11 @@ class UserProfile(models.Model):
         return f'Perfil de {self.user.username}'
     
     def get_eventos_participados(self):
+        # Retorna todos os eventos em que o usuário está inscrito
         return Evento.objects.filter(inscricoes__usuario=self.user).order_by('-data_hora')
     
     def get_eventos_organizados(self):
+        # Retorna todos os eventos organizados por este usuário
         return Evento.objects.filter(organizador=self.user).order_by('-data_hora')
     
     def get_total_eventos_participados(self):
