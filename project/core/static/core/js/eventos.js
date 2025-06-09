@@ -74,3 +74,11 @@ async function renderEventos() {
 }
 
 document.addEventListener('DOMContentLoaded', renderEventos);
+
+function scrollCarrossel(direction) {
+  const container = document.getElementById('listaEventosDestaque');
+  const scrollAmount = 300 * direction;
+  container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+}
+
+

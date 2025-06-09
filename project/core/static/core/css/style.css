@@ -417,3 +417,54 @@ footer .redes-sociais {
     gap: 18px;
   }
 }
+
+.carrossel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.carrossel-scroll-wrapper {
+  display: flex;
+  width: 100%;
+  overflow: hidden; 
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.carrossel-scroll {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.carrossel-scroll .card-evento {
+  flex-shrink: 0;
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.carrossel-scroll.dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.carrossel-scroll > * {
+  pointer-events: none;
+}
+.card-evento *,
+.card-evento {
+  pointer-events: auto;
+}
+
+.carrossel-scroll {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.card-evento { scroll-snap-align: start; }

@@ -3,6 +3,31 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <style>
+  #listaEventosDestaque {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 16px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  #listaEventosDestaque > .card-evento {
+    flex-shrink: 0 !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    background: #ffffff !important;
+    outline: 2px solid #efbc06 !important;
+  }
+
+  .card-evento-body {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  </style>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PUConnect</title>
@@ -46,9 +71,7 @@
           </div>
           <a href="{% url 'eventos_list' %}" class="btn">Ver todos os eventos</a>
         </div>
-        <div class="lista-eventos" id="listaEventosDestaque">
-          <!-- Os eventos serão carregados via JS -->
-        </div>
+        {% include "core/components/carrossel.html" with eventos=eventos_destaque id="listaEventosDestaque" botoes=false %}
       </section>
 
       <section id="colecao" class="colecao">

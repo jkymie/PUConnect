@@ -1,0 +1,29 @@
+{# templates/core/components/carrossel.html #}
+<div class="carrossel-container">
+  {% if botoes %}
+    <button class="carrossel-btn left" onclick="scrollCarrossel('{{ id }}', -1)">‹</button>
+  {% endif %}
+  <div class="carrossel-scroll-wrapper">
+    <div class="carrossel-scroll" id="{{ id }}">
+      {% for evento in eventos %}
+        <div class="card-evento">
+          <img src="{{ evento.imagem|default:'/static/core/assets/img/placeholder.jpg' }}" class="card-evento-img" alt="{{ evento.titulo }}">
+          <div class="card-evento-body">
+            <div class="card-evento-titulo">{{ evento.titulo }}</div>
+            <div class="card-evento-info">
+              <img src="/static/core/assets/img/clock.svg" class="icon-img" alt="Horário">
+              <span>{{ evento.data_hora|date:"d/m" }} | {{ evento.data_hora|time:"H:i" }}</span>
+            </div>
+            <div class="card-evento-info">
+              <img src="/static/core/assets/img/pin.svg" class="icon-img" alt="Local">
+              <span>{{ evento.local }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% if botoes %}
+    <button class="carrossel-btn right" onclick="scrollCarrossel('{{ id }}', 1)">›</button>
+  {% endif %}
+</div>

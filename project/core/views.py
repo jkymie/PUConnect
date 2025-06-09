@@ -10,9 +10,14 @@ from django.contrib.auth.forms import PasswordChangeForm
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import EventoSerializer
+from datetime import datetime
 
 def index(request):
-    return render(request, 'core/index.html')
+    agora = datetime.now()
+    eventos_destaque = Evento.objects.filter(data_hora__gte=agora).order_by('data_hora')[:10]
+    return render(request, 'core/index.html', {
+        'eventos_destaque': eventos_destaque
+    })
 
 def register(request):
     if request.method == 'POST':
