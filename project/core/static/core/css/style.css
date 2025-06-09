@@ -510,34 +510,69 @@ footer .redes-sociais {
 /* Alertas */
 .alert {
     padding: 15px;
-    margin-bottom: 20px;
+    margin: 10px 20px;
     border-radius: 5px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideIn 0.3s ease-out;
+    opacity: 1;
+    transition: opacity 0.3s ease-out;
 }
 
-.alert-info {
-    background: #e3f2fd;
-    color: #0d47a1;
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
 .alert-danger {
-    background: #ffebee;
-    color: #c62828;
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
-.alert-link {
-    color: #155de2;
-    text-decoration: none;
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
 }
 
-.alert-link:hover {
-    text-decoration: underline;
+.alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 0 0 15px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .eventos-btn-center {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 0;
+  margin-left: auto;
 }
 .eventos-btn-center .btn {
   width: auto;

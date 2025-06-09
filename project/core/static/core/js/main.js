@@ -12,11 +12,43 @@ document.addEventListener('DOMContentLoaded', function () {
   const input = document.getElementById('searchInput');
   const button = document.getElementById('searchButton');
 
-  input.addEventListener('input', () => {
-    if (input.value.trim() !== '') {
-      button.style.display = 'inline-block'; // more consistent
+  if (input) {
+    input.addEventListener('input', () => {
+      if (input.value.trim() !== '') {
+        button.style.display = 'inline-block';
+      } else {
+        button.style.display = 'none';
+      }
+    });
+  }
+
+  // Handle alert messages
+  const alerts = document.querySelectorAll('.alert');
+  const processedMessages = new Set();
+
+  alerts.forEach(alert => {
+    const messageContent = alert.textContent.trim();
+    
+    // If we've already processed this exact message, remove the duplicate
+    if (processedMessages.has(messageContent)) {
+      alert.remove();
     } else {
-      button.style.display = 'none';
+      processedMessages.add(messageContent);
+      
+      // Add auto-dismiss after 5 seconds
+      setTimeout(() => {
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 300);
+      }, 5000);
+
+      // Handle manual close button
+      const closeButton = alert.querySelector('.alert-close');
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          alert.style.opacity = '0';
+          setTimeout(() => alert.remove(), 300);
+        });
+      }
     }
   });
 
