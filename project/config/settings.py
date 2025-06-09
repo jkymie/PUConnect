@@ -110,3 +110,6 @@ LOGOUT_REDIRECT_URL = 'index'
 # Onde ficam os uploads de arquivos
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# E-mail para desenvolvimento: imprime no console
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
