@@ -44,7 +44,9 @@
             <img src="{% static 'core/assets/img/estrelinha.png' %}" alt="Estrela" class="estrela">
             <h3>Eventos em destaque</h3>
           </div>
-          <a href="{% url 'eventos_list' %}" class="btn">Ver todos os eventos</a>
+          <div class="eventos-btn-center">
+            <a href="{% url 'eventos_list' %}" class="btn">Ver todos os eventos</a>
+          </div>
         </div>
         <div class="lista-eventos" id="listaEventosDestaque">
           <!-- Os eventos serão carregados via JS -->
@@ -74,6 +76,135 @@
           <!-- Os eventos serão carregados via JS -->
         </div>
       </section>
+  </div>
+  <!-- Modais -->
+  <div class="modal-backdrop" style="display:none"></div>
+  <!-- Login -->
+  <div class="modal" id="modal-login" style="display:none">
+    <button class="modal-close" onclick="closeModal('modal-login')">&times;</button>
+    <h2 class="modal-title">Login</h2>
+    <form method="post" action="/login/">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="login-username">Email ou nome de usuário</label>
+        <input type="text" id="login-username" name="username" class="form-control" placeholder="Digite seu e-mail ou nome de usuário" required>
+      </div>
+      <div class="form-group">
+        <label for="login-password">Senha</label>
+        <input type="password" id="login-password" name="password" class="form-control" placeholder="Digite sua senha" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Entrar</button>
+      </div>
+      <div style="text-align:center; margin-top:10px;">
+        <a href="#" onclick="gotoModal('modal-login','modal-forgot');return false;" style="color:#155de2; font-weight:500;">Esqueci minha senha</a>
+      </div>
+    </form>
+    <div style="text-align:center; margin-top:18px;">
+      Não possui uma conta? <a href="#" onclick="gotoModal('modal-login','modal-register');return false;" style="color:#155de2; font-weight:500;">Cadastre-se</a>
+    </div>
+  </div>
+  <!-- Cadastro -->
+  <div class="modal" id="modal-register" style="display:none">
+    <button class="modal-close" onclick="closeModal('modal-register')">&times;</button>
+    <h2 class="modal-title">Cadastro</h2>
+    <form method="post" action="/register/">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="register-tipo">Tipo de usuário</label>
+        <select id="register-tipo" name="tipo_usuario" class="form-control" required>
+          <option value="">Selecione entre as opções</option>
+          <option value="aluno">Aluno</option>
+          <option value="organizador">Organizador de Eventos</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="register-matricula">Matrícula</label>
+        <input type="text" id="register-matricula" name="matricula" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="register-email">E-mail</label>
+        <input type="email" id="register-email" name="email" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="register-password1">Senha</label>
+        <input type="password" id="register-password1" name="password1" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="register-password2">Confirme a senha</label>
+        <input type="password" id="register-password2" name="password2" class="form-control" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+      </div>
+    </form>
+    <div style="text-align:center; margin-top:18px;">
+      Já possui uma conta? <a href="#" onclick="gotoModal('modal-register','modal-login');return false;" style="color:#155de2; font-weight:500;">Faça login!</a>
+    </div>
+  </div>
+  <!-- Esqueci minha senha -->
+  <div class="modal" id="modal-forgot" style="display:none">
+    <button class="modal-close" onclick="closeModal('modal-forgot')">&times;</button>
+    <h2 class="modal-title">Esqueci minha senha</h2>
+    <form method="post" action="/password-reset/">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="forgot-email">Email ou nome de usuário</label>
+        <input type="text" id="forgot-email" name="email" class="form-control" placeholder="Digite seu e-mail ou nome de usuário" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </div>
+    </form>
+    <div style="text-align:center; margin-top:18px;">
+      Não possui uma conta? <a href="#" onclick="gotoModal('modal-forgot','modal-register');return false;" style="color:#155de2; font-weight:500;">Cadastre-se</a>
+    </div>
+  </div>
+  <!-- Verificação de código -->
+  <div class="modal" id="modal-verify" style="display:none">
+    <button class="modal-close" onclick="closeModal('modal-verify')">&times;</button>
+    <h2 class="modal-title">Verificação</h2>
+    <form method="post" action="/password-reset/verify/">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="verify-code">Código</label>
+        <input type="text" id="verify-code" name="code" class="form-control" placeholder="Digite o código enviado" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </div>
+    </form>
+    <div style="text-align:center; margin-top:18px;">
+      Não recebeu o e-mail?<br>
+      Verifique sua caixa de spam ou clique em <a href="#" style="color:#155de2; font-weight:500;">Reenviar código.</a>
+    </div>
+  </div>
+  <!-- Nova senha -->
+  <div class="modal" id="modal-newpass" style="display:none">
+    <button class="modal-close" onclick="closeModal('modal-newpass')">&times;</button>
+    <h2 class="modal-title">Criação de nova senha</h2>
+    <div style="margin-bottom:18px;">
+      <b>Digite uma nova senha para sua conta.<br>Certifique-se de escolher uma senha forte e segura.</b>
+      <ul style="margin:10px 0 0 18px; padding:0; color:#222;">
+        <li>A senha deve ter pelo menos 8 caracteres</li>
+        <li>Incluir letras maiúsculas e minúsculas</li>
+        <li>Incluir números e, se possível, caracteres especiais</li>
+      </ul>
+    </div>
+    <form method="post" action="/password-reset/new/">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="newpass1">Nova senha</label>
+        <input type="password" id="newpass1" name="new_password1" class="form-control" placeholder="Digite a nova senha" required>
+      </div>
+      <div class="form-group">
+        <label for="newpass2">Confirme a nova senha</label>
+        <input type="password" id="newpass2" name="new_password2" class="form-control" placeholder="Digite a nova senha novamente" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Atualizar senha</button>
+      </div>
+    </form>
   </div>
   <!-- Footer dinâmico -->
   {% include 'core/components/footer.html' %}

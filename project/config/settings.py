@@ -89,6 +89,7 @@ USE_TZ = True
 
 # Arquivos estáticos (CSS, JS, imagens)
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Tipo padrão de chave primária
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -109,3 +110,6 @@ LOGOUT_REDIRECT_URL = 'index'
 # Onde ficam os uploads de arquivos
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# E-mail para desenvolvimento: imprime no console
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

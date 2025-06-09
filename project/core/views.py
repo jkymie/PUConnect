@@ -10,6 +10,13 @@ from django.contrib.auth.forms import PasswordChangeForm
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import EventoSerializer
+from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.http import JsonResponse
+import random
+from django.views.decorators.csrf import csrf_exempt
+
+User = get_user_model()
 
 def index(request):
     return render(request, 'core/index.html')
@@ -269,4 +276,82 @@ def eventos_api(request):
     eventos = Evento.objects.all()
     serializer = EventoSerializer(eventos, many=True, context={'request': request})
     return Response(serializer.data)
+
+def password_reset_request(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+            code = str(random.randint(100000, 999999))
+            request.session['reset_email'] = email
+            request.session['reset_code'] = code
+            # Envie o código por e-mail
+            send_mail(
+                'Seu código de verificação',
+                f'Seu código de verificação é: {code}',
+                'no-reply@puconnect.com',
+                [email],
+                fail_silently=False,
+            )
+            return JsonResponse({'success': True})
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'E-mail não encontrado.'})
+    return JsonResponse({'success': False, 'error': 'Requisição inválida.'})
+
+def password_reset_verify(request):
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        if code == request.session.get('reset_code'):
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Código inválido.'})
+    return JsonResponse({'success': False, 'error': 'Requisição inválida.'})
+
+def password_reset_new(request):
+    if request.method == 'POST':
+        password1 = request.POST.get('new_password1')
+        password2 = request.POST.get('new_password2')
+        email = request.session.get('reset_email')
+        if password1 != password2:
+            return JsonResponse({'success': False, 'error': 'As senhas não coincidem.'})
+        try:
+            user = User.objects.get(email=email)
+            user.set_password(password1)
+            user.save()
+            # Limpa sessão
+            request.session.pop('reset_email', None)
+            request.session.pop('reset_code', None)
+            return JsonResponse({'success': True})
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Usuário não encontrado.'})
+    return JsonResponse({'success': False, 'error': 'Requisição inválida.'})
+
+def register_modal(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.backend = 'core.backends.MatriculaBackend'
+            auth_login(request, user)
+            return JsonResponse({'success': True})
+        else:
+            errors = {}
+            for field, field_errors in form.errors.items():
+                errors[field] = [str(e) for e in field_errors]
+            return JsonResponse({'success': False, 'errors': errors})
+    return JsonResponse({'success': False, 'errors': {'__all__': ['Método inválido.']}}, status=400)
+
+def login_modal(request):
+    if request.method == 'POST':
+        form = UserLoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            return JsonResponse({'success': True})
+        else:
+            errors = {}
+            for field, field_errors in form.errors.items():
+                errors[field] = [str(e) for e in field_errors]
+            return JsonResponse({'success': False, 'errors': errors})
+    return JsonResponse({'success': False, 'errors': {'__all__': ['Método inválido.']}}, status=400)
  
