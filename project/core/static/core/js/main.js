@@ -29,6 +29,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById(id).style.display = 'none';
     document.querySelector('.modal-backdrop').style.display = 'none';
   }
+  window.gotoModal = function(from, to) {
+    document.getElementById(from).style.display = 'none';
+    document.getElementById(to).style.display = 'block';
+    document.querySelector('.modal-backdrop').style.display = 'block';
+  }
   var backdrop = document.querySelector('.modal-backdrop');
   if (backdrop) {
     backdrop.onclick = function() {
