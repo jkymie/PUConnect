@@ -454,12 +454,30 @@ footer .redes-sociais {
     font-weight: 500;
 }
 
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  background: #fff;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.form-group select {
+  background: #fff url('data:image/svg+xml;utf8,<svg fill="%23155de2" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/18px 18px;
+  cursor: pointer;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+  outline: none;
+  border-color: #155de2;
+  box-shadow: 0 0 0 2px #dae6fb;
 }
 
 .form-actions {

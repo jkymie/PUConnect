@@ -111,8 +111,16 @@
     <form method="post" action="/register/">
       {% csrf_token %}
       <div class="form-group">
-        <label for="register-username">Nome de usuário</label>
-        <input type="text" id="register-username" name="username" class="form-control" required>
+        <label for="register-tipo">Tipo de usuário</label>
+        <select id="register-tipo" name="tipo_usuario" class="form-control" required>
+          <option value="">Selecione entre as opções</option>
+          <option value="aluno">Aluno</option>
+          <option value="organizador">Organizador de Eventos</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="register-matricula">Matrícula</label>
+        <input type="text" id="register-matricula" name="matricula" class="form-control" required>
       </div>
       <div class="form-group">
         <label for="register-email">E-mail</label>
