@@ -1,7 +1,6 @@
 {% extends 'core/base.html' %}
 {% block title %}{{ action }} Evento{% endblock %}
 {% block content %}
-<<<<<<< HEAD
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -71,65 +70,8 @@
                         </div>
                     </form>
                 </div>
-=======
-<div class="evento-form-center">
-    <div class="evento-form-card">
-        <h2 class="evento-form-title">{{ action }} Evento</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="id_titulo" class="form-label">Título</label>
-                {{ form.titulo }}
-                {% if form.titulo.errors %}
-                    <div class="text-danger">{{ form.titulo.errors }}</div>
-                {% endif %}
->>>>>>> 5026128e963f7ec504b47316020878413beb89bb
             </div>
-            <div class="mb-3">
-                <label for="id_descricao" class="form-label">Descrição</label>
-                {{ form.descricao }}
-                {% if form.descricao.errors %}
-                    <div class="text-danger">{{ form.descricao.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="mb-3">
-                <label for="id_data_hora" class="form-label">Data e Hora</label>
-                {{ form.data_hora }}
-                {% if form.data_hora.errors %}
-                    <div class="text-danger">{{ form.data_hora.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="mb-3">
-                <label for="id_local" class="form-label">Local</label>
-                {{ form.local }}
-                {% if form.local.errors %}
-                    <div class="text-danger">{{ form.local.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="mb-3">
-                <label for="id_vagas" class="form-label">Número de Vagas</label>
-                {{ form.vagas }}
-                {% if form.vagas.errors %}
-                    <div class="text-danger">{{ form.vagas.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="mb-3">
-                <label for="id_imagem" class="form-label">Imagem do Evento</label>
-                {{ form.imagem }}
-                {% if form.imagem.errors %}
-                    <div class="text-danger">{{ form.imagem.errors }}</div>
-                {% endif %}
-                {% if form.instance.imagem %}
-                    <div class="mt-2">
-                        <img src="{{ form.instance.imagem.url }}" alt="Imagem atual" class="img-thumbnail" style="max-height: 200px;">
-                    </div>
-                {% endif %}
-            </div>
-            <div class="evento-form-actions">
-                <button type="submit" class="btn btn-primary">{{ action }}</button>
-                <a href="{% url 'meus_eventos' %}" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 {% endblock %} 
