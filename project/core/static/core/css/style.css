@@ -634,3 +634,74 @@ footer .redes-sociais {
     padding: 24px 8px 16px 8px;
   }
 }
+
+.eventos-list-container {
+  max-width: 1200px;
+  margin: 40px auto 0 auto;
+  padding: 32px 16px 64px 16px;
+  background: none;
+}
+.eventos-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+  justify-items: center;
+}
+.evento-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(21, 93, 226, 0.08);
+  overflow: hidden;
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s;
+}
+.evento-card:hover {
+  box-shadow: 0 8px 24px rgba(21, 93, 226, 0.16);
+}
+.evento-card-img, .evento-card-img-placeholder {
+  width: 100%;
+  height: 180px;
+  min-height: 180px;
+  max-height: 180px;
+  object-fit: cover;
+  background: #dae6fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.evento-card-body {
+  padding: 18px 16px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.evento-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 6px;
+  font-family: 'Inter', sans-serif;
+}
+.evento-card-text {
+  color: #222;
+  font-size: 0.98rem;
+  font-family: 'Inter', sans-serif;
+}
+.evento-card-footer {
+  padding: 12px 16px 16px 16px;
+  background: none;
+  border-top: none;
+  margin-top: auto;
+}
+@media (max-width: 700px) {
+  .eventos-list-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .eventos-list-container {
+    padding: 16px 4px 32px 4px;
+  }
+}
