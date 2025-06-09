@@ -5,46 +5,53 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-body p-4">
+                <div class="card-header">
                     <h2 class="text-center mb-4">{{ action }} Evento</h2>
+                </div>
+                <div class="card-body">
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="mb-3">
+
+                        <div class="form-group">
                             <label for="id_titulo" class="form-label">Título</label>
                             {{ form.titulo }}
                             {% if form.titulo.errors %}
                                 <div class="text-danger">{{ form.titulo.errors }}</div>
                             {% endif %}
                         </div>
-                        <div class="mb-3">
+
+                        <div class="form-group">
                             <label for="id_descricao" class="form-label">Descrição</label>
                             {{ form.descricao }}
                             {% if form.descricao.errors %}
                                 <div class="text-danger">{{ form.descricao.errors }}</div>
                             {% endif %}
                         </div>
-                        <div class="mb-3">
+                        <div class="form-group">
                             <label for="id_data_hora" class="form-label">Data e Hora</label>
                             {{ form.data_hora }}
                             {% if form.data_hora.errors %}
                                 <div class="text-danger">{{ form.data_hora.errors }}</div>
                             {% endif %}
                         </div>
-                        <div class="mb-3">
+
+                        <div class="form-group">
                             <label for="id_local" class="form-label">Local</label>
                             {{ form.local }}
                             {% if form.local.errors %}
                                 <div class="text-danger">{{ form.local.errors }}</div>
                             {% endif %}
                         </div>
-                        <div class="mb-3">
+
+                        <div class="form-group">
                             <label for="id_vagas" class="form-label">Número de Vagas</label>
                             {{ form.vagas }}
                             {% if form.vagas.errors %}
                                 <div class="text-danger">{{ form.vagas.errors }}</div>
                             {% endif %}
                         </div>
-                        <div class="mb-3">
+
+                        <div class="form-group">
                             <label for="id_imagem" class="form-label">Imagem do Evento</label>
                             {{ form.imagem }}
                             {% if form.imagem.errors %}
@@ -56,7 +63,8 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="d-grid gap-2">
+
+                        <div class="form-actions">
                             <button type="submit" class="btn btn-primary">{{ action }}</button>
                             <a href="{% url 'meus_eventos' %}" class="btn btn-secondary">Cancelar</a>
                         </div>
