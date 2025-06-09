@@ -3,17 +3,16 @@ from .models import User
 
 class MatriculaBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
-        # Só aceita matrícula como identificador
-        matricula = username
-        print(f"[DEBUG] Tentando autenticar matrícula: {matricula}")
+        #para poder usar matrícula OU e-mail como identificador
+        identificador = username
+        user = None
         try:
-            user = User.objects.get(matricula=matricula)
+            user = User.objects.get(matricula=identificador)
         except User.DoesNotExist:
-            print("[DEBUG] Matrícula não encontrada.")
-            return None
-        if user.check_password(password):
-            print(f"[DEBUG] Login OK para matrícula: {matricula}")
+            try:
+                user = User.objects.get(email=identificador)
+            except User.DoesNotExist:
+                return None
+        if user and user.check_password(password):
             return user
-        else:
-            print(f"[DEBUG] Senha incorreta para matrícula: {matricula}")
         return None 
