@@ -19,4 +19,21 @@ document.addEventListener('DOMContentLoaded', function () {
       button.style.display = 'none';
     }
   });
+
+  // Funções de modal
+  window.openModal = function(id) {
+    document.getElementById(id).style.display = 'block';
+    document.querySelector('.modal-backdrop').style.display = 'block';
+  }
+  window.closeModal = function(id) {
+    document.getElementById(id).style.display = 'none';
+    document.querySelector('.modal-backdrop').style.display = 'none';
+  }
+  var backdrop = document.querySelector('.modal-backdrop');
+  if (backdrop) {
+    backdrop.onclick = function() {
+      document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+      this.style.display = 'none';
+    };
+  }
 });

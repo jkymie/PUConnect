@@ -44,7 +44,9 @@
             <img src="{% static 'core/assets/img/estrelinha.png' %}" alt="Estrela" class="estrela">
             <h3>Eventos em destaque</h3>
           </div>
-          <a href="{% url 'eventos_list' %}" class="btn">Ver todos os eventos</a>
+          <div class="eventos-btn-center">
+            <a href="{% url 'eventos_list' %}" class="btn">Ver todos os eventos</a>
+          </div>
         </div>
         <div class="lista-eventos" id="listaEventosDestaque">
           <!-- Os eventos serão carregados via JS -->
@@ -74,6 +76,52 @@
           <!-- Os eventos serão carregados via JS -->
         </div>
       </section>
+  </div>
+  <!-- Modais -->
+  <div class="modal-backdrop" style="display:none"></div>
+  <div class="modal" id="modal-login" style="display:none">
+    <button class="modal-close" onclick="closeModal('modal-login')">&times;</button>
+    <h2 class="modal-title">Login</h2>
+    <form method="post" action="/login/">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="login-username">Usuário ou E-mail</label>
+        <input type="text" id="login-username" name="username" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="login-password">Senha</label>
+        <input type="password" id="login-password" name="password" class="form-control" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Entrar</button>
+      </div>
+    </form>
+  </div>
+  <div class="modal" id="modal-register" style="display:none">
+    <button class="modal-close" onclick="closeModal('modal-register')">&times;</button>
+    <h2 class="modal-title">Cadastro</h2>
+    <form method="post" action="/register/">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="register-username">Nome de usuário</label>
+        <input type="text" id="register-username" name="username" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="register-email">E-mail</label>
+        <input type="email" id="register-email" name="email" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="register-password1">Senha</label>
+        <input type="password" id="register-password1" name="password1" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="register-password2">Confirme a senha</label>
+        <input type="password" id="register-password2" name="password2" class="form-control" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+      </div>
+    </form>
   </div>
   <!-- Footer dinâmico -->
   {% include 'core/components/footer.html' %}

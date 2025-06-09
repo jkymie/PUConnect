@@ -24,8 +24,8 @@
           <img src="{% static 'core/assets/img/user.png' %}" alt="Logar/Cadastrar" style="width:32px; height:32px; border-radius:50%;" />
         </a>
         <div id="userDropdown" class="dropdown-content" style="display:none; position:absolute; right:0; background:#fff; min-width:180px; box-shadow:0 8px 16px rgba(0,0,0,0.2); z-index:1000; border-radius:8px;">
-          <a href="{% url 'login' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Entrar</a>
-          <a href="{% url 'register' %}" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Registrar</a>
+          <a href="#" onclick="openModal('modal-login'); document.getElementById('userDropdown').style.display='none'; return false;" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Entrar</a>
+          <a href="#" onclick="openModal('modal-register'); document.getElementById('userDropdown').style.display='none'; return false;" style="display:block; padding:10px 16px; color:#222; text-decoration:none;">Registrar</a>
         </div>
       </div>
     {% endif %}
