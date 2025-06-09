@@ -89,6 +89,7 @@ USE_TZ = True
 
 # Arquivos estáticos (CSS, JS, imagens)
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Tipo padrão de chave primária
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
