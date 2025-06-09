@@ -670,3 +670,71 @@ footer .redes-sociais {
     padding: 16px 4px 32px 4px;
   }
 }
+
+.evento-form-center {
+  min-height: 70vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 48px;
+}
+.evento-form-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(21, 93, 226, 0.08);
+  padding: 36px 32px 32px 32px;
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.evento-form-title {
+  font-size: 2rem;
+  color: #222;
+  font-family: 'Cal Sans', 'Inter', sans-serif;
+  text-align: left;
+  margin-bottom: 24px;
+}
+.evento-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+@media (max-width: 600px) {
+  .evento-form-card {
+    padding: 18px 6px 16px 6px;
+    max-width: 98vw;
+  }
+  .evento-form-title {
+    font-size: 1.3rem;
+  }
+}
+
+.preferencias-center {
+  min-height: 70vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 48px;
+}
+.preferencias-card {
+  background: none;
+  border-radius: 16px;
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.preferencias-card .card {
+  box-shadow: 0 4px 16px rgba(21, 93, 226, 0.08);
+  border-radius: 16px;
+}
+@media (max-width: 600px) {
+  .preferencias-card {
+    max-width: 98vw;
+    gap: 16px;
+  }
+}
