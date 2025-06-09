@@ -32,5 +32,6 @@ urlpatterns = [
     path('password-reset/verify/', views.password_reset_verify, name='password_reset_verify'),
     path('password-reset/new/', views.password_reset_new, name='password_reset_new'),
     path('register-modal/', views.register_modal, name='register_modal'),
+    path('login-modal/', views.login_modal, name='login_modal'),
 ]
 

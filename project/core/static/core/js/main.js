@@ -162,4 +162,56 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   }
+
+  // --- Login via AJAX ---
+  var loginForm = document.querySelector('#modal-login form');
+  if (loginForm) {
+    loginForm.onsubmit = async function(e) {
+      e.preventDefault();
+      // Limpa erros antigos
+      var oldErrors = loginForm.querySelectorAll('.form-error');
+      oldErrors.forEach(e => e.remove());
+      var btn = this.querySelector('button[type=submit]');
+      btn.disabled = true;
+      const formData = new FormData(this);
+      const resp = await fetch('/login-modal/', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': this.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: formData
+      });
+      const data = await resp.json();
+      btn.disabled = false;
+      if (data.success) {
+        closeModal('modal-login');
+        window.location.reload();
+      } else {
+        // Exibe erros no modal
+        for (const [field, msgs] of Object.entries(data.errors)) {
+          let el;
+          if (field === '__all__') {
+            el = loginForm;
+          } else {
+            el = loginForm.querySelector(`[name="${field}"]`);
+          }
+          if (el) {
+            const div = document.createElement('div');
+            div.className = 'form-error';
+            div.style.color = '#c62828';
+            div.style.margin = '6px 0 0 0';
+            div.style.fontSize = '15px';
+            div.innerHTML = msgs.map(m => `<span>• ${m}</span>`).join('<br>');
+            if (el.parentNode) {
+              if (field === '__all__') {
+                el.insertBefore(div, el.firstChild);
+              } else {
+                el.parentNode.appendChild(div);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 });

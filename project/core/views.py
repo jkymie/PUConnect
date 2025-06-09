@@ -340,4 +340,18 @@ def register_modal(request):
                 errors[field] = [str(e) for e in field_errors]
             return JsonResponse({'success': False, 'errors': errors})
     return JsonResponse({'success': False, 'errors': {'__all__': ['Método inválido.']}}, status=400)
+
+def login_modal(request):
+    if request.method == 'POST':
+        form = UserLoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            return JsonResponse({'success': True})
+        else:
+            errors = {}
+            for field, field_errors in form.errors.items():
+                errors[field] = [str(e) for e in field_errors]
+            return JsonResponse({'success': False, 'errors': errors})
+    return JsonResponse({'success': False, 'errors': {'__all__': ['Método inválido.']}}, status=400)
  
