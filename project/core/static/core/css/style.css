@@ -534,10 +534,7 @@ footer .redes-sociais {
 }
 
 .eventos-btn-center {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 0;
+  margin-left: auto;
 }
 .eventos-btn-center .btn {
   width: auto;
