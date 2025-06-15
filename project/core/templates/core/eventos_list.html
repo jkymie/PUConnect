@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-
+{% load static %}
 {% block title %}Todos os Eventos{% endblock %}
 
 {% block content %}
@@ -20,9 +20,9 @@
                         <h5 class="evento-card-title">{{ evento.titulo }}</h5>
                         <p class="evento-card-text">
                             <small class="text-muted">
-                                <i class="fas fa-calendar"></i> {{ evento.data_hora|date:"d/m/Y H:i" }}<br>
-                                <i class="fas fa-map-marker-alt"></i> {{ evento.local }}<br>
-                                <i class="fas fa-users"></i> {{ evento.vagas }} vagas
+                            <img src="{% static 'core/assets/img/horario.png' %}" alt="Horário" class="icon-img"> {{ evento.data_hora|date:"d/m/Y H:i" }}<br>
+                            <img src="{% static 'core/assets/img/local.png' %}" alt="Local" class="icon-img"> {{ evento.local }}<br>
+                            <i class="fas fa-users"></i> {{ evento.vagas }} vagas
                             </small>
                         </p>
                     </div>
