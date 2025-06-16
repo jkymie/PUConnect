@@ -10,15 +10,26 @@
       <input type="text" id="searchInput" placeholder="Pesquise por eventos, assuntos, áreas..." />
       <a href="#" id="searchButton">Procurar</a>
   </div>
-  <div class="d-flex flex-wrap align-items-center gap-3 mb-4 filtros-sympla">
-    <span class="fw-semibold text-secondary me-2">Filtrar por</span>
-    <button class="btn btn-filtro" onclick="openModal('modal-categoria')">Categoria <i class="fa fa-chevron-down ms-1"></i></button>
-    <button class="btn btn-filtro" onclick="openModal('modal-data')">Data <i class="fa fa-chevron-down ms-1"></i></button>
-    <button class="btn btn-filtro" onclick="openModal('modal-preco')">Preço <i class="fa fa-chevron-down ms-1"></i></button>
-    <button class="btn btn-filtro" onclick="openModal('modal-tipoevento')">Tipo Evento <i class="fa fa-chevron-down ms-1"></i></button>
-    <button class="btn btn-filtro" onclick="openModal('modal-centro')">Centro <i class="fa fa-chevron-down ms-1"></i></button>
-    <span class="fw-semibold text-secondary ms-4 me-2">Ordenar por</span>
-    <button class="btn btn-filtro" onclick="openModal('modal-ordenar')">Relevância <i class="fa fa-chevron-down ms-1"></i></button>
+  <div class="filtros-container">
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4 filtros-sympla">
+      <span class="fw-semibold text-secondary me-2">Filtrar por</span>
+      <button class="btn btn-filtro" onclick="openModal('modal-categoria')">Categoria <i class="fa fa-chevron-down ms-1"></i></button>
+      <button class="btn btn-filtro" onclick="openModal('modal-data')">Data <i class="fa fa-chevron-down ms-1"></i></button>
+      <button class="btn btn-filtro" onclick="openModal('modal-preco')">Preço <i class="fa fa-chevron-down ms-1"></i></button>
+      <button class="btn btn-filtro" onclick="openModal('modal-tipoevento')">Tipo Evento <i class="fa fa-chevron-down ms-1"></i></button>
+      <button class="btn btn-filtro" onclick="openModal('modal-centro')">Centro <i class="fa fa-chevron-down ms-1"></i></button>
+      <span class="fw-semibold text-secondary ms-4 me-2">Ordenar por</span>
+      <button class="btn btn-filtro" onclick="openModal('modal-ordenar')">Relevância <i class="fa fa-chevron-down ms-1"></i></button>
+    </div>
+  </div>
+
+  {% include 'core/components/filtro_categoria_modal.html' %}
+  {% include 'core/components/filtro_data_modal.html' %}
+  {% include 'core/components/filtro_preco_modal.html' %}
+  {% include 'core/components/filtro_tipoevento_modal.html' %}
+  {% include 'core/components/filtro_centro_modal.html' %}
+  {% include 'core/components/filtro_ordenar_modal.html' %}
+
   <div class="eventos-list-container">
     {% if eventos %}
         <div class="eventos-list-grid">
@@ -35,7 +46,7 @@
                         <h5 class="evento-card-title">{{ evento.titulo }}</h5>
                         <p class="evento-card-text">
                             <small class="text-muted">
-                            <img src="{% static 'core/assets/img/horario.png' %}" alt="Horário" class="icon-img"> {{ evento.data_hora|date:"d/m/Y H:i" }}<br>
+                            <img src="{% static 'core/assets/img/clock.svg' %}" alt="Horário" class="icon-img"> {{ evento.data_hora|date:"d/m/Y H:i" }}<br>
                             <img src="{% static 'core/assets/img/local.png' %}" alt="Local" class="icon-img"> {{ evento.local }}<br>
                             <i class="fas fa-users"></i> {{ evento.vagas }} vagas
                             </small>
@@ -64,6 +75,7 @@
             Nenhum evento encontrado.
         </div>
     {% endif %}
+  </div>
 </div>
 
 <style>
