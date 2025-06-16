@@ -23,7 +23,7 @@ function criarCard(evento) {
       <div class="card-evento-body">
         <div class="card-evento-titulo">${evento.titulo}</div>
         <div class="card-evento-info">
-          <span class="icon"><img src="/static/core/assets/img/horario.png" alt="Horário" class="icon-img"></span>
+          <span class="icon"><img src="/static/core/assets/img/clock.svg" alt="Horário" class="icon-img"></span>
           <span>${formatarDataHora(evento.data_hora)}</span>
         </div>
         <div class="card-evento-info">

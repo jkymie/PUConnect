@@ -3,51 +3,58 @@
 {% block title %}Todos os Eventos{% endblock %}
 
 {% block content %}
-<div class="eventos-list-container">
-    <h2 class="mb-4">Todos os Eventos</h2>
-    {% if eventos %}
-        <div class="eventos-list-grid">
-            {% for evento in eventos %}
-                <div class="evento-card">
-                    {% if evento.imagem %}
-                        <img src="{{ evento.imagem.url }}" class="evento-card-img" alt="{{ evento.titulo }}">
-                    {% else %}
-                        <div class="evento-card-img evento-card-img-placeholder">
-                            <i class="fas fa-calendar-alt fa-3x text-muted"></i>
-                        </div>
-                    {% endif %}
-                    <div class="evento-card-body">
-                        <h5 class="evento-card-title">{{ evento.titulo }}</h5>
-                        <p class="evento-card-text">
-                            <small class="text-muted">
-                            <img src="{% static 'core/assets/img/horario.png' %}" alt="Horário" class="icon-img"> {{ evento.data_hora|date:"d/m/Y H:i" }}<br>
-                            <img src="{% static 'core/assets/img/local.png' %}" alt="Local" class="icon-img"> {{ evento.local }}<br>
-                            <i class="fas fa-users"></i> {{ evento.vagas }} vagas
-                            </small>
-                        </p>
-                    </div>
-                    <div class="evento-card-footer">
-                        {% if user.is_authenticated and user.tipo_usuario == 'aluno' %}
-                            {% if evento in user.eventos_inscritos.all %}
-                                <form method="post" action="{% url 'cancelar_inscricao' evento.pk %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger w-100">Seguindo</button>
-                                </form>
+<div class="all-eventos-container">
+    <h2 class="title-eventos">Eventos da PUC-Rio</h2>
+    <div class="search-container1">
+        <img src="{% static 'core/assets/img/Search.svg' %}" alt="Pesquisar" class="search-icon">
+        <input type="text" id="searchInput" placeholder="Pesquise por eventos, assuntos, áreas..." />
+        <a href="#" id="searchButton">Procurar</a>
+    </div>
+    <div class="eventos-list-container">
+            {% if eventos %}
+                <div class="eventos-list-grid">
+                    {% for evento in eventos %}
+                        <div class="evento-card">
+                            {% if evento.imagem %}
+                                <img src="{{ evento.imagem.url }}" class="evento-card-img" alt="{{ evento.titulo }}">
                             {% else %}
-                                <form method="post" action="{% url 'inscrever_evento' evento.pk %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary w-100">Seguir</button>
-                                </form>
+                                <div class="evento-card-img evento-card-img-placeholder">
+                                    <i class="fas fa-calendar-alt fa-3x text-muted"></i>
+                                </div>
                             {% endif %}
-                        {% endif %}
-                    </div>
+                            <div class="evento-card-body">
+                                <h5 class="evento-card-title">{{ evento.titulo }}</h5>
+                                <p class="evento-card-text">
+                                    <small class="text-muted">
+                                    <img src="{% static 'core/assets/img/clock.svg' %}" alt="Horário" class="icon-img"> {{ evento.data_hora|date:"d/m/Y H:i" }}<br>
+                                    <img src="{% static 'core/assets/img/local.png' %}" alt="Local" class="icon-img"> {{ evento.local }}<br>
+                                    <i class="fas fa-users"></i> {{ evento.vagas }} vagas
+                                    </small>
+                                </p>
+                            </div>
+                            <div class="evento-card-footer">
+                                {% if user.is_authenticated and user.tipo_usuario == 'aluno' %}
+                                    {% if evento in user.eventos_inscritos.all %}
+                                        <form method="post" action="{% url 'cancelar_inscricao' evento.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger w-100">Seguindo</button>
+                                        </form>
+                                    {% else %}
+                                        <form method="post" action="{% url 'inscrever_evento' evento.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-primary w-100">Seguir</button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="alert alert-info">
-            Nenhum evento encontrado.
-        </div>
-    {% endif %}
+            {% else %}
+                <div class="alert alert-info">
+                    Nenhum evento encontrado.
+                </div>
+            {% endif %}
+    </div>
 </div>
 {% endblock %} 
