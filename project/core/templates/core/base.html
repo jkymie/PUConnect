@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}PUConnect{% endblock %}</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -25,56 +24,6 @@
         .all {
             background: #DAE6FB;
             min-height: 100vh;
-        }
-        .modal-auth {
-          display: none;
-          position: fixed;
-          z-index: 1050;
-          left: 0; top: 0; width: 100vw; height: 100vh;
-          background: rgba(0,0,0,0.18);
-          align-items: center;
-          justify-content: center;
-        }
-        .modal-auth[style*="display: block"], .modal-auth[style*="display:block"] {
-          display: flex !important;
-        }
-        .modal-auth .modal-title {
-          font-size: 2rem;
-          font-weight: bold;
-          margin-bottom: 18px;
-          color: #1563d9;
-        }
-        .modal-auth form, .modal-auth > div, .modal-auth > .modal-content {
-          background: #fff;
-          border-radius: 16px;
-          padding: 32px 32px 24px 32px;
-          min-width: 320px;
-          max-width: 400px;
-          width: 100%;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-          margin: 0 auto;
-          display: block;
-        }
-        .modal-auth .modal-close {
-          position: absolute;
-          top: 18px;
-          right: 24px;
-          background: none;
-          border: none;
-          font-size: 2rem;
-          color: #888;
-          cursor: pointer;
-          z-index: 2;
-        }
-        @media (max-width: 500px) {
-          .modal-auth form, .modal-auth > div, .modal-auth > .modal-content {
-            min-width: 0;
-            max-width: 95vw;
-            padding: 18px 8px 12px 8px;
-          }
-          .modal-auth .modal-title {
-            font-size: 1.3rem;
-          }
         }
     </style>
     {% block extra_css %}{% endblock %}
