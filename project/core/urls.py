@@ -26,6 +26,10 @@ urlpatterns = [
     
     path('meus-eventos-aluno/', views.meus_eventos_aluno, name='meus_eventos_aluno'),
     path('eventos/', views.eventos_list, name='eventos_list'),
+    path('evento/<int:pk>/', views.evento_detail, name='evento_detail'),
+    path('evento/create/', views.evento_create, name='evento_create'),
+    path('evento/<int:pk>/edit/', views.evento_edit, name='evento_edit'),
+    path('evento/<int:pk>/delete/', views.evento_delete, name='evento_delete'),
     path('api/eventos/', eventos_api, name='eventos_api'),
     # Recuperação de senha via modal
     path('password-reset/', views.password_reset_request, name='password_reset'),

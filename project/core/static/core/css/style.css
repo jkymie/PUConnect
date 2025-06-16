@@ -121,12 +121,13 @@ body {
 
 .hero {
   background-color: #DAE6FB;
-  padding-bottom: 80px;
+  padding-bottom: 150px;
 }
 
 .container-main {
   display: flex;
   flex-direction: column;
+  padding: 0 20px;
   align-items: center; /* centers children horizontally */
 }
 
@@ -208,7 +209,7 @@ input::placeholder {
 
 .banner {
   font-size: 50px;
-  padding: 40px;
+  padding: 80px 40px 40px 30px;
   text-align: center;
   color: #155de2;
 }

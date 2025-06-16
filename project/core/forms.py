@@ -74,7 +74,7 @@ class EventoForm(forms.ModelForm):
         widget=forms.Textarea(attrs={
             'class': 'form-control',
             'rows': 4,
-            'placeholder': 'Descreva o evento...'
+            'placeholder': 'Descreva mais sobre o evento...'
         })
     )
     data_hora = forms.DateTimeField(
@@ -87,15 +87,40 @@ class EventoForm(forms.ModelForm):
         max_length=200,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Digite o local do evento'
+            'placeholder': 'Digite o endereço do local do evento'
         })
     )
     vagas = forms.IntegerField(
         min_value=0,
         widget=forms.NumberInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Número de vagas disponíveis'
+            'placeholder': 'Indique o número de vagas disponíveis'
         })
+    )
+    preco = forms.ChoiceField(
+        choices=Evento.PRICE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label=_('Preço')
+    )
+    lugar = forms.ChoiceField(
+        choices=Evento.PLACE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label=_('Lugar')
+    )
+    tipo_evento = forms.ChoiceField(
+        choices=Evento.EVENT_TYPE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label=_('Tipo de Evento')
+    )
+    centro = forms.ChoiceField(
+        choices=Evento.DEPARTMENT_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label=_('Centro')
+    )
+    horas_complementares = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        label=_('Oferece horas complementares')
     )
     imagem = forms.ImageField(
         required=False,
@@ -107,13 +132,22 @@ class EventoForm(forms.ModelForm):
 
     class Meta:
         model = Evento
-        fields = ['titulo', 'descricao', 'data_hora', 'local', 'vagas', 'imagem']
+        fields = ['titulo', 'descricao', 'data_hora', 'local', 'vagas', 'preco', 'lugar', 'tipo_evento', 'centro', 'horas_complementares', 'imagem']
+        widgets = {
+            'data_hora': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'descricao': forms.Textarea(attrs={'rows': 4}),
+        }
         labels = {
             'titulo': _('Título'),
             'descricao': _('Descrição'),
             'data_hora': _('Data e Hora'),
             'local': _('Local'),
             'vagas': _('Número de Vagas'),
+            'preco': _('Preço'),
+            'lugar': _('Lugar'),
+            'tipo_evento': _('Tipo de Evento'),
+            'centro': _('Centro'),
+            'horas_complementares': _('Horas Complementares'),
             'imagem': _('Imagem do Evento'),
         }
 

@@ -63,11 +63,35 @@ class User(AbstractUser):
             raise ValidationError({'matricula': 'Matrícula é obrigatória para todos os usuários'})
 
 class Evento(models.Model):
+    PRICE_CHOICES = [
+        ('gratuito', 'Gratuito'),
+        ('pago', 'Pago'),
+    ]
+    PLACE_CHOICES = [
+        ('puc', 'PUC'),
+        ('fora', 'Fora da PUC'),
+    ]
+    EVENT_TYPE_CHOICES = [
+        ('online', 'Online'),
+        ('presencial', 'Presencial'),
+    ]
+    DEPARTMENT_CHOICES = [
+        ('ctch', 'Centro de Teologia e Ciências Humanas'),
+        ('css', 'Centro de Ciências Sociais'),
+        ('ctc', 'Centro Técnico Científico'),
+        ('ccbs', 'Centro de Ciências Biológicas e da Saúde'),
+    ]
+
     titulo = models.CharField(max_length=200, verbose_name=_('título'))
     descricao = models.TextField(verbose_name=_('descrição'))
     data_hora = models.DateTimeField(verbose_name=_('data e hora'))
     local = models.CharField(max_length=200, verbose_name=_('local'))
     vagas = models.PositiveIntegerField(default=0, verbose_name=_('vagas'))
+    preco = models.CharField(max_length=10, choices=PRICE_CHOICES, default='gratuito', verbose_name=_('preço'))
+    lugar = models.CharField(max_length=10, choices=PLACE_CHOICES, default='puc', verbose_name=_('lugar'))
+    tipo_evento = models.CharField(max_length=10, choices=EVENT_TYPE_CHOICES, default='presencial', verbose_name=_('tipo de evento'))
+    centro = models.CharField(max_length=20, choices=DEPARTMENT_CHOICES, default='ctch', verbose_name=_('centro'))
+    horas_complementares = models.BooleanField(default=False, verbose_name=_('horas complementares'))
     imagem = models.ImageField(upload_to='eventos/', null=True, blank=True, verbose_name=_('imagem'))
     organizador = models.ForeignKey(
         User,

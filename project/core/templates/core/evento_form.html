@@ -1,63 +1,379 @@
 {% extends 'core/base.html' %}
-{% block title %}{{ action }} Evento{% endblock %}
+{% load static %}
+
 {% block content %}
-<div class="evento-form-center">
-    <div class="evento-form-card">
-        <h2 class="evento-form-title">{{ action }} Evento</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="id_titulo" class="form-label">Título</label>
-                {{ form.titulo }}
-                {% if form.titulo.errors %}
-                    <div class="text-danger">{{ form.titulo.errors }}</div>
-                {% endif %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    .form-container {
+        padding: 2rem 0;
+        width: 100%;
+    }
+    
+    .form-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .form-card {
+        width: 1200px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-header {
+        background: #155de2;
+        color: white;
+        padding: 1rem;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .form-header h4 {
+        margin: 0;
+    }
+    
+    .form-body {
+        padding: 2rem;
+    }
+    
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -15px;
+    }
+    
+    .form-col {
+        flex: 0 0 50%;
+        padding: 0 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-col-4 {
+        flex: 0 0 33.333%;
+        padding: 0 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+    
+    .form-control::placeholder {
+        font-weight: normal;
+        color: #6c757d;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        position: relative;
+    }
+    
+    .form-check input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    
+    .form-check label {
+        margin: 0;
+        cursor: pointer;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-check label::before {
+        content: '';
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #0d6efd;
+        border-radius: 4px;
+        background-color: white;
+        transition: all 0.2s ease;
+    }
+    
+    .form-check input[type="checkbox"]:checked + label::before {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    
+    .form-check input[type="checkbox"]:checked + label::after {
+        content: '✓';
+        position: absolute;
+        left: 4px;
+        color: white;
+        font-size: 14px;
+    }
+    
+    .file-input-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .file-clear-btn {
+        padding: 0.25rem 0.5rem;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        display: none;
+    }
+    
+    .file-clear-btn:hover {
+        background: #bb2d3b;
+    }
+    
+    .file-name {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .btn-primary {
+        background: #EFBC06;
+        color: #000;
+    }
+    
+    .btn-secondary {
+        background: #0d6efd;
+        color: white;
+    }
+    
+    .btn:hover {
+        opacity: 0.9;
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-wrapper">
+        <div class="form-card">
+            <div class="form-header">
+                <h4>{{ action }} Evento</h4>
             </div>
-            <div class="form-group">
-                <label for="id_descricao" class="form-label">Descrição</label>
-                {{ form.descricao }}
-                {% if form.descricao.errors %}
-                    <div class="text-danger">{{ form.descricao.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                <label for="id_data_hora" class="form-label">Data e Hora</label>
-                {{ form.data_hora }}
-                {% if form.data_hora.errors %}
-                    <div class="text-danger">{{ form.data_hora.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                <label for="id_local" class="form-label">Local</label>
-                {{ form.local }}
-                {% if form.local.errors %}
-                    <div class="text-danger">{{ form.local.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                <label for="id_vagas" class="form-label">Número de Vagas</label>
-                {{ form.vagas }}
-                {% if form.vagas.errors %}
-                    <div class="text-danger">{{ form.vagas.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                <label for="id_imagem" class="form-label">Imagem do Evento</label>
-                {{ form.imagem }}
-                {% if form.imagem.errors %}
-                    <div class="text-danger">{{ form.imagem.errors }}</div>
-                {% endif %}
-                {% if form.instance.imagem %}
-                    <div class="form-group">
-                        <img src="{{ form.instance.imagem.url }}" alt="Imagem atual" class="img-thumbnail" style="max-height: 200px;">
+            <div class="form-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="{{ form.titulo.id_for_label }}" class="form-label">Título</label>
+                                {{ form.titulo }}
+                                {% if form.titulo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.titulo.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="{{ form.data_hora.id_for_label }}" class="form-label">Data e Hora</label>
+                                {{ form.data_hora }}
+                                {% if form.data_hora.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.data_hora.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                {% endif %}
+
+                    <div class="form-group">
+                        <label for="{{ form.descricao.id_for_label }}" class="form-label">Descrição</label>
+                        {{ form.descricao }}
+                        {% if form.descricao.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.descricao.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="{{ form.local.id_for_label }}" class="form-label">Informação do Local</label>
+                                {{ form.local }}
+                                {% if form.local.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.local.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="{{ form.vagas.id_for_label }}" class="form-label">Vagas</label>
+                                {{ form.vagas }}
+                                {% if form.vagas.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.vagas.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col-4">
+                            <div class="form-group">
+                                <label for="{{ form.preco.id_for_label }}" class="form-label">Preço</label>
+                                {{ form.preco }}
+                                {% if form.preco.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.preco.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-col-4">
+                            <div class="form-group">
+                                <label for="{{ form.lugar.id_for_label }}" class="form-label">Lugar</label>
+                                {{ form.lugar }}
+                                {% if form.lugar.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.lugar.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-col-4">
+                            <div class="form-group">
+                                <label for="{{ form.tipo_evento.id_for_label }}" class="form-label">Tipo de Evento</label>
+                                {{ form.tipo_evento }}
+                                {% if form.tipo_evento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.tipo_evento.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="{{ form.centro.id_for_label }}" class="form-label">Centro</label>
+                                {{ form.centro }}
+                                {% if form.centro.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.centro.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="{{ form.imagem.id_for_label }}" class="form-label">Imagem</label>
+                                <div class="file-input-group">
+                                    {{ form.imagem }}
+                                    <button type="button" class="file-clear-btn" onclick="clearFileInput()">Limpar</button>
+                                </div>
+                                <div class="file-name" id="fileName"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            {{ form.horas_complementares }}
+                            <label for="{{ form.horas_complementares.id_for_label }}">
+                                Oferece horas complementares
+                            </label>
+                        </div>
+                        {% if form.horas_complementares.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.horas_complementares.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{% url 'meus_eventos' %}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
             </div>
-            <div class="evento-form-actions">
-                <button type="submit" class="btn btn-primary">{{ action }}</button>
-                <a href="{% url 'meus_eventos' %}" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-{% endblock %} 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.querySelector('input[type="file"]');
+        const clearBtn = document.querySelector('.file-clear-btn');
+        const fileName = document.getElementById('fileName');
+        
+        // Check if there's an initial file
+        if (fileInput.files.length > 0) {
+            clearBtn.style.display = 'block';
+            fileName.textContent = fileInput.files[0].name;
+        }
+        
+        // Update when file is selected
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                clearBtn.style.display = 'block';
+                fileName.textContent = this.files[0].name;
+            } else {
+                clearBtn.style.display = 'none';
+                fileName.textContent = '';
+            }
+        });
+    });
+    
+    function clearFileInput() {
+        const fileInput = document.querySelector('input[type="file"]');
+        const clearBtn = document.querySelector('.file-clear-btn');
+        const fileName = document.getElementById('fileName');
+        
+        fileInput.value = '';
+        clearBtn.style.display = 'none';
+        fileName.textContent = '';
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,34 @@
+<div class="modal fade" id="filtroTipoModal" tabindex="-1" aria-labelledby="filtroTipoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filtroTipoModalLabel">Filtrar por Tipo de Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_evento" id="tipoTodos" value="">
+                    <label class="form-check-label" for="tipoTodos">Todos</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_evento" id="tipoOnline" value="online">
+                    <label class="form-check-label" for="tipoOnline">Online</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_evento" id="tipoPresencial" value="presencial">
+                    <label class="form-check-label" for="tipoPresencial">Presencial</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn-apply" onclick="aplicarFiltro('tipo_evento')">Aplicar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.modal-title {
+    color: white;
+}
+</style> 

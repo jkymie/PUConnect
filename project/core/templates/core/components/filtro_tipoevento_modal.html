@@ -1,8 +1,27 @@
-<div class="modal" id="modal-tipoevento" style="display:none">
-  <button class="modal-close" onclick="closeModal('modal-tipoevento')">&times;</button>
-  <h2 class="modal-title">Tipo Evento</h2>
-  <div class="list-group">
-    <button class="list-group-item list-group-item-action">Presencial</button>
-    <button class="list-group-item list-group-item-action">Online</button>
-  </div>
+<!-- Modal Tipo de Evento -->
+<div class="modal fade" id="modal-tipoevento" tabindex="-1" aria-labelledby="modalTipoEventoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTipoEventoLabel">Tipo de Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                    <label class="list-group-item">
+                        <input class="form-check-input me-1" type="radio" name="tipo_evento" value="online">
+                        Online
+                    </label>
+                    <label class="list-group-item">
+                        <input class="form-check-input me-1" type="radio" name="tipo_evento" value="presencial">
+                        Presencial
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="aplicarFiltro('tipo_evento')">Aplicar</button>
+            </div>
+        </div>
+    </div>
 </div> 

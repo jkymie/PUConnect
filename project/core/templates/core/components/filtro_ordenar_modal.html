@@ -1,15 +1,43 @@
-<div class="modal" id="modal-ordenar" style="display:none">
-  <button class="modal-close" onclick="closeModal('modal-ordenar')">&times;</button>
-  <h2 class="modal-title">Ordenar por</h2>
-  <div class="list-group">
-    <button class="list-group-item list-group-item-action">
-      <i class="fa fa-link me-2 text-primary"></i> Relevância <span class="text-muted small ms-2">Eventos em alta na sua Região</span>
-    </button>
-    <button class="list-group-item list-group-item-action">
-      <i class="fa fa-calendar-alt me-2 text-primary"></i> Data <span class="text-muted small ms-2">Eventos mais próximos de acontecer</span>
-    </button>
-    <button class="list-group-item list-group-item-action">
-      <i class="fa fa-map-marker-alt me-2 text-primary"></i> Distância <span class="text-muted small ms-2">Eventos mais perto de você</span>
-    </button>
-  </div>
-</div> 
+<!-- Modal Ordenar -->
+<div class="modal fade" id="filtroOrdenarModal" tabindex="-1" aria-labelledby="filtroOrdenarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filtroOrdenarModalLabel">Ordenar por</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarRelevancia" value="relevancia">
+                    <label class="form-check-label" for="ordenarRelevancia">Relevância</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarDataProxima" value="data_proxima">
+                    <label class="form-check-label" for="ordenarDataProxima">Data (mais próxima)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarDataDistante" value="data_distante">
+                    <label class="form-check-label" for="ordenarDataDistante">Data (mais distante)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarPrecoMenor" value="preco_menor">
+                    <label class="form-check-label" for="ordenarPrecoMenor">Preço (menor)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarPrecoMaior" value="preco_maior">
+                    <label class="form-check-label" for="ordenarPrecoMaior">Preço (maior)</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn-apply" onclick="aplicarFiltro('ordenar')">Aplicar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.modal-title {
+    color: white;
+}
+</style> 

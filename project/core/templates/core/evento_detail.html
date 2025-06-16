@@ -1,0 +1,79 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        {% if evento.imagem %}
+            <img src="{{ evento.imagem.url }}" class="card-img-top" alt="{{ evento.titulo }}" style="max-height: 400px; object-fit: cover;">
+        {% endif %}
+        <div class="card-body">
+            <h2 class="card-title">{{ evento.titulo }}</h2>
+            
+            <div class="row mt-4">
+                <div class="col-md-8">
+                    <h4>Detalhes do Evento</h4>
+                    <p class="card-text">{{ evento.descricao }}</p>
+                    
+                    <div class="mt-4">
+                        <h5>Informações</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-calendar"></i> <strong>Data e Hora:</strong> {{ evento.data_hora|date:"d/m/Y H:i" }}</li>
+                            <li><i class="fas fa-map-marker-alt"></i> <strong>Local:</strong> {{ evento.local }}</li>
+                            <li><i class="fas fa-building"></i> <strong>Centro:</strong> {{ evento.get_centro_display }}</li>
+                            <li><i class="fas fa-video"></i> <strong>Tipo de Evento:</strong> {{ evento.get_tipo_evento_display }}</li>
+                            <li><i class="fas fa-money-bill"></i> <strong>Preço:</strong> {{ evento.get_preco_display }}</li>
+                            {% if evento.horas_complementares %}
+                                <li><i class="fas fa-clock"></i> <strong>Horas Complementares:</strong> Sim</li>
+                            {% endif %}
+                            <li><i class="fas fa-users"></i> <strong>Vagas:</strong> {{ evento.vagas_disponiveis }} disponíveis de {{ evento.vagas }}</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Organizador</h5>
+                            <p class="card-text">
+                                <a href="{% url 'profile_other' evento.organizador.username %}">
+                                    {{ evento.organizador.get_full_name|default:evento.organizador.username }}
+                                </a>
+                            </p>
+                            
+                            {% if user.is_authenticated %}
+                                {% if user.tipo_usuario == 'aluno' %}
+                                    {% if esta_inscrito %}
+                                        <form method="post" action="{% url 'cancelar_inscricao' evento.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger w-100">Cancelar Inscrição</button>
+                                        </form>
+                                    {% else %}
+                                        <form method="post" action="{% url 'inscrever_evento' evento.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-primary w-100" {% if not vagas_disponiveis %}disabled{% endif %}>
+                                                {% if vagas_disponiveis %}Inscrever-se{% else %}Vagas Esgotadas{% endif %}
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                                
+                                {% if pode_editar %}
+                                    <div class="mt-3">
+                                        <a href="{% url 'evento_edit' evento.pk %}" class="btn btn-warning w-100 mb-2">Editar Evento</a>
+                                        <a href="{% url 'evento_delete' evento.pk %}" class="btn btn-danger w-100">Excluir Evento</a>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <a href="{% url 'login' %}">Faça login</a> para se inscrever neste evento.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

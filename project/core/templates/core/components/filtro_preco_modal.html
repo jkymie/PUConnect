@@ -1,9 +1,35 @@
-<div class="modal" id="modal-preco" style="display:none">
-  <button class="modal-close" onclick="closeModal('modal-preco')">&times;</button>
-  <h2 class="modal-title">Preço</h2>
-  <div class="list-group">
-    <button class="list-group-item list-group-item-action">Grátis</button>
-    <button class="list-group-item list-group-item-action">Pago</button>
-    <button class="list-group-item list-group-item-action">Qualquer preço</button>
-  </div>
-</div> 
+<!-- Modal Preço -->
+<div class="modal fade" id="filtroPrecoModal" tabindex="-1" aria-labelledby="filtroPrecoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filtroPrecoModalLabel">Filtrar por Preço</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="preco" id="precoTodos" value="">
+                    <label class="form-check-label" for="precoTodos">Todos</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="preco" id="precoGratuito" value="gratuito">
+                    <label class="form-check-label" for="precoGratuito">Gratuito</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="preco" id="precoPago" value="pago">
+                    <label class="form-check-label" for="precoPago">Pago</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn-apply" onclick="aplicarFiltro('preco')">Aplicar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.modal-title {
+    color: white;
+}
+</style> 

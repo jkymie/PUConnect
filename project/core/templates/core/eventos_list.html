@@ -1,227 +1,554 @@
 {% extends 'core/base.html' %}
 {% load static %}
-{% block title %}Todos os Eventos{% endblock %}
 
 {% block content %}
-<div class="all-eventos-container">
-  <h2 class="title-eventos">Eventos da PUC-Rio</h2>
-  <div class="search-container1">
-      <img src="{% static 'core/assets/img/Search.svg' %}" alt="Pesquisar" class="search-icon">
-      <input type="text" id="searchInput" placeholder="Pesquise por eventos, assuntos, áreas..." />
-      <a href="#" id="searchButton">Procurar</a>
-  </div>
-  <div class="filtros-container">
-    <div class="d-flex flex-wrap align-items-center gap-3 mb-4 filtros-sympla">
-      <span class="fw-semibold text-secondary me-2">Filtrar por</span>
-      <button class="btn btn-filtro" onclick="openModal('modal-categoria')">Categoria <i class="fa fa-chevron-down ms-1"></i></button>
-      <button class="btn btn-filtro" onclick="openModal('modal-data')">Data <i class="fa fa-chevron-down ms-1"></i></button>
-      <button class="btn btn-filtro" onclick="openModal('modal-preco')">Preço <i class="fa fa-chevron-down ms-1"></i></button>
-      <button class="btn btn-filtro" onclick="openModal('modal-tipoevento')">Tipo Evento <i class="fa fa-chevron-down ms-1"></i></button>
-      <button class="btn btn-filtro" onclick="openModal('modal-centro')">Centro <i class="fa fa-chevron-down ms-1"></i></button>
-      <span class="fw-semibold text-secondary ms-4 me-2">Ordenar por</span>
-      <button class="btn btn-filtro" onclick="openModal('modal-ordenar')">Relevância <i class="fa fa-chevron-down ms-1"></i></button>
-    </div>
-  </div>
-
-  {% include 'core/components/filtro_categoria_modal.html' %}
-  {% include 'core/components/filtro_data_modal.html' %}
-  {% include 'core/components/filtro_preco_modal.html' %}
-  {% include 'core/components/filtro_tipoevento_modal.html' %}
-  {% include 'core/components/filtro_centro_modal.html' %}
-  {% include 'core/components/filtro_ordenar_modal.html' %}
-
-  <div class="eventos-list-container">
-    {% if eventos %}
-        <div class="eventos-list-grid">
-            {% for evento in eventos %}
-                <div class="evento-card">
-                    {% if evento.imagem %}
-                        <img src="{{ evento.imagem.url }}" class="evento-card-img" alt="{{ evento.titulo }}">
-                    {% else %}
-                        <div class="evento-card-img evento-card-img-placeholder">
-                            <i class="fas fa-calendar-alt fa-3x text-muted"></i>
-                        </div>
-                    {% endif %}
-                    <div class="evento-card-body">
-                        <h5 class="evento-card-title">{{ evento.titulo }}</h5>
-                        <p class="evento-card-text">
-                            <small class="text-muted">
-                            <img src="{% static 'core/assets/img/clock.svg' %}" alt="Horário" class="icon-img"> {{ evento.data_hora|date:"d/m/Y H:i" }}<br>
-                            <img src="{% static 'core/assets/img/local.png' %}" alt="Local" class="icon-img"> {{ evento.local }}<br>
-                            <i class="fas fa-users"></i> {{ evento.vagas }} vagas
-                            </small>
-                        </p>
-                    </div>
-                    <div class="evento-card-footer">
-                        {% if user.is_authenticated and user.tipo_usuario == 'aluno' %}
-                            {% if evento in user.eventos_inscritos.all %}
-                                <form method="post" action="{% url 'cancelar_inscricao' evento.pk %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger w-100">Seguindo</button>
-                                </form>
-                            {% else %}
-                                <form method="post" action="{% url 'inscrever_evento' evento.pk %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary w-100">Seguir</button>
-                                </form>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="alert alert-info">
-            Nenhum evento encontrado.
-        </div>
-    {% endif %}
-  </div>
-</div>
-
 <style>
-.filtros-sympla .btn-filtro {
-    background: #f7f9fb;
-    border: 1px solid #e3e7ed;
-    border-radius: 10px;
-    color: #1976d2;
-    font-weight: 500;
-    min-width: 120px;
-    box-shadow: none;
-}
-.filtros-sympla .btn-filtro:focus, .filtros-sympla .btn-filtro.active {
-    border-color: #1976d2;
-    color: #1976d2;
-    background: #e3f0fd;
-    outline: none;
-}
-.modal-backdrop.show {
-    opacity: 0 !important;
-    background: transparent !important;
-}
+    .all {
+        background: #DAE6FB;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .search-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .search-form {
+        flex: 1;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .search-btn {
+        padding: 0.75rem 1.5rem;
+        background: #1563d9;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .filter-bar {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .filter-btn {
+        padding: 0.75rem 1.5rem;
+        background: white;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .filter-btn i {
+        font-size: 1rem;
+    }
+
+    .filter-btn:hover {
+        background: #f8f9fa;
+    }
+
+    .filter-btn.active {
+        background: #1563d9;
+        color: white;
+        border-color: #1563d9;
+    }
+
+    .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: auto;
+    }
+
+    .custom-checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .checkbox-label {
+        font-size: 1rem;
+        color: #495057;
+    }
+
+    .eventos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .evento-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        overflow: hidden;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .evento-imagem {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .evento-content {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .evento-info-section {
+        margin-bottom: 1rem;
+    }
+
+    .evento-titulo {
+        margin: 0 0 1rem 0;
+        font-size: 1.25rem;
+        color: #000000;
+        font-weight: bold;
+    }
+
+    .evento-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        color: #6c757d;
+    }
+
+    .evento-info i {
+        font-size: 1rem;
+        color: #1563d9;
+    }
+
+    .evento-tags {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .evento-tag {
+        padding: 0.25rem 0.5rem;
+        background: #DAE6FB;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        color: #1563d9;
+    }
+
+    .evento-actions {
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .evento-vagas {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .evento-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .btn-primary {
+        background: #1563d9;
+        color: white;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .alert {
+        padding: 1rem 1.5rem;
+        border-radius: 16px;
+        margin-bottom: 1rem;
+    }
+
+    .alert-info {
+        background-color: #DAE6FB;
+        border: 1px solid #1563d9;
+        color: #1563d9;
+    }
+
+    /* Modal Styles */
+    .modal-dialog {
+        max-width: 400px !important;
+        margin: 1.75rem auto;
+    }
+
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-header {
+        background: #1563d9;
+        color: white;
+        border-radius: 16px 16px 0 0;
+        padding: 1.5rem;
+        border: none;
+        flex-shrink: 0;
+    }
+
+    .modal-title {
+        color: white;
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+        overflow-y: auto;
+        flex-grow: 1;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #dee2e6;
+        padding: 1rem 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .form-check {
+        margin-bottom: 0.75rem;
+    }
+
+    .form-check-input {
+        width: 18px;
+        height: 18px;
+        margin-right: 0.5rem;
+        cursor: pointer;
+    }
+
+    .form-check-label {
+        font-size: 1rem;
+        color: #495057;
+        cursor: pointer;
+    }
+
+    .date-range {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    .date-input {
+        flex: 1;
+        padding: 0.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+    }
+
+    .btn-apply {
+        background: #1563d9;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .btn-apply:hover, .btn-cancel:hover {
+        opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+        .search-section {
+            flex-direction: column;
+        }
+
+        .filter-bar {
+            width: 100%;
+        }
+
+        .eventos-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .modal-dialog {
+            max-width: 95% !important;
+            margin: 1rem auto;
+        }
+    }
 </style>
 
-<!-- Modais de Login/Registro (hardcoded) -->
-<div class="modal-backdrop" style="display:none"></div>
-<div class="modal" id="modal-login" style="display:none">
-  <button class="modal-close" onclick="closeModal('modal-login')">&times;</button>
-  <h2 class="modal-title">Login</h2>
-  <form method="post" action="/login/">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="login-username">Email ou nome de usuário</label>
-      <input type="text" id="login-username" name="username" class="form-control" placeholder="Digite seu e-mail ou nome de usuário" required>
+<div class="all">
+    <div class="container">
+        <div class="search-section">
+            <form method="get" class="search-form">
+                <input type="text" name="q" class="search-input" placeholder="Buscar eventos..." value="{{ current_query|default:'' }}">
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            <div class="filter-bar">
+                <button class="filter-btn" onclick="openModal('filtroDataModal')">
+                    <i class="fas fa-calendar"></i> Data
+                </button>
+                <button class="filter-btn" onclick="openModal('filtroPrecoModal')">
+                    <i class="fas fa-tag"></i> Preço
+                </button>
+                <button class="filter-btn" onclick="openModal('filtroTipoModal')">
+                    <i class="fas fa-video"></i> Tipo
+                </button>
+                <button class="filter-btn" onclick="openModal('filtroCentroModal')">
+                    <i class="fas fa-building"></i> Centro
+                </button>
+                <button class="filter-btn" onclick="openModal('filtroOrdenarModal')">
+                    <i class="fas fa-sort"></i> Ordenar
+                </button>
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" class="custom-checkbox" id="horasComplementares" name="horas" value="true" {% if current_horas == 'true' %}checked{% endif %}>
+                    <label class="checkbox-label" for="horasComplementares">
+                        Horas Complementares
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="eventos-grid">
+            {% if eventos %}
+                {% for evento in eventos %}
+                    <div class="evento-card">
+                        {% if evento.imagem %}
+                            <img src="{{ evento.imagem.url }}" alt="{{ evento.titulo }}" class="evento-imagem">
+                        {% endif %}
+                        <div class="evento-content">
+                            <h3 class="evento-titulo">{{ evento.titulo }}</h3>
+                            <div class="evento-info-section">
+                                <div class="evento-info">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ evento.data_hora|date:"d/m/Y H:i" }}
+                                </div>
+                                <div class="evento-info">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ evento.local }}
+                                </div>
+                                <div class="evento-info">
+                                    <i class="fas fa-building"></i>
+                                    {{ evento.get_centro_display }}
+                                </div>
+                                <div class="evento-tags">
+                                    <span class="evento-tag">{{ evento.get_tipo_evento_display }}</span>
+                                    <span class="evento-tag">{{ evento.get_preco_display }}</span>
+                                    {% if evento.horas_complementares %}
+                                        <span class="evento-tag">Horas Complementares</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="evento-actions">
+                                <span class="evento-vagas">{{ evento.vagas_disponiveis }} vagas disponíveis</span>
+                                {% if user.is_authenticated %}
+                                    {% if evento.esta_inscrito %}
+                                        <form method="post" action="{% url 'cancelar_inscricao' evento.pk %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="evento-btn btn-danger">
+                                                <i class="fas fa-times"></i> Cancelar
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <form method="post" action="{% url 'inscrever_evento' evento.pk %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="evento-btn btn-primary" {% if not evento.tem_vagas_disponiveis %}disabled{% endif %}>
+                                                <i class="fas fa-check"></i> Seguir
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    Nenhum evento encontrado.
+                </div>
+            {% endif %}
+        </div>
     </div>
-    <div class="form-group">
-      <label for="login-password">Senha</label>
-      <input type="password" id="login-password" name="password" class="form-control" placeholder="Digite sua senha" required>
-    </div>
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Entrar</button>
-    </div>
-    <div style="text-align:center; margin-top:10px;">
-      <a href="#" onclick="gotoModal('modal-login','modal-forgot');return false;" style="color:#155de2; font-weight:500;">Esqueci minha senha</a>
-    </div>
-  </form>
-  <div style="text-align:center; margin-top:18px;">
-    Não possui uma conta? <a href="#" onclick="gotoModal('modal-login','modal-register');return false;" style="color:#155de2; font-weight:500;">Cadastre-se</a>
-  </div>
 </div>
-<div class="modal" id="modal-register" style="display:none">
-  <button class="modal-close" onclick="closeModal('modal-register')">&times;</button>
-  <h2 class="modal-title">Cadastro</h2>
-  <form method="post" action="/register/">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="register-tipo">Tipo de usuário</label>
-      <select id="register-tipo" name="tipo_usuario" class="form-control" required>
-        <option value="">Selecione entre as opções</option>
-        <option value="aluno">Aluno</option>
-        <option value="organizador">Organizador de Eventos</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="register-matricula">Matrícula</label>
-      <input type="text" id="register-matricula" name="matricula" class="form-control" required>
-    </div>
-    <div class="form-group">
-      <label for="register-email">E-mail</label>
-      <input type="email" id="register-email" name="email" class="form-control" required>
-    </div>
-    <div class="form-group">
-      <label for="register-password1">Senha</label>
-      <input type="password" id="register-password1" name="password1" class="form-control" required>
-    </div>
-    <div class="form-group">
-      <label for="register-password2">Confirme a senha</label>
-      <input type="password" id="register-password2" name="password2" class="form-control" required>
-    </div>
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Cadastrar</button>
-    </div>
-  </form>
-  <div style="text-align:center; margin-top:18px;">
-    Já possui uma conta? <a href="#" onclick="gotoModal('modal-register','modal-login');return false;" style="color:#155de2; font-weight:500;">Faça login!</a>
-  </div>
-</div>
-<div class="modal" id="modal-forgot" style="display:none">
-  <button class="modal-close" onclick="closeModal('modal-forgot')">&times;</button>
-  <h2 class="modal-title">Esqueci minha senha</h2>
-  <form method="post" action="/password-reset/">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="forgot-email">Email ou nome de usuário</label>
-      <input type="text" id="forgot-email" name="email" class="form-control" placeholder="Digite seu e-mail ou nome de usuário" required>
-    </div>
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Enviar</button>
-    </div>
-  </form>
-  <div style="text-align:center; margin-top:18px;">
-    Não possui uma conta? <a href="#" onclick="gotoModal('modal-forgot','modal-register');return false;" style="color:#155de2; font-weight:500;">Cadastre-se</a>
-  </div>
-</div>
-<div class="modal" id="modal-verify" style="display:none">
-  <button class="modal-close" onclick="closeModal('modal-verify')">&times;</button>
-  <h2 class="modal-title">Verificação</h2>
-  <form method="post" action="/password-reset/verify/">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="verify-code">Código</label>
-      <input type="text" id="verify-code" name="code" class="form-control" placeholder="Digite o código enviado" required>
-    </div>
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Enviar</button>
-    </div>
-  </form>
-  <div style="text-align:center; margin-top:18px;">
-    Não recebeu o e-mail?<br>
-    Verifique sua caixa de spam ou clique em <a href="#" style="color:#155de2; font-weight:500;">Reenviar código.</a>
-  </div>
-</div>
-<div class="modal" id="modal-newpass" style="display:none">
-  <button class="modal-close" onclick="closeModal('modal-newpass')">&times;</button>
-  <h2 class="modal-title">Criação de nova senha</h2>
-  <div style="margin-bottom:18px;">
-    <b>Digite uma nova senha para sua conta.<br>Certifique-se de escolher uma senha forte e segura.</b>
-    <ul style="margin:10px 0 0 18px; padding:0; color:#222;">
-      <li>A senha deve ter pelo menos 8 caracteres</li>
-      <li>Incluir letras maiúsculas e minúsculas</li>
-      <li>Incluir números e, se possível, caracteres especiais</li>
-    </ul>
-  </div>
-  <form method="post" action="/password-reset/new/">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="newpass1">Nova senha</label>
-      <input type="password" id="newpass1" name="new_password1" class="form-control" placeholder="Digite a nova senha" required>
-    </div>
-    <div class="form-group">
-      <label for="newpass2">Confirme a nova senha</label>
-      <input type="password" id="newpass2" name="new_password2" class="form-control" placeholder="Digite a nova senha novamente" required>
-    </div>
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Atualizar senha</button>
-    </div>
-  </form>
-</div>
+
+{% include 'core/components/filtro_data_modal.html' %}
+{% include 'core/components/filtro_preco_modal.html' %}
+{% include 'core/components/filtro_tipo_modal.html' %}
+{% include 'core/components/filtro_centro_modal.html' %}
+{% include 'core/components/filtro_ordenar_modal.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all modals
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        new bootstrap.Modal(modal, {
+            backdrop: 'static',
+            keyboard: false
+        });
+    });
+
+    // Handle data personalizada
+    const dataPersonalizada = document.getElementById('dataPersonalizada');
+    const dateRange = document.querySelector('.date-range');
+    
+    if (dataPersonalizada) {
+        dataPersonalizada.addEventListener('change', function() {
+            dateRange.style.display = this.checked ? 'flex' : 'none';
+        });
+    }
+
+    // Handle horas complementares
+    const horasComplementares = document.getElementById('horasComplementares');
+    if (horasComplementares) {
+        horasComplementares.addEventListener('change', function() {
+            aplicarFiltro('horas');
+        });
+    }
+});
+
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+    }
+}
+
+function aplicarFiltro(tipo) {
+    let url = new URL(window.location.href);
+    let params = new URLSearchParams(url.search);
+
+    switch(tipo) {
+        case 'data':
+            const dataSelecionada = document.querySelector('input[name="data"]:checked');
+            if (dataSelecionada) {
+                if (dataSelecionada.value === 'personalizada') {
+                    const dataInicio = document.getElementById('dataInicio').value;
+                    const dataFim = document.getElementById('dataFim').value;
+                    if (dataInicio && dataFim) {
+                        params.set('data_inicio', dataInicio);
+                        params.set('data_fim', dataFim);
+                    }
+                } else {
+                    params.set('data', dataSelecionada.value);
+                }
+            }
+            break;
+
+        case 'preco':
+            const precoSelecionado = document.querySelector('input[name="preco"]:checked');
+            if (precoSelecionado) {
+                params.set('preco', precoSelecionado.value);
+            }
+            break;
+
+        case 'tipo_evento':
+            const tipoSelecionado = document.querySelector('input[name="tipo_evento"]:checked');
+            if (tipoSelecionado) {
+                params.set('tipo_evento', tipoSelecionado.value);
+            }
+            break;
+
+        case 'centro':
+            const centroSelecionado = document.querySelector('input[name="centro"]:checked');
+            if (centroSelecionado) {
+                params.set('centro', centroSelecionado.value);
+            }
+            break;
+
+        case 'ordenar':
+            const ordenarSelecionado = document.querySelector('input[name="ordenar"]:checked');
+            if (ordenarSelecionado) {
+                params.set('ordenar', ordenarSelecionado.value);
+            }
+            break;
+
+        case 'horas':
+            const horasCheckbox = document.getElementById('horasComplementares');
+            if (horasCheckbox) {
+                if (horasCheckbox.checked) {
+                    params.set('horas', 'true');
+                } else {
+                    params.delete('horas');
+                }
+            }
+            break;
+    }
+
+    // Remove empty parameters
+    for (let [key, value] of params.entries()) {
+        if (!value) {
+            params.delete(key);
+        }
+    }
+
+    // Update URL and reload page
+    url.search = params.toString();
+    window.location.href = url.toString();
+}
+</script>
 {% endblock %} 
