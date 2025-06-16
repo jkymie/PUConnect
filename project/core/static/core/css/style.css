@@ -570,10 +570,12 @@ footer .redes-sociais {
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.18);
   z-index: 1010;
-  padding: 40px 32px 32px 32px;
-  min-width: 350px;
-  max-width: 95vw;
-  min-height: 200px;
+  padding: 32px 24px 24px 24px;
+  min-width: 0;
+  max-width: 400px;
+  width: 100%;
+  min-height: unset;
+  box-sizing: border-box;
   display: none;
   animation: modalIn 0.2s;
 }
@@ -602,10 +604,10 @@ footer .redes-sociais {
 .modal-close:hover {
   color: #EFBC06;
 }
-@media (max-width: 600px) {
+@media (max-width: 500px) {
   .modal {
-    min-width: 90vw;
-    padding: 24px 8px 16px 8px;
+    max-width: 95vw;
+    padding: 16px 4px 12px 4px;
   }
 }
 
@@ -745,5 +747,20 @@ footer .redes-sociais {
   .preferencias-card {
     max-width: 98vw;
     gap: 16px;
+  }
+}
+
+.modal.modal-auth {
+  min-width: 0 !important;
+  max-width: 400px !important;
+  width: 100% !important;
+  padding: 32px 24px 24px 24px !important;
+  min-height: unset !important;
+  box-sizing: border-box !important;
+}
+@media (max-width: 500px) {
+  .modal.modal-auth {
+    max-width: 95vw !important;
+    padding: 16px 4px 12px 4px !important;
   }
 }

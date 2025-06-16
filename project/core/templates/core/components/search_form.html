@@ -1,0 +1,70 @@
+{% load static %}
+
+<div class="search-container mb-4">
+    <form method="get" action="{% url 'eventos_list' %}" class="d-flex gap-2">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fas fa-search text-muted"></i>
+            </span>
+            <input type="text" 
+                   name="q" 
+                   class="form-control border-start-0" 
+                   placeholder="Buscar eventos..." 
+                   value="{{ request.GET.q }}"
+                   id="searchInput">
+        </div>
+        <button type="submit" 
+                class="btn btn-primary search-btn" 
+                id="searchBtn" 
+                style="display: none;">
+            Procurar
+        </button>
+        {% if show_filter %}
+        <button type="button" 
+                class="btn btn-outline-primary" 
+                data-bs-toggle="modal" 
+                data-bs-target="#filterModal">
+            <i class="fas fa-filter"></i> Filtrar
+        </button>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    
+    searchInput.addEventListener('input', function() {
+        searchBtn.style.display = this.value.trim() ? 'block' : 'none';
+    });
+    
+    // Trigger on page load if there's a search query
+    if (searchInput.value.trim()) {
+        searchBtn.style.display = 'block';
+    }
+});
+</script>
+
+<style>
+.search-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.search-container .input-group {
+    flex: 1;
+}
+
+.search-container .input-group-text {
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.search-container .form-control {
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.search-btn {
+    border-radius: 0.5rem;
+}
+</style> 

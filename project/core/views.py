@@ -15,10 +15,16 @@ from django.core.mail import send_mail
 from django.http import JsonResponse
 import random
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
+from django.urls import reverse
 
 User = get_user_model()
 
 def index(request):
+    # If there's a search query, redirect to events list with the query
+    query = request.GET.get('q')
+    if query:
+        return redirect(f"{reverse('eventos_list')}?q={query}")
     return render(request, 'core/index.html')
 
 def register(request):
@@ -268,8 +274,58 @@ def meus_eventos_aluno(request):
     return render(request, 'core/meus_eventos_aluno.html', {'eventos': eventos})
 
 def eventos_list(request):
-    eventos = Evento.objects.all().order_by('-data_hora')
-    return render(request, 'core/eventos_list.html', {'eventos': eventos})
+    eventos = Evento.objects.all()
+    
+    # Search by query
+    query = request.GET.get('q')
+    if query:
+        eventos = eventos.filter(
+            Q(titulo__icontains=query) |
+            Q(descricao__icontains=query) |
+            Q(local__icontains=query)
+        )
+    
+    # Additional keyword search
+    keyword = request.GET.get('keyword')
+    if keyword:
+        eventos = eventos.filter(
+            Q(titulo__icontains=keyword) |
+            Q(descricao__icontains=keyword) |
+            Q(local__icontains=keyword)
+        )
+    
+    # Period filter
+    period = request.GET.get('period')
+    if period:
+        today = timezone.now().date()
+        if period == 'today':
+            eventos = eventos.filter(data_hora__date=today)
+        elif period == 'week':
+            start_of_week = today - timezone.timedelta(days=today.weekday())
+            end_of_week = start_of_week + timezone.timedelta(days=6)
+            eventos = eventos.filter(data_hora__date__range=[start_of_week, end_of_week])
+        elif period == 'month':
+            start_of_month = today.replace(day=1)
+            if today.month == 12:
+                end_of_month = today.replace(year=today.year + 1, month=1, day=1) - timezone.timedelta(days=1)
+            else:
+                end_of_month = today.replace(month=today.month + 1, day=1) - timezone.timedelta(days=1)
+            eventos = eventos.filter(data_hora__date__range=[start_of_month, end_of_month])
+    
+    # My events filter
+    if request.GET.get('my_events') and request.user.is_authenticated:
+        eventos = eventos.filter(inscritos=request.user)
+    
+    # Order by date
+    eventos = eventos.order_by('data_hora')
+    
+    return render(request, 'core/eventos_list.html', {
+        'eventos': eventos,
+        'current_query': query,
+        'current_keyword': keyword,
+        'current_period': period,
+        'current_my_events': request.GET.get('my_events')
+    })
 
 @api_view(['GET'])
 def eventos_api(request):
