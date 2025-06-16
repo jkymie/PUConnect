@@ -1,0 +1,39 @@
+<div class="modal" id="modal-categoria" style="display:none">
+  <button class="modal-close" onclick="closeModal('modal-categoria')">&times;</button>
+  <h2 class="modal-title">Categorias</h2>
+  <div class="categorias-grid">
+    <button class="categoria-btn"><i class="fa fa-music me-2"></i> Festas e shows</button>
+    <button class="categoria-btn"><i class="fa fa-chalkboard-teacher me-2"></i> Cursos e Workshops</button>
+    <button class="categoria-btn"><i class="fa fa-microphone me-2"></i> Congressos e Palestras</button>
+    <button class="categoria-btn"><i class="fa fa-futbol me-2"></i> Esportes</button>
+    <button class="categoria-btn"><i class="fa fa-hamburger me-2"></i> Gastronomia</button>
+    <button class="categoria-btn"><i class="fa fa-film me-2"></i> Arte, Cinema e Lazer</button>
+    <button class="categoria-btn"><i class="fa fa-heartbeat me-2"></i> Saúde e Bem-Estar</button>
+    <button class="categoria-btn"><i class="fa fa-child me-2"></i> Infantil</button>
+    <button class="categoria-btn"><i class="fa fa-praying-hands me-2"></i> Religião e Espiritualidade</button>
+    <button class="categoria-btn"><i class="fa fa-gamepad me-2"></i> Games e Geek</button>
+    <button class="categoria-btn"><i class="fa fa-tshirt me-2"></i> Moda e Beleza</button>
+  </div>
+</div>
+<style>
+.categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+.categoria-btn {
+  background: #1563d9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: left;
+  transition: background 0.2s;
+}
+.categoria-btn:hover {
+  background: #1976d2;
+}
+</style> 

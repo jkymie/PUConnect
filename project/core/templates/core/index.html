@@ -28,11 +28,7 @@
     <section class="hero">
         <div class="container-main">
         <h2 class="banner"><b>Participe</b>, <b>descubra</b> e <b>divulgue</b> eventos na PUC-Rio</h2>
-          <div class="search-container">
-            <img src="{% static 'core/assets/img/Search.svg' %}" alt="Pesquisar" class="search-icon">
-            <input type="text" id="searchInput" placeholder="Pesquise por eventos, assuntos, áreas..." />
-            <a href="#" id="searchButton">Procurar</a>
-          </div>
+          {% include 'core/components/search_form.html' with show_filter=False %}
         </div>
     </section>
     </div>
