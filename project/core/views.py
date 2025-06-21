@@ -247,8 +247,18 @@ def preferencias(request):
     for field in password_form.fields.values():
         field.widget.attrs['class'] = 'form-control'
     password_form.fields['old_password'].label = 'Senha atual'
+    password_form.fields['old_password'].widget.attrs['placeholder'] = 'Digite sua senha atual'
     password_form.fields['new_password1'].label = 'Senha nova'
+    password_form.fields['new_password1'].widget.attrs['placeholder'] = 'Digite sua nova senha'
     password_form.fields['new_password2'].label = 'Confirme a senha nova'
+    password_form.fields['new_password2'].widget.attrs['placeholder'] = 'Confirme sua nova senha'
+    
+    # Uniformizar os campos do EmailChangeForm
+    for field in email_form.fields.values():
+        field.widget.attrs['class'] = 'form-control'
+    email_form.fields['password'].widget.attrs['placeholder'] = 'Digite sua senha para confirmar'
+    email_form.fields['new_email'].widget.attrs['placeholder'] = 'Digite o novo e-mail'
+    email_form.fields['confirm_email'].widget.attrs['placeholder'] = 'Confirme o novo e-mail'
 
     email_success = None
     password_success = None
@@ -258,11 +268,15 @@ def preferencias(request):
             if email_form.is_valid():
                 email_form.save()
                 email_success = 'E-mail atualizado com sucesso.'
+                # Re-instantiate form to clear old data
+                email_form = EmailChangeForm(user=request.user)
         elif 'update_password' in request.POST:
             if password_form.is_valid():
                 password_form.save()
                 update_session_auth_hash(request, user)
                 password_success = 'Senha alterada com sucesso.'
+                # Re-instantiate form to clear old data
+                password_form = PasswordChangeForm(user=request.user)
 
     return render(request, 'core/preferencias.html', {
         'user': user,

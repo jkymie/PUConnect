@@ -1,47 +1,362 @@
 {% extends 'core/base.html' %}
 {% block title %}Preferências{% endblock %}
+
+{% block extra_css %}
+<style>
+.preferencias-container {
+    max-width: 900px;
+    margin: 40px auto;
+    margin-top: 0px;
+    padding: 20px;
+}
+
+.preferencias-title {
+    font-size: 2rem;
+    color: #155de2;
+    font-family: 'Cal Sans', 'Inter', sans-serif;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-cards-wrapper {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.form-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(21, 93, 226, 0.08);
+    padding: 24px;
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.form-card-title {
+    font-size: 1.25rem;
+    color: #155de2;
+    font-family: 'Inter', sans-serif;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+.required-asterisk {
+    color: #dc3545;
+    margin-left: 4px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background: #155de2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.alert {
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 8px;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.required-note {
+    font-size: 0.875rem;
+    color: #6c757d;
+    text-align: right;
+    margin-top: 20px;
+}
+
+.password-help-btn {
+    background: rgba(21, 93, 226, 0.1);
+    border: none;
+    color: #155de2;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 4px;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.password-help-btn:hover {
+    background-color: rgba(21, 93, 226, 0.2);
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 16px;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #155de2 0%, #1e40af 100%);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    color: white !important;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.modal-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.password-requirements-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.password-requirements-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: flex-start;
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+.password-requirements-list li:last-child {
+    border-bottom: none;
+}
+
+.password-requirements-list li:before {
+    content: "✓";
+    color: #155de2;
+    font-weight: bold;
+    margin-right: 12px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@media (max-width: 768px) {
+    .form-cards-wrapper {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-card {
+        margin-bottom: 24px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="preferencias-center">
-    <div class="preferencias-card">
-        <h2 class="mb-4 text-center">Preferências</h2>
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="mb-3">Alterar E-mail</h5>
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="update_email" value="1">
-                    <div class="mb-3">{{ email_form.password.label_tag }}{{ email_form.password }}</div>
-                    <div class="mb-3">{{ email_form.new_email.label_tag }}{{ email_form.new_email }}</div>
-                    <div class="mb-3">{{ email_form.confirm_email.label_tag }}{{ email_form.confirm_email }}</div>
-                    {% if email_form.errors %}
-                        <div class="alert alert-danger">{{ email_form.errors }}</div>
-                    {% endif %}
-                    {% if email_success %}
-                        <div class="alert alert-success">{{ email_success }}</div>
-                    {% endif %}
-                    <button type="submit" class="btn btn-primary">Salvar E-mail</button>
-                </form>
-            </div>
+<div class="preferencias-container">
+    <h2 class="preferencias-title">Preferências</h2>
+    <div class="form-cards-wrapper">
+        <div class="form-card">
+            <h5 class="form-card-title">Alterar E-mail</h5>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="update_email" value="1">
+                <div class="form-group">
+                    <label for="{{ email_form.password.id_for_label }}" class="form-label">{{ email_form.password.label }}<span class="required-asterisk">*</span></label>
+                    {{ email_form.password }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ email_form.new_email.id_for_label }}" class="form-label">{{ email_form.new_email.label }}<span class="required-asterisk">*</span></label>
+                    {{ email_form.new_email }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ email_form.confirm_email.id_for_label }}" class="form-label">{{ email_form.confirm_email.label }}<span class="required-asterisk">*</span></label>
+                    {{ email_form.confirm_email }}
+                </div>
+                {% if email_form.errors %}
+                    <div class="alert alert-danger">{{ email_form.errors }}</div>
+                {% endif %}
+                {% if email_success %}
+                    <div class="alert alert-success">{{ email_success }}</div>
+                {% endif %}
+                <p class="required-note">* Todos os campos são obrigatórios</p>
+                <button type="submit" class="btn-submit">Salvar E-mail</button>
+            </form>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="mb-3">Alterar Senha</h5>
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="update_password" value="1">
-                    <div class="mb-3">{{ password_form.old_password.label_tag }}{{ password_form.old_password }}</div>
-                    <div class="mb-3">{{ password_form.new_password1.label_tag }}{{ password_form.new_password1 }}</div>
-                    <div class="mb-3">{{ password_form.new_password2.label_tag }}{{ password_form.new_password2 }}</div>
-                    {% if password_form.errors %}
-                        <div class="alert alert-danger">{{ password_form.errors }}</div>
-                    {% endif %}
-                    {% if password_success %}
-                        <div class="alert alert-success">{{ password_success }}</div>
-                    {% endif %}
-                    <button type="submit" class="btn btn-primary">Salvar Senha</button>
-                </form>
-            </div>
+        <div class="form-card">
+            <h5 class="form-card-title">Alterar Senha</h5>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="update_password" value="1">
+                <div class="form-group">
+                    <label for="{{ password_form.old_password.id_for_label }}" class="form-label">{{ password_form.old_password.label }}<span class="required-asterisk">*</span></label>
+                    {{ password_form.old_password }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ password_form.new_password1.id_for_label }}" class="form-label">
+                        {{ password_form.new_password1.label }}<span class="required-asterisk">*</span>
+                        <button type="button" class="password-help-btn" onclick="openPasswordModal()">?</button>
+                    </label>
+                    {{ password_form.new_password1 }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ password_form.new_password2.id_for_label }}" class="form-label">{{ password_form.new_password2.label }}<span class="required-asterisk">*</span></label>
+                    {{ password_form.new_password2 }}
+                </div>
+                {% if password_form.errors %}
+                    <div class="alert alert-danger">{{ password_form.errors }}</div>
+                {% endif %}
+                {% if password_success %}
+                    <div class="alert alert-success">{{ password_success }}</div>
+                {% endif %}
+                <p class="required-note">* Todos os campos são obrigatórios</p>
+                <button type="submit" class="btn-submit">Salvar Senha</button>
+            </form>
         </div>
     </div>
 </div>
+
+<!-- Modal de Requisitos da Senha -->
+<div id="passwordModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Requisitos da Senha</h3>
+            <button class="modal-close" onclick="closePasswordModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <ul class="password-requirements-list">
+                <li>Sua senha não pode ser muito similar às suas outras informações pessoais</li>
+                <li>Sua senha deve conter pelo menos 8 caracteres</li>
+                <li>Sua senha não pode ser uma senha comumente utilizada</li>
+                <li>Sua senha não pode ser inteiramente numérica</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPasswordModal() {
+    document.getElementById('passwordModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closePasswordModal() {
+    document.getElementById('passwordModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Fechar modal ao clicar fora dele
+document.getElementById('passwordModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closePasswordModal();
+    }
+});
+
+// Fechar modal com tecla ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closePasswordModal();
+    }
+});
+</script>
 {% endblock %} 

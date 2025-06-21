@@ -15,6 +15,7 @@
                     <i class="fas fa-search"></i>
                 </button>
             </form>
+            
             <div class="filter-bar">
                 <div class="filter-left">
                     <button class="filter-btn" onclick="openCustomModal('filtroDataModal')">
@@ -45,6 +46,90 @@
                     </button>
                 </div>
             </div>
+            
+            <!-- Tags de filtros aplicados -->
+            <div class="applied-filters" id="appliedFilters">
+                {% if current_query %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Busca: "{{ current_query }}"</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('q')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
+                {% if current_data %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Data: {{ current_data|title }}</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('data')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
+                {% if current_data_inicio and current_data_fim %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Período: {{ current_data_inicio }} a {{ current_data_fim }}</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('data_range')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
+                {% if current_preco %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Preço: {{ current_preco|title }}</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('preco')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
+                {% if current_tipo_evento %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Tipo: {{ current_tipo_evento|title }}</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('tipo_evento')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
+                {% if current_centro %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Centro: {{ current_centro|title }}</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('centro')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
+                {% if current_local %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Local: {% if current_local == 'puc' %}Na PUC{% else %}Fora da PUC{% endif %}</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('local')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
+                {% if current_horas == 'true' %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Horas Complementares</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('horas')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
+                {% if current_ordenar %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Ordenar: {% if current_ordenar == 'relevancia' %}Alfabética{% elif current_ordenar == 'data_proxima' %}Data (próxima){% elif current_ordenar == 'data_distante' %}Data (distante){% elif current_ordenar == 'preco_menor' %}Preço (menor){% elif current_ordenar == 'preco_maior' %}Preço (maior){% endif %}</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('ordenar')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
         </div>
 
         <div class="eventos-grid">
@@ -70,6 +155,23 @@
                                     {{ evento.get_centro_display }}
                                 </div>
                                 <div class="evento-tags">
+                                    {% if evento.get_proximidade_temporal %}
+                                        {% if evento.get_proximidade_temporal == 'encerrado' %}
+                                            <span class="evento-tag evento-tag-encerrado">Encerrado</span>
+                                        {% else %}
+                                            <span class="evento-tag evento-tag-proximidade {{ evento.get_proximidade_temporal }}">
+                                                {% if evento.get_proximidade_temporal == 'hoje' %}
+                                                    Hoje
+                                                {% elif evento.get_proximidade_temporal == 'amanha' %}
+                                                    Amanhã
+                                                {% elif evento.get_proximidade_temporal == 'semana' %}
+                                                    Essa semana
+                                                {% elif evento.get_proximidade_temporal == 'mes' %}
+                                                    Esse mês
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                    {% endif %}
                                     <span class="evento-tag">{{ evento.get_tipo_evento_display }}</span>
                                     <span class="evento-tag">{{ evento.get_preco_display }}</span>
                                     {% if evento.horas_complementares %}
@@ -257,6 +359,46 @@ function aplicarFiltro(tipo) {
         if (!value) {
             params.delete(key);
         }
+    }
+
+    // Update URL and reload page
+    url.search = params.toString();
+    window.location.href = url.toString();
+}
+
+function removeFilter(filterType) {
+    let url = new URL(window.location.href);
+    let params = new URLSearchParams(url.search);
+
+    switch(filterType) {
+        case 'q':
+            params.delete('q');
+            break;
+        case 'data':
+            params.delete('data');
+            break;
+        case 'data_range':
+            params.delete('data_inicio');
+            params.delete('data_fim');
+            break;
+        case 'preco':
+            params.delete('preco');
+            break;
+        case 'tipo_evento':
+            params.delete('tipo_evento');
+            break;
+        case 'centro':
+            params.delete('centro');
+            break;
+        case 'local':
+            params.delete('local');
+            break;
+        case 'horas':
+            params.delete('horas');
+            break;
+        case 'ordenar':
+            params.delete('ordenar');
+            break;
     }
 
     // Update URL and reload page

@@ -1,39 +1,75 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}Meus Eventos Inscritos{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Meus Eventos Inscritos</h2>
-    {% if eventos %}
-        <div class="row">
-            {% for evento in eventos %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
+<div class="all">
+    <div class="container">
+        <h1 class="text-center">Meus Eventos Inscritos</h1>
+        
+        <div class="eventos-grid">
+            {% if eventos %}
+                {% for evento in eventos %}
+                    <div class="evento-card">
                         {% if evento.imagem %}
-                            <img src="{{ evento.imagem.url }}" class="card-img-top" alt="{{ evento.titulo }}" style="object-fit:cover; max-height:200px; width:100%;">
-                        {% else %}
-                            <div class="card-img-top bg-light text-center py-5">
-                                <i class="fas fa-calendar-alt fa-3x text-muted"></i>
-                            </div>
+                            <img src="{{ evento.imagem.url }}" alt="{{ evento.titulo }}" class="evento-imagem">
                         {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ evento.titulo }}</h5>
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar"></i> {{ evento.data_hora|date:"d/m/Y H:i" }}<br>
-                                    <i class="fas fa-map-marker-alt"></i> {{ evento.local }}
-                                </small>
-                            </p>
+                        <div class="evento-content">
+                            <h3 class="evento-titulo">{{ evento.titulo }}</h3>
+                            <div class="evento-info-section">
+                                <div class="evento-info">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ evento.data_hora|date:"d/m/Y H:i" }}
+                                </div>
+                                <div class="evento-info">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ evento.local }}
+                                </div>
+                                <div class="evento-info">
+                                    <i class="fas fa-building"></i>
+                                    {{ evento.get_centro_display }}
+                                </div>
+                                <div class="evento-tags">
+                                    {% if evento.get_proximidade_temporal %}
+                                        {% if evento.get_proximidade_temporal == 'encerrado' %}
+                                            <span class="evento-tag evento-tag-encerrado">Encerrado</span>
+                                        {% else %}
+                                            <span class="evento-tag evento-tag-proximidade {{ evento.get_proximidade_temporal }}">
+                                                {% if evento.get_proximidade_temporal == 'hoje' %}
+                                                    Hoje
+                                                {% elif evento.get_proximidade_temporal == 'amanha' %}
+                                                    Amanhã
+                                                {% elif evento.get_proximidade_temporal == 'semana' %}
+                                                    Essa semana
+                                                {% elif evento.get_proximidade_temporal == 'mes' %}
+                                                    Esse mês
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                    {% endif %}
+                                    <span class="evento-tag">{{ evento.get_tipo_evento_display }}</span>
+                                    <span class="evento-tag">{{ evento.get_preco_display }}</span>
+                                    {% if evento.horas_complementares %}
+                                        <span class="evento-tag">Horas Complementares</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="evento-actions">
+                                <span class="evento-vagas">{{ evento.vagas_disponiveis }} vagas disponíveis</span>
+                                <a href="{% url 'evento_detail' evento.pk %}" class="evento-btn btn-primary">
+                                    <i class="fas fa-eye"></i> Ver Detalhes
+                                </a>
+                            </div>
                         </div>
                     </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    Você ainda não está inscrito em nenhum evento.
                 </div>
-            {% endfor %}
+            {% endif %}
         </div>
-    {% else %}
-        <div class="alert alert-info">
-            Você ainda não está inscrito em nenhum evento.
-        </div>
-    {% endif %}
+    </div>
 </div>
 {% endblock %} 

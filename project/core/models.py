@@ -7,6 +7,7 @@ from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from datetime import datetime, timedelta
 
 # Modelos principais do sistema de eventos e usuários customizados
 
@@ -128,6 +129,28 @@ class Evento(models.Model):
     def esta_inscrito(self, usuario):
         """Verifica se o usuário já está inscrito neste evento."""
         return self.inscricoes.filter(usuario=usuario).exists()
+    
+    def get_proximidade_temporal(self):
+        """Retorna a proximidade temporal do evento (hoje, amanhã, essa semana, esse mês, encerrado)."""
+        try:
+            from datetime import date
+            hoje = date.today()
+            data_evento = self.data_hora.date()
+            if data_evento < hoje:
+                return 'encerrado'
+            if data_evento == hoje:
+                return 'hoje'
+            elif data_evento == hoje + timedelta(days=1):
+                return 'amanha'
+            elif data_evento <= hoje + timedelta(days=7):
+                return 'semana'
+            elif data_evento.month == hoje.month and data_evento.year == hoje.year:
+                return 'mes'
+            else:
+                return None
+        except Exception as e:
+            print(f"Erro no get_proximidade_temporal: {e}")
+            return None
 
 class Inscricao(models.Model):
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='inscricoes')

@@ -10,6 +10,26 @@
         <div class="card-body">
             <h2 class="card-title">{{ evento.titulo }}</h2>
             
+            {% if evento.get_proximidade_temporal %}
+                <div class="mb-3">
+                    {% if evento.get_proximidade_temporal == 'encerrado' %}
+                        <span class="evento-tag evento-tag-encerrado">Encerrado</span>
+                    {% else %}
+                        <span class="evento-tag evento-tag-proximidade {{ evento.get_proximidade_temporal }}">
+                            {% if evento.get_proximidade_temporal == 'hoje' %}
+                                Hoje
+                            {% elif evento.get_proximidade_temporal == 'amanha' %}
+                                Amanhã
+                            {% elif evento.get_proximidade_temporal == 'semana' %}
+                                Essa semana
+                            {% elif evento.get_proximidade_temporal == 'mes' %}
+                                Esse mês
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
             <div class="row mt-4">
                 <div class="col-md-8">
                     <h4>Detalhes do Evento</h4>

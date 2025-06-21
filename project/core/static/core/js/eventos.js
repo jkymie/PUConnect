@@ -14,14 +14,46 @@ function formatarDataHora(dataStr) {
   return `${dia}/${mes} | ${hora}:${min}`;
 }
 
+function getProximidadeTemporal(dataEvento) {
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  
+  const dataEventoDate = new Date(dataEvento);
+  dataEventoDate.setHours(0, 0, 0, 0);
+  
+  const amanha = new Date(hoje);
+  amanha.setDate(amanha.getDate() + 1);
+  
+  const fimSemana = new Date(hoje);
+  fimSemana.setDate(fimSemana.getDate() + 7);
+  
+  if (dataEventoDate.getTime() === hoje.getTime()) {
+    return { tipo: 'hoje', texto: 'Hoje' };
+  } else if (dataEventoDate.getTime() === amanha.getTime()) {
+    return { tipo: 'amanha', texto: 'Amanhã' };
+  } else if (dataEventoDate <= fimSemana) {
+    return { tipo: 'semana', texto: 'Essa semana' };
+  } else if (dataEventoDate.getMonth() === hoje.getMonth() && dataEventoDate.getFullYear() === hoje.getFullYear()) {
+    return { tipo: 'mes', texto: 'Esse mês' };
+  }
+  return null;
+}
+
 function criarCard(evento) {
   // Se imagem for null, usar um placeholder
   const imgUrl = evento.imagem ? evento.imagem : '/static/core/assets/img/placeholder.jpg';
+  
+  // Calcular proximidade temporal
+  const proximidade = getProximidadeTemporal(evento.data_hora);
+  const tagProximidade = proximidade ? 
+    `<span class="evento-tag evento-tag-proximidade ${proximidade.tipo}">${proximidade.texto}</span>` : '';
+  
   return `
     <div class="card-evento">
       <img src="${imgUrl}" alt="${evento.titulo}" class="card-evento-img">
       <div class="card-evento-body">
         <div class="card-evento-titulo">${evento.titulo}</div>
+        ${tagProximidade ? `<div style="margin-bottom: 8px;">${tagProximidade}</div>` : ''}
         <div class="card-evento-info">
           <span class="icon"><img src="/static/core/assets/img/clock.svg" alt="Horário" class="icon-img"></span>
           <span>${formatarDataHora(evento.data_hora)}</span>
