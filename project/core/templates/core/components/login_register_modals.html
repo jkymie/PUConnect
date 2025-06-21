@@ -1,5 +1,5 @@
 <div class="modal-backdrop" style="display:none"></div>
-<div class="modal modal-auth" id="modal-login" style="display:none">
+<div class="modal" id="modal-login" style="display:none">
   <button class="modal-close" onclick="closeModal('modal-login')">&times;</button>
   <h2 class="modal-title">Login</h2>
   <form method="post" action="/login/">
@@ -23,7 +23,7 @@
     Não possui uma conta? <a href="#" onclick="gotoModal('modal-login','modal-register');return false;" style="color:#155de2; font-weight:500;">Cadastre-se</a>
   </div>
 </div>
-<div class="modal modal-auth" id="modal-register" style="display:none">
+<div class="modal" id="modal-register" style="display:none">
   <button class="modal-close" onclick="closeModal('modal-register')">&times;</button>
   <h2 class="modal-title">Cadastro</h2>
   <form method="post" action="/register/">
@@ -60,7 +60,7 @@
     Já possui uma conta? <a href="#" onclick="gotoModal('modal-register','modal-login');return false;" style="color:#155de2; font-weight:500;">Faça login!</a>
   </div>
 </div>
-<div class="modal modal-auth" id="modal-forgot" style="display:none">
+<div class="modal" id="modal-forgot" style="display:none">
   <button class="modal-close" onclick="closeModal('modal-forgot')">&times;</button>
   <h2 class="modal-title">Esqueci minha senha</h2>
   <form method="post" action="/password-reset/">
@@ -77,7 +77,7 @@
     Não possui uma conta? <a href="#" onclick="gotoModal('modal-forgot','modal-register');return false;" style="color:#155de2; font-weight:500;">Cadastre-se</a>
   </div>
 </div>
-<div class="modal modal-auth" id="modal-verify" style="display:none">
+<div class="modal" id="modal-verify" style="display:none">
   <button class="modal-close" onclick="closeModal('modal-verify')">&times;</button>
   <h2 class="modal-title">Verificação</h2>
   <form method="post" action="/password-reset/verify/">
@@ -95,7 +95,7 @@
     Verifique sua caixa de spam ou clique em <a href="#" style="color:#155de2; font-weight:500;">Reenviar código.</a>
   </div>
 </div>
-<div class="modal modal-auth" id="modal-newpass" style="display:none">
+<div class="modal" id="modal-newpass" style="display:none">
   <button class="modal-close" onclick="closeModal('modal-newpass')">&times;</button>
   <h2 class="modal-title">Criação de nova senha</h2>
   <div style="margin-bottom:18px;">

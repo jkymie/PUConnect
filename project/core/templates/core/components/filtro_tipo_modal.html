@@ -1,28 +1,63 @@
-<div class="modal fade" id="filtroTipoModal" tabindex="-1" aria-labelledby="filtroTipoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filtroTipoModalLabel">Filtrar por Tipo de Evento</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Modal Tipo -->
+<div class="custom-modal" id="filtroTipoModal">
+    <div class="custom-modal-overlay" onclick="closeCustomModal('filtroTipoModal')"></div>
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">
+            <div class="custom-modal-title">
+                <i class="fas fa-video"></i>
+                <span>Filtrar por Tipo de Evento</span>
             </div>
-            <div class="modal-body">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="tipo_evento" id="tipoTodos" value="">
-                    <label class="form-check-label" for="tipoTodos">Todos</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="tipo_evento" id="tipoOnline" value="online">
-                    <label class="form-check-label" for="tipoOnline">Online</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="tipo_evento" id="tipoPresencial" value="presencial">
-                    <label class="form-check-label" for="tipoPresencial">Presencial</label>
-                </div>
+            <button type="button" class="custom-modal-close" onclick="closeCustomModal('filtroTipoModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="custom-modal-body">
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="tipo_evento" id="tipoTodos" value="">
+                <label class="custom-radio-label" for="tipoTodos">
+                    <div class="radio-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Todos</span>
+                        <span class="radio-subtitle">Mostrar todos os tipos</span>
+                    </div>
+                </label>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn-apply" onclick="aplicarFiltro('tipo_evento')">Aplicar</button>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="tipo_evento" id="tipoOnline" value="online">
+                <label class="custom-radio-label" for="tipoOnline">
+                    <div class="radio-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Online</span>
+                        <span class="radio-subtitle">Eventos virtuais</span>
+                    </div>
+                </label>
             </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="tipo_evento" id="tipoPresencial" value="presencial">
+                <label class="custom-radio-label" for="tipoPresencial">
+                    <div class="radio-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Presencial</span>
+                        <span class="radio-subtitle">Eventos presenciais</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+        
+        <div class="custom-modal-footer">
+            <button type="button" class="custom-btn custom-btn-primary" onclick="aplicarFiltro('tipo_evento')">
+                <i class="fas fa-check"></i>
+                Aplicar
+            </button>
         </div>
     </div>
 </div>

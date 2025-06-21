@@ -1,37 +1,89 @@
 <!-- Modal Centro -->
-<div class="modal fade" id="filtroCentroModal" tabindex="-1" aria-labelledby="filtroCentroModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filtroCentroModalLabel">Filtrar por Centro</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="custom-modal" id="filtroCentroModal">
+    <div class="custom-modal-overlay" onclick="closeCustomModal('filtroCentroModal')"></div>
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">
+            <div class="custom-modal-title">
+                <i class="fas fa-building"></i>
+                <span>Filtrar por Centro</span>
             </div>
-            <div class="modal-body">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="centro" id="centroTodos" value="">
-                    <label class="form-check-label" for="centroTodos">Todos</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="centro" id="centroCTCH" value="ctch">
-                    <label class="form-check-label" for="centroCTCH">Centro de Teologia e Ciências Humanas</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="centro" id="centroCSS" value="css">
-                    <label class="form-check-label" for="centroCSS">Centro de Ciências Sociais</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="centro" id="centroCTC" value="ctc">
-                    <label class="form-check-label" for="centroCTC">Centro Técnico Científico</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="centro" id="centroCCBS" value="ccbs">
-                    <label class="form-check-label" for="centroCCBS">Centro de Ciências Biológicas e da Saúde</label>
-                </div>
+            <button type="button" class="custom-modal-close" onclick="closeCustomModal('filtroCentroModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="custom-modal-body">
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="centro" id="centroTodos" value="">
+                <label class="custom-radio-label" for="centroTodos">
+                    <div class="radio-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Todos</span>
+                        <span class="radio-subtitle">Mostrar todos os centros</span>
+                    </div>
+                </label>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn-apply" onclick="aplicarFiltro('centro')">Aplicar</button>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="centro" id="centroCTCH" value="ctch">
+                <label class="custom-radio-label" for="centroCTCH">
+                    <div class="radio-icon">
+                        <i class="fas fa-church"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Centro de Teologia e Ciências Humanas</span>
+                        <span class="radio-subtitle">CTCH</span>
+                    </div>
+                </label>
             </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="centro" id="centroCSS" value="css">
+                <label class="custom-radio-label" for="centroCSS">
+                    <div class="radio-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Centro de Ciências Sociais</span>
+                        <span class="radio-subtitle">CSS</span>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="centro" id="centroCTC" value="ctc">
+                <label class="custom-radio-label" for="centroCTC">
+                    <div class="radio-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Centro Técnico Científico</span>
+                        <span class="radio-subtitle">CTC</span>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="centro" id="centroCCBS" value="ccbs">
+                <label class="custom-radio-label" for="centroCCBS">
+                    <div class="radio-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Centro de Ciências Biológicas e da Saúde</span>
+                        <span class="radio-subtitle">CCBS</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+        
+        <div class="custom-modal-footer">
+            <button type="button" class="custom-btn custom-btn-primary" onclick="aplicarFiltro('centro')">
+                <i class="fas fa-check"></i>
+                Aplicar
+            </button>
         </div>
     </div>
 </div>

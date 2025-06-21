@@ -1,37 +1,89 @@
 <!-- Modal Ordenar -->
-<div class="modal fade" id="filtroOrdenarModal" tabindex="-1" aria-labelledby="filtroOrdenarModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filtroOrdenarModalLabel">Ordenar por</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="custom-modal" id="filtroOrdenarModal">
+    <div class="custom-modal-overlay" onclick="closeCustomModal('filtroOrdenarModal')"></div>
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">
+            <div class="custom-modal-title">
+                <i class="fas fa-sort"></i>
+                <span>Ordenar por</span>
             </div>
-            <div class="modal-body">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarRelevancia" value="relevancia">
-                    <label class="form-check-label" for="ordenarRelevancia">Relevância</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarDataProxima" value="data_proxima">
-                    <label class="form-check-label" for="ordenarDataProxima">Data (mais próxima)</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarDataDistante" value="data_distante">
-                    <label class="form-check-label" for="ordenarDataDistante">Data (mais distante)</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarPrecoMenor" value="preco_menor">
-                    <label class="form-check-label" for="ordenarPrecoMenor">Preço (menor)</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ordenar" id="ordenarPrecoMaior" value="preco_maior">
-                    <label class="form-check-label" for="ordenarPrecoMaior">Preço (maior)</label>
-                </div>
+            <button type="button" class="custom-modal-close" onclick="closeCustomModal('filtroOrdenarModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="custom-modal-body">
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="ordenar" id="ordenarRelevancia" value="relevancia">
+                <label class="custom-radio-label" for="ordenarRelevancia">
+                    <div class="radio-icon">
+                        <i class="fas fa-sort-alpha-down"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Ordem alfabética</span>
+                        <span class="radio-subtitle">A-Z por título do evento</span>
+                    </div>
+                </label>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn-apply" onclick="aplicarFiltro('ordenar')">Aplicar</button>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="ordenar" id="ordenarDataProxima" value="data_proxima">
+                <label class="custom-radio-label" for="ordenarDataProxima">
+                    <div class="radio-icon">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Data (mais próxima)</span>
+                        <span class="radio-subtitle">Eventos próximos primeiro</span>
+                    </div>
+                </label>
             </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="ordenar" id="ordenarDataDistante" value="data_distante">
+                <label class="custom-radio-label" for="ordenarDataDistante">
+                    <div class="radio-icon">
+                        <i class="fas fa-calendar-minus"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Data (mais distante)</span>
+                        <span class="radio-subtitle">Eventos futuros primeiro</span>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="ordenar" id="ordenarPrecoMenor" value="preco_menor">
+                <label class="custom-radio-label" for="ordenarPrecoMenor">
+                    <div class="radio-icon">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Preço (menor)</span>
+                        <span class="radio-subtitle">Mais baratos primeiro</span>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="ordenar" id="ordenarPrecoMaior" value="preco_maior">
+                <label class="custom-radio-label" for="ordenarPrecoMaior">
+                    <div class="radio-icon">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Preço (maior)</span>
+                        <span class="radio-subtitle">Mais caros primeiro</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+        
+        <div class="custom-modal-footer">
+            <button type="button" class="custom-btn custom-btn-primary" onclick="aplicarFiltro('ordenar')">
+                <i class="fas fa-check"></i>
+                Aplicar
+            </button>
         </div>
     </div>
 </div>

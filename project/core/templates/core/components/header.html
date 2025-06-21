@@ -34,13 +34,36 @@
 <script>
 function toggleDropdown(event) {
   event.preventDefault();
+  event.stopPropagation();
   var dropdown = document.getElementById('userDropdown');
-  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-  document.addEventListener('click', function handler(e) {
-    if (!event.target.closest('.dropdown')) {
-      dropdown.style.display = 'none';
-      document.removeEventListener('click', handler);
-    }
-  });
+  var isVisible = dropdown.style.display === 'block';
+  
+  // Close all dropdowns first
+  dropdown.style.display = 'none';
+  
+  // If it was hidden, show it
+  if (!isVisible) {
+    dropdown.style.display = 'block';
+    
+    // Add click listener to close dropdown when clicking outside
+    setTimeout(function() {
+      document.addEventListener('click', function closeDropdown(e) {
+        if (!e.target.closest('.dropdown')) {
+          dropdown.style.display = 'none';
+          document.removeEventListener('click', closeDropdown);
+        }
+      });
+    }, 0);
+  }
 }
+
+// Close dropdown when clicking outside (global handler)
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.dropdown')) {
+    var dropdown = document.getElementById('userDropdown');
+    if (dropdown) {
+      dropdown.style.display = 'none';
+    }
+  }
+});
 </script>

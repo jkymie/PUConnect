@@ -1,29 +1,63 @@
 <!-- Modal Preço -->
-<div class="modal fade" id="filtroPrecoModal" tabindex="-1" aria-labelledby="filtroPrecoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filtroPrecoModalLabel">Filtrar por Preço</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="custom-modal" id="filtroPrecoModal">
+    <div class="custom-modal-overlay" onclick="closeCustomModal('filtroPrecoModal')"></div>
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">
+            <div class="custom-modal-title">
+                <i class="fas fa-tag"></i>
+                <span>Filtrar por Preço</span>
             </div>
-            <div class="modal-body">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="preco" id="precoTodos" value="">
-                    <label class="form-check-label" for="precoTodos">Todos</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="preco" id="precoGratuito" value="gratuito">
-                    <label class="form-check-label" for="precoGratuito">Gratuito</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="preco" id="precoPago" value="pago">
-                    <label class="form-check-label" for="precoPago">Pago</label>
-                </div>
+            <button type="button" class="custom-modal-close" onclick="closeCustomModal('filtroPrecoModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="custom-modal-body">
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="preco" id="precoTodos" value="">
+                <label class="custom-radio-label" for="precoTodos">
+                    <div class="radio-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Todos</span>
+                        <span class="radio-subtitle">Mostrar todos os preços</span>
+                    </div>
+                </label>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn-apply" onclick="aplicarFiltro('preco')">Aplicar</button>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="preco" id="precoGratuito" value="gratuito">
+                <label class="custom-radio-label" for="precoGratuito">
+                    <div class="radio-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Gratuito</span>
+                        <span class="radio-subtitle">Eventos sem custo</span>
+                    </div>
+                </label>
             </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="preco" id="precoPago" value="pago">
+                <label class="custom-radio-label" for="precoPago">
+                    <div class="radio-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Pago</span>
+                        <span class="radio-subtitle">Eventos com custo</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+        
+        <div class="custom-modal-footer">
+            <button type="button" class="custom-btn custom-btn-primary" onclick="aplicarFiltro('preco')">
+                <i class="fas fa-check"></i>
+                Aplicar
+            </button>
         </div>
     </div>
 </div>
