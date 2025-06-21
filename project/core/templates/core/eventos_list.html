@@ -29,6 +29,9 @@
                     <button class="filter-btn" onclick="openCustomModal('filtroCentroModal')">
                         <i class="fas fa-building"></i> Centro
                     </button>
+                    <button class="filter-btn" onclick="openCustomModal('filtroLocalModal')">
+                        <i class="fas fa-map-marker-alt"></i> Local
+                    </button>
                     <div class="checkbox-wrapper">
                         <input type="checkbox" class="custom-checkbox" id="horasComplementares" name="horas" value="true" {% if current_horas == 'true' %}checked{% endif %}>
                         <label class="checkbox-label" for="horasComplementares">
@@ -110,6 +113,7 @@
 {% include 'core/components/filtro_preco_modal.html' %}
 {% include 'core/components/filtro_tipo_modal.html' %}
 {% include 'core/components/filtro_centro_modal.html' %}
+{% include 'core/components/filtro_local_modal.html' %}
 {% include 'core/components/filtro_ordenar_modal.html' %}
 
 <script>
@@ -219,6 +223,13 @@ function aplicarFiltro(tipo) {
             const centroSelecionado = document.querySelector('input[name="centro"]:checked');
             if (centroSelecionado) {
                 params.set('centro', centroSelecionado.value);
+            }
+            break;
+
+        case 'local':
+            const localSelecionado = document.querySelector('input[name="local"]:checked');
+            if (localSelecionado) {
+                params.set('local', localSelecionado.value);
             }
             break;
 

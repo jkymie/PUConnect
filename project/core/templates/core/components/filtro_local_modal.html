@@ -1,0 +1,63 @@
+<!-- Modal Local -->
+<div class="custom-modal" id="filtroLocalModal">
+    <div class="custom-modal-overlay" onclick="closeCustomModal('filtroLocalModal')"></div>
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">
+            <div class="custom-modal-title">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Filtrar por Local</span>
+            </div>
+            <button type="button" class="custom-modal-close" onclick="closeCustomModal('filtroLocalModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="custom-modal-body">
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="local" id="localTodos" value="" {% if not current_local %}checked{% endif %}>
+                <label class="custom-radio-label" for="localTodos">
+                    <div class="radio-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Todos</span>
+                        <span class="radio-subtitle">Mostrar todos os locais</span>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="local" id="localPUC" value="puc" {% if current_local == 'puc' %}checked{% endif %}>
+                <label class="custom-radio-label" for="localPUC">
+                    <div class="radio-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Na PUC</span>
+                        <span class="radio-subtitle">Eventos dentro da universidade</span>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input class="custom-radio" type="radio" name="local" id="localFora" value="fora" {% if current_local == 'fora' %}checked{% endif %}>
+                <label class="custom-radio-label" for="localFora">
+                    <div class="radio-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="radio-content">
+                        <span class="radio-title">Fora da PUC</span>
+                        <span class="radio-subtitle">Eventos externos</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+        
+        <div class="custom-modal-footer">
+            <button type="button" class="custom-btn custom-btn-primary" onclick="aplicarFiltro('local')">
+                <i class="fas fa-check"></i>
+                Aplicar
+            </button>
+        </div>
+    </div>
+</div> 

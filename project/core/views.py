@@ -334,6 +334,11 @@ def eventos_list(request):
         if centro:
             eventos = eventos.filter(centro=centro)
         
+        # Local filter
+        local = request.GET.get('local')
+        if local:
+            eventos = eventos.filter(lugar=local)
+        
         # Horas complementares filter
         if request.GET.get('horas') == 'true':
             eventos = eventos.filter(horas_complementares=True)
@@ -368,6 +373,7 @@ def eventos_list(request):
             'current_preco': preco,
             'current_tipo_evento': tipo_evento,
             'current_centro': centro,
+            'current_local': local,
             'current_horas': request.GET.get('horas'),
             'current_ordenar': ordenar
         }
