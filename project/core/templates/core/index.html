@@ -85,8 +85,8 @@
     <form method="post" action="/login/">
       {% csrf_token %}
       <div class="form-group">
-        <label for="login-username">Email ou nome de usuário</label>
-        <input type="text" id="login-username" name="username" class="form-control" placeholder="Digite seu e-mail ou nome de usuário" required>
+        <label for="login-username">E-mail ou matrícula</label>
+        <input type="text" id="login-username" name="username" class="form-control" placeholder="Digite seu e-mail ou matrícula" required>
       </div>
       <div class="form-group">
         <label for="login-password">Senha</label>
@@ -148,8 +148,8 @@
     <form method="post" action="/password-reset/">
       {% csrf_token %}
       <div class="form-group">
-        <label for="forgot-email">Email ou nome de usuário</label>
-        <input type="text" id="forgot-email" name="email" class="form-control" placeholder="Digite seu e-mail ou nome de usuário" required>
+        <label for="forgot-email">E-mail ou matrícula</label>
+        <input type="text" id="forgot-email" name="email" class="form-control" placeholder="Digite seu e-mail ou matrícula" required>
       </div>
       <div class="form-actions">
         <button type="submit" class="btn btn-primary">Enviar</button>

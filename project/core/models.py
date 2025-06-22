@@ -146,6 +146,10 @@ class Evento(models.Model):
         """True se ainda há vagas para o evento."""
         return self.vagas_disponiveis() > 0
     
+    def esta_lotado(self):
+        """True se o evento está lotado mas ainda vai acontecer."""
+        return not self.tem_vagas_disponiveis() and self.get_proximidade_temporal() != 'encerrado'
+    
     def esta_inscrito(self, usuario):
         """Verifica se o usuário já está inscrito neste evento."""
         return self.inscricoes.filter(usuario=usuario).exists()

@@ -33,17 +33,30 @@
                     <button class="filter-btn" onclick="openCustomModal('filtroLocalModal')">
                         <i class="fas fa-map-marker-alt"></i> Local
                     </button>
-                    <div class="checkbox-wrapper">
-                        <input type="checkbox" class="custom-checkbox" id="horasComplementares" name="horas" value="true" {% if current_horas == 'true' %}checked{% endif %}>
-                        <label class="checkbox-label" for="horasComplementares">
-                            Horas Complementares
-                        </label>
-                    </div>
                 </div>
                 <div class="filter-right">
                     <button class="filter-btn" onclick="openCustomModal('filtroOrdenarModal')">
                         <i class="fas fa-sort"></i> Ordenar
                     </button>
+                    <button class="filter-btn btn-limpar" onclick="limparFiltros()">
+                        <i class="fas fa-times"></i> Limpar
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Checkboxes adicionais -->
+            <div class="filter-checkboxes">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" class="custom-checkbox" id="horasComplementares" name="horas" value="true" {% if current_horas == 'true' %}checked{% endif %}>
+                    <label class="checkbox-label" for="horasComplementares">
+                        Horas Complementares
+                    </label>
+                </div>
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" class="custom-checkbox" id="eventosEncerrados" name="encerrados" value="true" {% if current_encerrados == 'true' %}checked{% endif %}>
+                    <label class="checkbox-label" for="eventosEncerrados">
+                        Ver eventos encerrados
+                    </label>
                 </div>
             </div>
             
@@ -123,6 +136,15 @@
                     </div>
                 {% endif %}
                 
+                {% if current_encerrados == 'true' %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Ver eventos encerrados</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('encerrados')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
                 {% if current_ordenar %}
                     <div class="filter-tag">
                         <span class="filter-tag-text">Ordenar: {% if current_ordenar == 'relevancia' %}Alfabética{% elif current_ordenar == 'data_proxima' %}Data (próxima){% elif current_ordenar == 'data_distante' %}Data (distante){% elif current_ordenar == 'preco_menor' %}Preço (menor){% elif current_ordenar == 'preco_maior' %}Preço (maior){% endif %}</span>
@@ -180,6 +202,11 @@
                                             </span>
                                         {% endif %}
                                     {% endif %}
+                                    
+                                    {% if evento.esta_lotado %}
+                                        <span class="evento-tag evento-tag-lotado">Lotado</span>
+                                    {% endif %}
+                                    
                                     <span class="evento-tag">{{ evento.get_tipo_evento_display }}</span>
                                     <span class="evento-tag">
                                         {% if evento.preco == 'gratuito' %}
@@ -208,9 +235,15 @@
                                     {% else %}
                                         <form method="post" action="{% url 'inscrever_evento' evento.pk %}" style="display: inline;">
                                             {% csrf_token %}
-                                            <button type="submit" class="evento-btn btn-primary" {% if not evento.tem_vagas_disponiveis %}disabled{% endif %}>
-                                                <i class="fas fa-check"></i> Seguir
-                                            </button>
+                                            {% if evento.tem_vagas_disponiveis %}
+                                                <button type="submit" class="evento-btn btn-primary">
+                                                    <i class="fas fa-check"></i> Seguir
+                                                </button>
+                                            {% else %}
+                                                <button type="submit" class="evento-btn btn-primary" disabled>
+                                                    <i class="fas fa-ban"></i> Sem vagas
+                                                </button>
+                                            {% endif %}
                                         </form>
                                     {% endif %}
                                 {% endif %}
@@ -282,6 +315,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (horasComplementares) {
         horasComplementares.addEventListener('change', function() {
             aplicarFiltro('horas');
+        });
+    }
+
+    // Handle eventos encerrados
+    const eventosEncerrados = document.getElementById('eventosEncerrados');
+    if (eventosEncerrados) {
+        eventosEncerrados.addEventListener('change', function() {
+            aplicarFiltro('encerrados');
         });
     }
 });
@@ -371,6 +412,17 @@ function aplicarFiltro(tipo) {
                 }
             }
             break;
+
+        case 'encerrados':
+            const encerradosCheckbox = document.getElementById('eventosEncerrados');
+            if (encerradosCheckbox) {
+                if (encerradosCheckbox.checked) {
+                    params.set('encerrados', 'true');
+                } else {
+                    params.delete('encerrados');
+                }
+            }
+            break;
     }
 
     // Remove empty parameters
@@ -424,11 +476,19 @@ function removeFilter(filterType, valueToRemove = null) {
         case 'ordenar':
             params.delete('ordenar');
             break;
+        case 'encerrados':
+            params.delete('encerrados');
+            break;
     }
 
     // Update URL and reload page
     url.search = params.toString();
     window.location.href = url.toString();
+}
+
+function limparFiltros() {
+    // Redirect to the base eventos list URL without any parameters
+    window.location.href = "{% url 'eventos_list' %}";
 }
 </script>
 {% endblock %} 

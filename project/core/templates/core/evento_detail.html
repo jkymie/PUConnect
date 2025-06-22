@@ -27,6 +27,10 @@
                             {% endif %}
                         </span>
                     {% endif %}
+                    
+                    {% if evento.esta_lotado %}
+                        <span class="evento-tag evento-tag-lotado">Lotado</span>
+                    {% endif %}
                 </div>
             {% endif %}
             
@@ -87,9 +91,15 @@
                                     {% else %}
                                         <form method="post" action="{% url 'inscrever_evento' evento.pk %}">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-primary w-100" {% if not vagas_disponiveis %}disabled{% endif %}>
-                                                {% if vagas_disponiveis %}Inscrever-se{% else %}Vagas Esgotadas{% endif %}
-                                            </button>
+                                            {% if vagas_disponiveis %}
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    Inscrever-se
+                                                </button>
+                                            {% else %}
+                                                <button type="submit" class="btn btn-primary w-100" disabled>
+                                                    <i class="fas fa-ban"></i> Sem vagas
+                                                </button>
+                                            {% endif %}
                                         </form>
                                     {% endif %}
                                 {% endif %}

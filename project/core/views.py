@@ -17,6 +17,7 @@ import random
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from django.urls import reverse
+from datetime import date
 
 User = get_user_model()
 
@@ -60,7 +61,12 @@ def login(request):
 def logout(request):
     auth_logout(request)
     messages.success(request, 'Logout realizado com sucesso!')
-    return redirect('index')
+    # Usar um redirect temporário para garantir que as mensagens sejam exibidas
+    response = redirect('index')
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
 def is_organizador(user):
     return user.is_authenticated and user.tipo_usuario == 'organizador'
@@ -357,6 +363,12 @@ def eventos_list(request):
         if request.GET.get('horas') == 'true':
             eventos = eventos.filter(horas_complementares=True)
         
+        # Eventos encerrados filter
+        if request.GET.get('encerrados') != 'true':
+            # Se não estiver marcado, oculta eventos encerrados
+            hoje = date.today()
+            eventos = eventos.filter(data_hora__date__gte=hoje)
+        
         # Order by
         ordenar = request.GET.get('ordenar')
         if ordenar:
@@ -390,6 +402,7 @@ def eventos_list(request):
             'current_centros': centros,
             'current_local': local,
             'current_horas': request.GET.get('horas'),
+            'current_encerrados': request.GET.get('encerrados'),
             'current_ordenar': ordenar
         }
         

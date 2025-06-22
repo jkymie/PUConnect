@@ -61,6 +61,11 @@ class UserLoginForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         self.fields['username'].label = _('Matrícula')
         self.fields['username'].widget = forms.TextInput(attrs={'class': 'form-control'})
+        # Customizar mensagem de erro
+        self.error_messages = {
+            'invalid_login': _('Por favor, insira uma matrícula/e-mail e senha válidos. Note que ambos os campos podem ser sensíveis a maiúsculas e minúsculas.'),
+            'inactive': _('Esta conta está inativa.'),
+        }
 
 class EventoForm(forms.ModelForm):
     titulo = forms.CharField(

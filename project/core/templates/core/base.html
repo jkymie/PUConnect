@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>{% block title %}PUConnect{% endblock %}</title>
 
 
@@ -25,14 +28,30 @@
             background: #DAE6FB;
             min-height: 100vh;
         }
+        
+        /* Container fixo para alertas */
+        .alerts-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 100%;
+            max-width: 600px;
+            pointer-events: none;
+        }
+        
+        .alerts-container .alert {
+            pointer-events: auto;
+            margin: 0.5rem auto;
+            animation: messageSlideIn 0.3s ease-out;
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Header dinâmico -->
-    {% include 'core/components/header.html' %}
-
-    <div class="all">
+    <!-- Container fixo para alertas -->
+    <div class="alerts-container">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}">
@@ -41,7 +60,12 @@
                 </div>
             {% endfor %}
         {% endif %}
+    </div>
 
+    <!-- Header dinâmico -->
+    {% include 'core/components/header.html' %}
+
+    <div class="all">
         {% block content %}{% endblock %}
     </div>
 

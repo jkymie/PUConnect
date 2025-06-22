@@ -8,7 +8,110 @@ function carregarComponente(id, arquivo) {
       });
   }
 
+// Função para gerenciar alertas
+function initAlerts() {
+  const alerts = document.querySelectorAll('.alert');
+  
+  alerts.forEach(alert => {
+    // Auto-remove após 5 segundos
+    setTimeout(() => {
+      if (alert && alert.parentElement) {
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+          if (alert.parentElement) {
+            alert.parentElement.removeChild(alert);
+          }
+        }, 300);
+      }
+    }, 5000);
+    
+    // Melhorar o botão de fechar
+    const closeBtn = alert.querySelector('.alert-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+          if (alert.parentElement) {
+            alert.parentElement.removeChild(alert);
+          }
+        }, 300);
+      });
+    }
+  });
+}
+
+// Função para verificar se há mensagens e garantir que sejam exibidas
+function checkForMessages() {
+  const alertsContainer = document.querySelector('.alerts-container');
+  if (alertsContainer && alertsContainer.children.length > 0) {
+    // Se há mensagens, garantir que elas sejam visíveis
+    alertsContainer.style.display = 'block';
+    initAlerts();
+  }
+}
+
+// Função para forçar recarregamento sem cache
+function forceReload() {
+  window.location.reload(true);
+}
+
+// Função para criar alertas dinamicamente
+function createAlert(message, type = 'success') {
+  const alertsContainer = document.querySelector('.alerts-container');
+  if (!alertsContainer) return;
+  
+  const alert = document.createElement('div');
+  alert.className = `alert alert-${type}`;
+  alert.innerHTML = `
+    ${message}
+    <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">&times;</button>
+  `;
+  
+  alertsContainer.appendChild(alert);
+  
+  // Inicializar o alerta
+  setTimeout(() => {
+    initAlerts();
+  }, 100);
+}
+
+// Função para verificar se há mensagens na URL (para casos de redirect)
+function checkUrlMessages() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const message = urlParams.get('message');
+  const messageType = urlParams.get('type') || 'success';
+  
+  if (message) {
+    createAlert(decodeURIComponent(message), messageType);
+    // Limpar a URL
+    const newUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, newUrl);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+  // Inicializar alertas
+  initAlerts();
+  
+  // Verificar se há mensagens e garantir que sejam exibidas
+  checkForMessages();
+  
+  // Verificar se há mensagens na URL
+  checkUrlMessages();
+  
+  // Verificar se a página foi carregada após um logout (URL pode conter parâmetros)
+  if (window.location.search.includes('logout') || document.referrer.includes('logout')) {
+    // Forçar recarregamento para garantir que as mensagens sejam exibidas
+    setTimeout(() => {
+      if (document.querySelector('.alerts-container .alert')) {
+        // Se há alertas, garantir que sejam visíveis
+        document.querySelector('.alerts-container').style.display = 'block';
+      }
+    }, 100);
+  }
+  
   const input = document.getElementById('searchInput');
   const button = document.getElementById('searchButton');
 

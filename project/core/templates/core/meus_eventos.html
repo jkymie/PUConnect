@@ -60,6 +60,11 @@
                                             </span>
                                         {% endif %}
                                     {% endif %}
+                                    
+                                    {% if evento.esta_lotado %}
+                                        <span class="evento-tag evento-tag-lotado">Lotado</span>
+                                    {% endif %}
+                                    
                                     <span class="evento-tag">{{ evento.get_tipo_evento_display }}</span>
                                     <span class="evento-tag">
                                         {% if evento.preco == 'gratuito' %}
