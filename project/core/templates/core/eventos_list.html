@@ -178,7 +178,7 @@
                                     <i class="fas fa-building"></i>
                                     {% for centro in evento.centros.all %}
                                         <span class="badge bg-primary me-1">
-                                            <strong>{{ centro.codigo|upper }}</strong> | {{ centro.nome }}
+                                            <strong>{{ centro.codigo|upper }}</strong>
                                         </span>
                                     {% empty %}
                                         <span class="text-muted">Não especificado</span>
