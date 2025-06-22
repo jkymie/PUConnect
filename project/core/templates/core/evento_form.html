@@ -1,57 +1,100 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load core_tags %}
 
 {% block content %}
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
     .form-container {
+        min-height: 100vh;
+        /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+        background: #dae6fb;
         padding: 2rem 0;
-        width: 100%;
+        font-family: 'Inter', sans-serif;
     }
     
     .form-wrapper {
-        max-width: 1200px;
+        max-width: 1000px;
         margin: 0 auto;
+        padding: 0 1rem;
     }
     
     .form-card {
-        width: 1200px;
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
     }
     
     .form-header {
-        background: #155de2;
+        background: linear-gradient(135deg, #155de2 0%, #1e40af 100%);
         color: white;
-        padding: 1rem;
-        border-radius: 8px 8px 0 0;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
     }
     
     .form-header h4 {
         margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .form-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+        font-weight: 300;
+        position: relative;
+        z-index: 1;
     }
     
     .form-body {
-        padding: 2rem;
+        padding: 3rem;
+    }
+    
+    .form-section {
+        margin-bottom: 2.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+        position: relative;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background: linear-gradient(135deg, #155de2 0%, #1e40af 100%);
     }
     
     .form-row {
-        display: flex;
-        flex-wrap: wrap;
-        margin: -15px;
-    }
-    
-    .form-col {
-        flex: 0 0 50%;
-        padding: 0 1rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .form-col-4 {
-        flex: 0 0 33.333%;
-        padding: 0 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
         margin-bottom: 1.5rem;
     }
     
@@ -63,128 +106,367 @@
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 500;
+        color: #374151;
+        font-size: 0.95rem;
     }
     
     .form-control {
         width: 100%;
-        padding: 0.5rem;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f9fafb;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #155de2;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(21, 93, 226, 0.1);
     }
     
     .form-control::placeholder {
-        font-weight: normal;
-        color: #6c757d;
-        font-family: 'Inter', sans-serif;
+        color: #9ca3af;
+        font-weight: 400;
     }
     
     textarea.form-control {
-        min-height: 100px;
+        min-height: 120px;
         resize: vertical;
+        line-height: 1.6;
+    }
+    
+    select.form-control {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+        appearance: none;
+    }
+    
+    .centros-section {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 2px solid #e2e8f0;
+    }
+    
+    .centros-checkboxes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .centro-checkbox {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .centro-checkbox:hover {
+        border-color: #155de2;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .centro-checkbox input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    .centro-checkbox label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        font-weight: 500;
+        color: #374151;
+        margin: 0;
+    }
+    
+    .centro-sigla {
+        font-weight: 700;
+        color: #374151;
+        margin-right: 0.5rem;
+    }
+    
+    .centro-divider {
+        color: #d1d5db;
+        margin: 0 0.5rem;
+        font-weight: 300;
+    }
+    
+    .centro-nome {
+        font-weight: 400;
+    }
+    
+    .centro-checkbox input[type="checkbox"]:checked + label .centro-sigla {
+        color: #155de2;
+    }
+    
+    .centro-checkbox label::before {
+        content: '';
+        width: 20px;
+        height: 20px;
+        border: 2px solid #d1d5db;
+        border-radius: 6px;
+        background: white;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+    
+    .centro-checkbox input[type="checkbox"]:checked + label::before {
+        background: linear-gradient(135deg, #155de2 0%, #1e40af 100%);
+        border-color: #155de2;
+    }
+    
+    .centro-checkbox input[type="checkbox"]:checked + label::after {
+        content: '✓';
+        position: absolute;
+        left: 1.5rem;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    
+    .centro-checkbox input[type="checkbox"]:checked + label {
+        color: #155de2;
+        font-weight: 600;
+    }
+    
+    .centro-checkbox input[type="checkbox"]:checked {
+        background: linear-gradient(135deg, #155de2 0%, #1e40af 100%);
+        border-color: #155de2;
+    }
+    
+    .checkbox-group {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1rem;
+        border: 2px solid #e2e8f0;
+        margin-top: 1rem;
     }
     
     .form-check {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-top: 1rem;
-        position: relative;
+        gap: 0.75rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .form-check:hover {
+        background: #e2e8f0;
     }
     
     .form-check input[type="checkbox"] {
-        position: absolute;
-        opacity: 0;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #d1d5db;
+        border-radius: 6px;
+        background: white;
         cursor: pointer;
-        height: 0;
-        width: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .form-check input[type="checkbox"]:checked {
+        background: linear-gradient(135deg, #155de2 0%, #1e40af 100%);
+        border-color: #155de2;
     }
     
     .form-check label {
         margin: 0;
         cursor: pointer;
-        font-size: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .form-check label::before {
-        content: '';
-        display: inline-block;
-        width: 18px;
-        height: 18px;
-        border: 2px solid #0d6efd;
-        border-radius: 4px;
-        background-color: white;
-        transition: all 0.2s ease;
-    }
-    
-    .form-check input[type="checkbox"]:checked + label::before {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-    }
-    
-    .form-check input[type="checkbox"]:checked + label::after {
-        content: '✓';
-        position: absolute;
-        left: 4px;
-        color: white;
-        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
     }
     
     .file-input-group {
+        position: relative;
         display: flex;
         align-items: center;
         gap: 1rem;
     }
     
+    .file-input-wrapper {
+        position: relative;
+        flex: 1;
+    }
+    
+    .file-input-wrapper input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .file-input-display {
+        padding: 0.75rem 1rem;
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        background: #f9fafb;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .file-input-display:hover {
+        border-color: #155de2;
+        background: #f0f4ff;
+    }
+    
+    .file-input-display i {
+        font-size: 1.5rem;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
     .file-clear-btn {
-        padding: 0.25rem 0.5rem;
-        background: #dc3545;
+        padding: 0.5rem 1rem;
+        background: #ef4444;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         cursor: pointer;
         font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
         display: none;
     }
     
     .file-clear-btn:hover {
-        background: #bb2d3b;
+        background: #dc2626;
+        transform: translateY(-1px);
     }
     
     .file-name {
         font-size: 0.875rem;
-        color: #6c757d;
-        margin-top: 0.25rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+        font-style: italic;
     }
     
     .form-actions {
         display: flex;
         justify-content: space-between;
-        margin-top: 2rem;
+        align-items: center;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e5e7eb;
     }
     
     .btn {
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
         border: none;
         cursor: pointer;
-        font-weight: 500;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
     
     .btn-primary {
-        background: #EFBC06;
-        color: #000;
+        background: linear-gradient(135deg, #155de2 0%, #1e40af 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(21, 93, 226, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(21, 93, 226, 0.4);
     }
     
     .btn-secondary {
-        background: #0d6efd;
+        background: #6b7280;
         color: white;
     }
     
-    .btn:hover {
-        opacity: 0.9;
+    .btn-secondary:hover {
+        background: #4b5563;
+        transform: translateY(-2px);
+    }
+    
+    .invalid-feedback {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+    
+    .form-text {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .price-info-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .price-info-group .form-group {
+        flex: 1;
+    }
+    
+    .price-info-group .form-control {
+        position: relative;
+    }
+    
+    .price-info-group .form-control::before {
+        content: 'R$';
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-weight: 500;
+    }
+    
+    .price-info-group .form-control {
+        padding-left: 2.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .form-body {
+            padding: 2rem 1.5rem;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .centros-checkboxes {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
 
@@ -193,64 +475,77 @@
         <div class="form-card">
             <div class="form-header">
                 <h4>{{ action }} Evento</h4>
+                <p>Preencha as informações abaixo para {{ action|lower }} seu evento</p>
             </div>
             <div class="form-body">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     
-                    <div class="form-row">
-                        <div class="form-col">
+                    <!-- Seção: Informações Básicas -->
+                    <div class="form-section">
+                        <h3 class="section-title">Informações Básicas</h3>
+                        
+                        <div class="form-row">
                             <div class="form-group">
-                                <label for="{{ form.titulo.id_for_label }}" class="form-label">Título</label>
+                                <label for="{{ form.titulo.id_for_label }}" class="form-label">
+                                    <i class="fas fa-heading"></i> Título do Evento
+                                </label>
                                 {{ form.titulo }}
                                 {% if form.titulo.errors %}
-                                    <div class="invalid-feedback d-block">
+                                    <div class="invalid-feedback">
                                         {{ form.titulo.errors }}
                                     </div>
                                 {% endif %}
                             </div>
-                        </div>
-                        <div class="form-col">
                             <div class="form-group">
-                                <label for="{{ form.data_hora.id_for_label }}" class="form-label">Data e Hora</label>
+                                <label for="{{ form.data_hora.id_for_label }}" class="form-label">
+                                    <i class="fas fa-calendar-alt"></i> Data e Hora
+                                </label>
                                 {{ form.data_hora }}
                                 {% if form.data_hora.errors %}
-                                    <div class="invalid-feedback d-block">
+                                    <div class="invalid-feedback">
                                         {{ form.data_hora.errors }}
                                     </div>
                                 {% endif %}
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.descricao.id_for_label }}" class="form-label">
+                                <i class="fas fa-align-left"></i> Descrição
+                            </label>
+                            {{ form.descricao }}
+                            {% if form.descricao.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.descricao.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="{{ form.descricao.id_for_label }}" class="form-label">Descrição</label>
-                        {{ form.descricao }}
-                        {% if form.descricao.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.descricao.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-col">
+                    <!-- Seção: Local e Capacidade -->
+                    <div class="form-section">
+                        <h3 class="section-title">Local e Capacidade</h3>
+                        
+                        <div class="form-row">
                             <div class="form-group">
-                                <label for="{{ form.local.id_for_label }}" class="form-label">Informação do Local</label>
+                                <label for="{{ form.local.id_for_label }}" class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i> Local do Evento
+                                </label>
                                 {{ form.local }}
                                 {% if form.local.errors %}
-                                    <div class="invalid-feedback d-block">
+                                    <div class="invalid-feedback">
                                         {{ form.local.errors }}
                                     </div>
                                 {% endif %}
                             </div>
-                        </div>
-                        <div class="form-col">
                             <div class="form-group">
-                                <label for="{{ form.vagas.id_for_label }}" class="form-label">Vagas</label>
+                                <label for="{{ form.vagas.id_for_label }}" class="form-label">
+                                    <i class="fas fa-users"></i> Número de Vagas
+                                </label>
                                 {{ form.vagas }}
                                 {% if form.vagas.errors %}
-                                    <div class="invalid-feedback d-block">
+                                    <div class="invalid-feedback">
                                         {{ form.vagas.errors }}
                                     </div>
                                 {% endif %}
@@ -258,35 +553,57 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-col-4">
+                    <!-- Seção: Configurações do Evento -->
+                    <div class="form-section">
+                        <h3 class="section-title">Configurações do Evento</h3>
+                        
+                        <div class="form-row">
                             <div class="form-group">
-                                <label for="{{ form.preco.id_for_label }}" class="form-label">Preço</label>
+                                <label for="{{ form.preco.id_for_label }}" class="form-label">
+                                    <i class="fas fa-tag"></i> Tipo de Preço
+                                </label>
                                 {{ form.preco }}
                                 {% if form.preco.errors %}
-                                    <div class="invalid-feedback d-block">
+                                    <div class="invalid-feedback">
                                         {{ form.preco.errors }}
                                     </div>
                                 {% endif %}
                             </div>
-                        </div>
-                        <div class="form-col-4">
-                            <div class="form-group">
-                                <label for="{{ form.lugar.id_for_label }}" class="form-label">Lugar</label>
-                                {{ form.lugar }}
-                                {% if form.lugar.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.lugar.errors }}
+                            <div class="form-group" id="precoInfoWrapper">
+                                <label for="{{ form.preco_info.id_for_label }}" class="form-label">
+                                    <i class="fas fa-dollar-sign"></i> Valor Inicial
+                                </label>
+                                {{ form.preco_info }}
+                                {% if form.preco_info.help_text %}
+                                    <div class="form-text">{{ form.preco_info.help_text }}</div>
+                                {% endif %}
+                                {% if form.preco_info.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.preco_info.errors }}
                                     </div>
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="form-col-4">
+
+                        <div class="form-row">
                             <div class="form-group">
-                                <label for="{{ form.tipo_evento.id_for_label }}" class="form-label">Tipo de Evento</label>
+                                <label for="{{ form.lugar.id_for_label }}" class="form-label">
+                                    <i class="fas fa-building"></i> Localização
+                                </label>
+                                {{ form.lugar }}
+                                {% if form.lugar.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.lugar.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.tipo_evento.id_for_label }}" class="form-label">
+                                    <i class="fas fa-video"></i> Tipo de Evento
+                                </label>
                                 {{ form.tipo_evento }}
                                 {% if form.tipo_evento.errors %}
-                                    <div class="invalid-feedback d-block">
+                                    <div class="invalid-feedback">
                                         {{ form.tipo_evento.errors }}
                                     </div>
                                 {% endif %}
@@ -294,47 +611,83 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="{{ form.centro.id_for_label }}" class="form-label">Centro</label>
-                                {{ form.centro }}
-                                {% if form.centro.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.centro.errors }}
+                    <!-- Seção: Centros -->
+                    <div class="form-section">
+                        <h3 class="section-title">Centros Relacionados</h3>
+                        <div class="centros-section">
+                            <div class="centros-checkboxes">
+                                {% for choice in form.centros %}
+                                    <div class="centro-checkbox">
+                                        {{ choice.tag }}
+                                        <label for="{{ choice.id_for_label }}">
+                                            <i class="fas fa-university"></i>
+                                            {% with parts=choice.choice_label|split:" - " %}
+                                                <span class="centro-sigla">{{ parts.0|upper }}</span>
+                                                <span class="centro-divider">|</span>
+                                                <span class="centro-nome">{{ parts.1 }}</span>
+                                            {% endwith %}
+                                        </label>
                                     </div>
-                                {% endif %}
+                                {% endfor %}
                             </div>
-                        </div>
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="{{ form.imagem.id_for_label }}" class="form-label">Imagem</label>
-                                <div class="file-input-group">
-                                    {{ form.imagem }}
-                                    <button type="button" class="file-clear-btn" onclick="clearFileInput()">Limpar</button>
+                            {% if form.centros.help_text %}
+                                <div class="form-text">{{ form.centros.help_text }}</div>
+                            {% endif %}
+                            {% if form.centros.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.centros.errors }}
                                 </div>
-                                <div class="file-name" id="fileName"></div>
-                            </div>
+                            {% endif %}
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <div class="form-check">
-                            {{ form.horas_complementares }}
-                            <label for="{{ form.horas_complementares.id_for_label }}">
-                                Oferece horas complementares
-                            </label>
-                        </div>
-                        {% if form.horas_complementares.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.horas_complementares.errors }}
+                    <!-- Seção: Recursos Adicionais -->
+                    <div class="form-section">
+                        <h3 class="section-title">Recursos Adicionais</h3>
+                        
+                        <div class="checkbox-group">
+                            <div class="form-check">
+                                {{ form.horas_complementares }}
+                                <label for="{{ form.horas_complementares.id_for_label }}">
+                                    <i class="fas fa-clock"></i>
+                                    Oferece horas complementares
+                                </label>
                             </div>
-                        {% endif %}
+                            {% if form.horas_complementares.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.horas_complementares.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.imagem.id_for_label }}" class="form-label">
+                                <i class="fas fa-image"></i> Imagem do Evento
+                            </label>
+                            <div class="file-input-group">
+                                <div class="file-input-wrapper">
+                                    {{ form.imagem }}
+                                    <div class="file-input-display">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <div>Clique para selecionar uma imagem</div>
+                                        <small>PNG, JPG até 5MB</small>
+                                    </div>
+                                </div>
+                                <button type="button" class="file-clear-btn" onclick="clearFileInput()">
+                                    <i class="fas fa-times"></i> Limpar
+                                </button>
+                            </div>
+                            <div class="file-name" id="fileName"></div>
+                        </div>
                     </div>
 
                     <div class="form-actions">
-                        <a href="{% url 'meus_eventos' %}" class="btn btn-secondary">Cancelar</a>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <a href="{% url 'meus_eventos' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> {{ action }} Evento
+                        </button>
                     </div>
                 </form>
             </div>
@@ -343,37 +696,75 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const fileInput = document.querySelector('input[type="file"]');
-        const clearBtn = document.querySelector('.file-clear-btn');
-        const fileName = document.getElementById('fileName');
-        
-        // Check if there's an initial file
-        if (fileInput.files.length > 0) {
-            clearBtn.style.display = 'block';
-            fileName.textContent = fileInput.files[0].name;
-        }
-        
-        // Update when file is selected
-        fileInput.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                clearBtn.style.display = 'block';
-                fileName.textContent = this.files[0].name;
-            } else {
-                clearBtn.style.display = 'none';
-                fileName.textContent = '';
-            }
-        });
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.querySelector('input[type="file"]');
+    const clearBtn = document.querySelector('.file-clear-btn');
+    const fileName = document.getElementById('fileName');
+    const fileDisplay = document.querySelector('.file-input-display');
     
-    function clearFileInput() {
-        const fileInput = document.querySelector('input[type="file"]');
-        const clearBtn = document.querySelector('.file-clear-btn');
-        const fileName = document.getElementById('fileName');
-        
-        fileInput.value = '';
-        clearBtn.style.display = 'none';
-        fileName.textContent = '';
+    // Check if there's an initial file
+    if (fileInput.files.length > 0) {
+        clearBtn.style.display = 'block';
+        fileName.textContent = fileInput.files[0].name;
+        fileDisplay.innerHTML = `
+            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+            <div>Arquivo selecionado</div>
+            <small>${fileInput.files[0].name}</small>
+        `;
     }
+    
+    // Update when file is selected
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            clearBtn.style.display = 'block';
+            fileName.textContent = this.files[0].name;
+            fileDisplay.innerHTML = `
+                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                <div>Arquivo selecionado</div>
+                <small>${this.files[0].name}</small>
+            `;
+        } else {
+            clearBtn.style.display = 'none';
+            fileName.textContent = '';
+            fileDisplay.innerHTML = `
+                <i class="fas fa-cloud-upload-alt"></i>
+                <div>Clique para selecionar uma imagem</div>
+                <small>PNG, JPG até 5MB</small>
+            `;
+        }
+    });
+
+    // Preço dinâmico
+    const precoSelect = document.querySelector('select[name="preco"]');
+    const precoInfoWrapper = document.getElementById('precoInfoWrapper');
+    function togglePrecoInfo() {
+        if (precoSelect.value === 'pago') {
+            precoInfoWrapper.style.display = 'block';
+        } else {
+            precoInfoWrapper.style.display = 'none';
+        }
+    }
+    
+    if (precoSelect) {
+        precoSelect.addEventListener('change', togglePrecoInfo);
+        togglePrecoInfo(); // Initial state
+    }
+});
+    
+function clearFileInput() {
+    const fileInput = document.querySelector('input[type="file"]');
+    const clearBtn = document.querySelector('.file-clear-btn');
+    const fileName = document.getElementById('fileName');
+    const fileDisplay = document.querySelector('.file-input-display');
+    
+    fileInput.value = '';
+    clearBtn.style.display = 'none';
+    fileName.textContent = '';
+    fileDisplay.innerHTML = `
+        <i class="fas fa-cloud-upload-alt"></i>
+        <div>Clique para selecionar uma imagem</div>
+        <small>PNG, JPG até 5MB</small>
+    `;
+}
 </script>
 {% endblock %}

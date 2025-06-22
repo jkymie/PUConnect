@@ -1,23 +1,23 @@
 {% extends 'core/base.html' %}
 {% block title %}Excluir Evento{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body p-4">
-                    <h2 class="text-center mb-4">Excluir Evento</h2>
-                    <p class="text-center">Tem certeza que deseja excluir o evento "{{ evento.titulo }}"?</p>
+<div class="all">
+    <div class="container">
+        <div class="delete-event-container">
+            <div class="delete-event-card">
+                <div class="delete-event-content">
+                    <h2 class="delete-event-title">Excluir Evento</h2>
+                    <p class="delete-event-message">Tem certeza que deseja excluir o evento "{{ evento.titulo }}"?</p>
                     {% if evento.inscricoes.exists %}
                         <div class="alert alert-warning">
                             <strong>Atenção!</strong> Este evento possui inscrições e não pode ser excluído.
                         </div>
                     {% else %}
-                        <form method="post">
+                        <form method="post" class="delete-event-form">
                             {% csrf_token %}
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
-                                <a href="{% url 'meus_eventos' %}" class="btn btn-secondary">Cancelar</a>
+                            <div class="delete-event-actions">
+                                <button type="submit" class="btn-danger">Confirmar Exclusão</button>
+                                <a href="{% url 'meus_eventos' %}" class="btn-secondary">Cancelar</a>
                             </div>
                         </form>
                     {% endif %}

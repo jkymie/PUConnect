@@ -89,9 +89,21 @@ class Evento(models.Model):
     local = models.CharField(max_length=200, verbose_name=_('local'))
     vagas = models.PositiveIntegerField(default=0, verbose_name=_('vagas'))
     preco = models.CharField(max_length=10, choices=PRICE_CHOICES, default='gratuito', verbose_name=_('preço'))
+    preco_info = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        null=True, 
+        blank=True, 
+        verbose_name=_('valor inicial'),
+        help_text=_('Valor inicial que o usuário terá que pagar para participar do evento')
+    )
     lugar = models.CharField(max_length=10, choices=PLACE_CHOICES, default='puc', verbose_name=_('lugar'))
     tipo_evento = models.CharField(max_length=10, choices=EVENT_TYPE_CHOICES, default='presencial', verbose_name=_('tipo de evento'))
-    centro = models.CharField(max_length=20, choices=DEPARTMENT_CHOICES, default='ctch', verbose_name=_('centro'))
+    centros = models.ManyToManyField(
+        'Centro',
+        verbose_name=_('centros'),
+        help_text=_('Selecione um ou mais centros para este evento')
+    )
     horas_complementares = models.BooleanField(default=False, verbose_name=_('horas complementares'))
     imagem = models.ImageField(upload_to='eventos/', null=True, blank=True, verbose_name=_('imagem'))
     organizador = models.ForeignKey(
@@ -116,6 +128,14 @@ class Evento(models.Model):
         # Não deixa criar evento no passado
         if self.data_hora and self.data_hora < timezone.now():
             raise ValidationError({'data_hora': 'A data e hora do evento não podem ser no passado.'})
+        
+        # Validação para preço_info quando o evento é pago
+        if self.preco == 'pago' and (self.preco_info is None or self.preco_info <= 0):
+            raise ValidationError({'preco_info': 'Para eventos pagos, é necessário informar um valor inicial maior que zero.'})
+        
+        # Validação para preço_info quando o evento é gratuito
+        if self.preco == 'gratuito' and self.preco_info and self.preco_info > 0:
+            raise ValidationError({'preco_info': 'Para eventos gratuitos, o valor inicial deve ser zero ou não informado.'})
     
     def vagas_disponiveis(self):
         """Retorna quantas vagas ainda estão disponíveis para o evento."""
@@ -216,6 +236,18 @@ class UserProfile(models.Model):
     
     def get_total_eventos_organizados(self):
         return Evento.objects.filter(organizador=self.user).count()
+
+class Centro(models.Model):
+    codigo = models.CharField(max_length=10, unique=True, verbose_name=_('código'))
+    nome = models.CharField(max_length=100, verbose_name=_('nome'))
+    
+    class Meta:
+        verbose_name = _('centro')
+        verbose_name_plural = _('centros')
+        ordering = ['nome']
+    
+    def __str__(self):
+        return f"{self.codigo} - {self.nome}"
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

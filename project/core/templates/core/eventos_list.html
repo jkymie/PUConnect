@@ -94,13 +94,15 @@
                     </div>
                 {% endif %}
                 
-                {% if current_centro %}
+                {% if current_centros %}
+                    {% for centro in current_centros %}
                     <div class="filter-tag">
-                        <span class="filter-tag-text">Centro: {{ current_centro|title }}</span>
-                        <button class="filter-tag-remove" onclick="removeFilter('centro')">
+                        <span class="filter-tag-text">Centro: {{ centro|upper }}</span>
+                        <button class="filter-tag-remove" onclick="removeFilter('centro', '{{ centro }}')">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
+                    {% endfor %}
                 {% endif %}
                 
                 {% if current_local %}
@@ -152,7 +154,13 @@
                                 </div>
                                 <div class="evento-info">
                                     <i class="fas fa-building"></i>
-                                    {{ evento.get_centro_display }}
+                                    {% for centro in evento.centros.all %}
+                                        <span class="badge bg-primary me-1">
+                                            <strong>{{ centro.codigo|upper }}</strong> | {{ centro.nome }}
+                                        </span>
+                                    {% empty %}
+                                        <span class="text-muted">Não especificado</span>
+                                    {% endfor %}
                                 </div>
                                 <div class="evento-tags">
                                     {% if evento.get_proximidade_temporal %}
@@ -173,7 +181,15 @@
                                         {% endif %}
                                     {% endif %}
                                     <span class="evento-tag">{{ evento.get_tipo_evento_display }}</span>
-                                    <span class="evento-tag">{{ evento.get_preco_display }}</span>
+                                    <span class="evento-tag">
+                                        {% if evento.preco == 'gratuito' %}
+                                            Gratuito
+                                        {% elif evento.preco_info %}
+                                            R$ {{ evento.preco_info|floatformat:0 }}
+                                        {% else %}
+                                            Pago
+                                        {% endif %}
+                                    </span>
                                     {% if evento.horas_complementares %}
                                         <span class="evento-tag">Horas Complementares</span>
                                     {% endif %}
@@ -322,9 +338,12 @@ function aplicarFiltro(tipo) {
             break;
 
         case 'centro':
-            const centroSelecionado = document.querySelector('input[name="centro"]:checked');
-            if (centroSelecionado) {
-                params.set('centro', centroSelecionado.value);
+            const centrosSelecionados = document.querySelectorAll('input[name="centro"]:checked');
+            params.delete('centro');
+            if (centrosSelecionados.length > 0) {
+                centrosSelecionados.forEach(checkbox => {
+                    params.append('centro', checkbox.value);
+                });
             }
             break;
 
@@ -366,7 +385,7 @@ function aplicarFiltro(tipo) {
     window.location.href = url.toString();
 }
 
-function removeFilter(filterType) {
+function removeFilter(filterType, valueToRemove = null) {
     let url = new URL(window.location.href);
     let params = new URLSearchParams(url.search);
 
@@ -388,7 +407,13 @@ function removeFilter(filterType) {
             params.delete('tipo_evento');
             break;
         case 'centro':
-            params.delete('centro');
+            if (valueToRemove) {
+                const currentValues = params.getAll('centro');
+                params.delete('centro');
+                currentValues.filter(v => v !== valueToRemove).forEach(v => params.append('centro', v));
+            } else {
+                params.delete('centro');
+            }
             break;
         case 'local':
             params.delete('local');

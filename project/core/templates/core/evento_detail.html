@@ -40,9 +40,25 @@
                         <ul class="list-unstyled">
                             <li><i class="fas fa-calendar"></i> <strong>Data e Hora:</strong> {{ evento.data_hora|date:"d/m/Y H:i" }}</li>
                             <li><i class="fas fa-map-marker-alt"></i> <strong>Local:</strong> {{ evento.local }}</li>
-                            <li><i class="fas fa-building"></i> <strong>Centro:</strong> {{ evento.get_centro_display }}</li>
+                            <li><i class="fas fa-building"></i> <strong>Centros:</strong> 
+                                {% for centro in evento.centros.all %}
+                                    <span class="badge bg-primary me-1">
+                                        <strong>{{ centro.codigo|upper }}</strong> | {{ centro.nome }}
+                                    </span>
+                                {% empty %}
+                                    <span class="text-muted">Não especificado</span>
+                                {% endfor %}
+                            </li>
                             <li><i class="fas fa-video"></i> <strong>Tipo de Evento:</strong> {{ evento.get_tipo_evento_display }}</li>
-                            <li><i class="fas fa-money-bill"></i> <strong>Preço:</strong> {{ evento.get_preco_display }}</li>
+                            <li><i class="fas fa-money-bill"></i> <strong>Preço:</strong> 
+                                {% if evento.preco == 'gratuito' %}
+                                    Gratuito
+                                {% elif evento.preco_info %}
+                                    R$ {{ evento.preco_info|floatformat:0 }}
+                                {% else %}
+                                    Pago
+                                {% endif %}
+                            </li>
                             {% if evento.horas_complementares %}
                                 <li><i class="fas fa-clock"></i> <strong>Horas Complementares:</strong> Sim</li>
                             {% endif %}

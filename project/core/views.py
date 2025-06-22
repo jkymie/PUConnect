@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from .forms import UserRegistrationForm, UserLoginForm, EventoForm, UserProfileForm, EmailChangeForm
-from .models import Evento, Inscricao, UserProfile
+from .models import Evento, Inscricao, UserProfile, Centro
 from django.contrib.auth.forms import PasswordChangeForm
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -343,10 +343,10 @@ def eventos_list(request):
         if tipo_evento:
             eventos = eventos.filter(tipo_evento=tipo_evento)
         
-        # Centro filter
-        centro = request.GET.get('centro')
-        if centro:
-            eventos = eventos.filter(centro=centro)
+        # Centro filter - agora filtra por múltiplos centros
+        centros = request.GET.getlist('centro')
+        if centros:
+            eventos = eventos.filter(centros__codigo__in=centros).distinct()
         
         # Local filter
         local = request.GET.get('local')
@@ -380,13 +380,14 @@ def eventos_list(request):
         
         context = {
             'eventos': eventos,
+            'centros': Centro.objects.all(),  # Adiciona todos os centros para o filtro
             'current_query': query,
             'current_data': data,
             'current_data_inicio': data_inicio,
             'current_data_fim': data_fim,
             'current_preco': preco,
             'current_tipo_evento': tipo_evento,
-            'current_centro': centro,
+            'current_centros': centros,
             'current_local': local,
             'current_horas': request.GET.get('horas'),
             'current_ordenar': ordenar

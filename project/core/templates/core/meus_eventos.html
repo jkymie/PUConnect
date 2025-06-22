@@ -34,7 +34,13 @@
                                 </div>
                                 <div class="evento-info">
                                     <i class="fas fa-building"></i>
-                                    {{ evento.get_centro_display }}
+                                    {% for centro in evento.centros.all %}
+                                        <span class="badge bg-primary me-1">
+                                            <strong>{{ centro.codigo|upper }}</strong> | {{ centro.nome }}
+                                        </span>
+                                    {% empty %}
+                                        <span class="text-muted">Não especificado</span>
+                                    {% endfor %}
                                 </div>
                                 <div class="evento-tags">
                                     {% if evento.get_proximidade_temporal %}
@@ -55,7 +61,15 @@
                                         {% endif %}
                                     {% endif %}
                                     <span class="evento-tag">{{ evento.get_tipo_evento_display }}</span>
-                                    <span class="evento-tag">{{ evento.get_preco_display }}</span>
+                                    <span class="evento-tag">
+                                        {% if evento.preco == 'gratuito' %}
+                                            Gratuito
+                                        {% elif evento.preco_info %}
+                                            R$ {{ evento.preco_info|floatformat:0 }}
+                                        {% else %}
+                                            Pago
+                                        {% endif %}
+                                    </span>
                                     {% if evento.horas_complementares %}
                                         <span class="evento-tag">Horas Complementares</span>
                                     {% endif %}

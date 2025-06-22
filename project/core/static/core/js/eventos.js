@@ -53,7 +53,6 @@ function criarCard(evento) {
       <img src="${imgUrl}" alt="${evento.titulo}" class="card-evento-img">
       <div class="card-evento-body">
         <div class="card-evento-titulo">${evento.titulo}</div>
-        ${tagProximidade ? `<div style="margin-bottom: 8px;">${tagProximidade}</div>` : ''}
         <div class="card-evento-info">
           <span class="icon"><img src="/static/core/assets/img/clock.svg" alt="Horário" class="icon-img"></span>
           <span>${formatarDataHora(evento.data_hora)}</span>
@@ -62,6 +61,7 @@ function criarCard(evento) {
           <span class="icon"><img src="/static/core/assets/img/local.png" alt="Local" class="icon-img"></span>
           <span>${evento.local}</span>
         </div>
+        ${tagProximidade ? `<div style="margin-top: 8px;">${tagProximidade}</div>` : ''}
       </div>
     </div>
   `;

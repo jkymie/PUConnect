@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
-from .models import User, Evento, SolicitarOrganizador, UserProfile
+from .models import User, Evento, SolicitarOrganizador, UserProfile, Centro
 from django.utils import timezone
 
 class UserRegistrationForm(UserCreationForm):
@@ -102,6 +102,19 @@ class EventoForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'}),
         label=_('Preço')
     )
+    preco_info = forms.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required=False,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Digite o valor inicial do evento',
+            'step': '0.01',
+            'min': '0'
+        }),
+        label=_('Valor Inicial'),
+        help_text=_('Valor que o usuário terá que pagar para participar do evento')
+    )
     lugar = forms.ChoiceField(
         choices=Evento.PLACE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'}),
@@ -112,10 +125,11 @@ class EventoForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'}),
         label=_('Tipo de Evento')
     )
-    centro = forms.ChoiceField(
-        choices=Evento.DEPARTMENT_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        label=_('Centro')
+    centros = forms.ModelMultipleChoiceField(
+        queryset=Centro.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
+        label=_('Centros'),
+        help_text=_('Selecione um ou mais centros para este evento')
     )
     horas_complementares = forms.BooleanField(
         required=False,
@@ -132,7 +146,7 @@ class EventoForm(forms.ModelForm):
 
     class Meta:
         model = Evento
-        fields = ['titulo', 'descricao', 'data_hora', 'local', 'vagas', 'preco', 'lugar', 'tipo_evento', 'centro', 'horas_complementares', 'imagem']
+        fields = ['titulo', 'descricao', 'data_hora', 'local', 'vagas', 'preco', 'preco_info', 'lugar', 'tipo_evento', 'centros', 'horas_complementares', 'imagem']
         widgets = {
             'data_hora': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'descricao': forms.Textarea(attrs={'rows': 4}),
@@ -144,12 +158,21 @@ class EventoForm(forms.ModelForm):
             'local': _('Local'),
             'vagas': _('Número de Vagas'),
             'preco': _('Preço'),
+            'preco_info': _('Valor Inicial'),
             'lugar': _('Lugar'),
             'tipo_evento': _('Tipo de Evento'),
-            'centro': _('Centro'),
+            'centros': _('Centros'),
             'horas_complementares': _('Horas Complementares'),
             'imagem': _('Imagem do Evento'),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Adicionar classes CSS aos campos
+        for field_name, field in self.fields.items():
+            if field_name not in ['centros', 'horas_complementares']:
+                if hasattr(field.widget, 'attrs'):
+                    field.widget.attrs.update({'class': 'form-control'})
 
     def clean_data_hora(self):
         data_hora = self.cleaned_data.get('data_hora')
@@ -162,6 +185,25 @@ class EventoForm(forms.ModelForm):
         if vagas < 0:
             raise forms.ValidationError('O número de vagas não pode ser negativo.')
         return vagas
+
+    def clean(self):
+        cleaned_data = super().clean()
+        preco = cleaned_data.get('preco')
+        preco_info = cleaned_data.get('preco_info')
+        
+        # Validação para preço_info quando o evento é pago
+        if preco == 'pago' and (preco_info is None or preco_info <= 0):
+            raise forms.ValidationError({
+                'preco_info': 'Para eventos pagos, é necessário informar um valor inicial maior que zero.'
+            })
+        
+        # Validação para preço_info quando o evento é gratuito
+        if preco == 'gratuito' and preco_info and preco_info > 0:
+            raise forms.ValidationError({
+                'preco_info': 'Para eventos gratuitos, o valor inicial deve ser zero ou não informado.'
+            })
+        
+        return cleaned_data
 
 class SolicitarOrganizadorForm(forms.ModelForm):
     class Meta:
