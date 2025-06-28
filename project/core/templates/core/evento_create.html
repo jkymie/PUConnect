@@ -10,28 +10,28 @@
                     <form method="post">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="id_titulo" class="form-label">Título</label>
+                            <label for="id_titulo" class="form-label">Título <span class="required-asterisk">*</span></label>
                             {{ form.titulo }}
                             {% if form.titulo.errors %}
                                 <div class="text-danger">{{ form.titulo.errors }}</div>
                             {% endif %}
                         </div>
                         <div class="mb-3">
-                            <label for="id_descricao" class="form-label">Descrição</label>
+                            <label for="id_descricao" class="form-label">Descrição <span class="required-asterisk">*</span></label>
                             {{ form.descricao }}
                             {% if form.descricao.errors %}
                                 <div class="text-danger">{{ form.descricao.errors }}</div>
                             {% endif %}
                         </div>
                         <div class="mb-3">
-                            <label for="id_data_hora" class="form-label">Data e Hora</label>
+                            <label for="id_data_hora" class="form-label">Data e Hora <span class="required-asterisk">*</span></label>
                             {{ form.data_hora }}
                             {% if form.data_hora.errors %}
                                 <div class="text-danger">{{ form.data_hora.errors }}</div>
                             {% endif %}
                         </div>
                         <div class="mb-3">
-                            <label for="id_local" class="form-label">Local</label>
+                            <label for="id_local" class="form-label">Local <span class="required-asterisk">*</span></label>
                             {{ form.local }}
                             {% if form.local.errors %}
                                 <div class="text-danger">{{ form.local.errors }}</div>

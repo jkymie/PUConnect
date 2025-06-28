@@ -87,11 +87,11 @@
     <form method="post" action="/login/">
       {% csrf_token %}
       <div class="form-group">
-        <label for="login-username">E-mail ou matrícula</label>
+        <label for="login-username">E-mail ou matrícula <span class="required-asterisk">*</span></label>
         <input type="text" id="login-username" name="username" class="form-control" placeholder="Digite seu e-mail ou matrícula" required>
       </div>
       <div class="form-group">
-        <label for="login-password">Senha</label>
+        <label for="login-password">Senha <span class="required-asterisk">*</span></label>
         <input type="password" id="login-password" name="password" class="form-control" placeholder="Digite sua senha" required>
       </div>
       <div class="form-actions">
@@ -112,7 +112,7 @@
     <form method="post" action="/register/">
       {% csrf_token %}
       <div class="form-group">
-        <label for="register-tipo">Tipo de usuário</label>
+        <label for="register-tipo">Tipo de usuário <span class="required-asterisk">*</span></label>
         <select id="register-tipo" name="tipo_usuario" class="form-control" required>
           <option value="">Selecione entre as opções</option>
           <option value="aluno">Aluno</option>
@@ -120,19 +120,19 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="register-matricula">Matrícula</label>
+        <label for="register-matricula">Matrícula <span class="required-asterisk">*</span></label>
         <input type="text" id="register-matricula" name="matricula" class="form-control" required>
       </div>
       <div class="form-group">
-        <label for="register-email">E-mail</label>
+        <label for="register-email">E-mail <span class="required-asterisk">*</span></label>
         <input type="email" id="register-email" name="email" class="form-control" required>
       </div>
       <div class="form-group">
-        <label for="register-password1">Senha</label>
+        <label for="register-password1">Senha <span class="required-asterisk">*</span></label>
         <input type="password" id="register-password1" name="password1" class="form-control" required>
       </div>
       <div class="form-group">
-        <label for="register-password2">Confirme a senha</label>
+        <label for="register-password2">Confirme a senha <span class="required-asterisk">*</span></label>
         <input type="password" id="register-password2" name="password2" class="form-control" required>
       </div>
       <div class="form-actions">
@@ -150,7 +150,7 @@
     <form method="post" action="/password-reset/">
       {% csrf_token %}
       <div class="form-group">
-        <label for="forgot-email">E-mail ou matrícula</label>
+        <label for="forgot-email">E-mail ou matrícula <span class="required-asterisk">*</span></label>
         <input type="text" id="forgot-email" name="email" class="form-control" placeholder="Digite seu e-mail ou matrícula" required>
       </div>
       <div class="form-actions">
@@ -168,7 +168,7 @@
     <form method="post" action="/password-reset/verify/">
       {% csrf_token %}
       <div class="form-group">
-        <label for="verify-code">Código</label>
+        <label for="verify-code">Código <span class="required-asterisk">*</span></label>
         <input type="text" id="verify-code" name="code" class="form-control" placeholder="Digite o código enviado" required>
       </div>
       <div class="form-actions">
@@ -195,11 +195,11 @@
     <form method="post" action="/password-reset/new/">
       {% csrf_token %}
       <div class="form-group">
-        <label for="newpass1">Nova senha</label>
+        <label for="newpass1">Nova senha <span class="required-asterisk">*</span></label>
         <input type="password" id="newpass1" name="new_password1" class="form-control" placeholder="Digite a nova senha" required>
       </div>
       <div class="form-group">
-        <label for="newpass2">Confirme a nova senha</label>
+        <label for="newpass2">Confirme a nova senha <span class="required-asterisk">*</span></label>
         <input type="password" id="newpass2" name="new_password2" class="form-control" placeholder="Digite a nova senha novamente" required>
       </div>
       <div class="form-actions">

@@ -488,7 +488,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="{{ form.titulo.id_for_label }}" class="form-label">
-                                    <i class="fas fa-heading"></i> Título do Evento
+                                    <i class="fas fa-heading"></i> Título do Evento <span class="required-asterisk">*</span>
                                 </label>
                                 {{ form.titulo }}
                                 {% if form.titulo.errors %}
@@ -499,7 +499,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="{{ form.data_hora.id_for_label }}" class="form-label">
-                                    <i class="fas fa-calendar-alt"></i> Data e Hora
+                                    <i class="fas fa-calendar-alt"></i> Data e Hora <span class="required-asterisk">*</span>
                                 </label>
                                 {{ form.data_hora }}
                                 {% if form.data_hora.errors %}
@@ -512,7 +512,7 @@
 
                         <div class="form-group">
                             <label for="{{ form.descricao.id_for_label }}" class="form-label">
-                                <i class="fas fa-align-left"></i> Descrição
+                                <i class="fas fa-align-left"></i> Descrição <span class="required-asterisk">*</span>
                             </label>
                             {{ form.descricao }}
                             {% if form.descricao.errors %}
@@ -530,7 +530,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="{{ form.local.id_for_label }}" class="form-label">
-                                    <i class="fas fa-map-marker-alt"></i> Local do Evento
+                                    <i class="fas fa-map-marker-alt"></i> Local do Evento <span class="required-asterisk">*</span>
                                 </label>
                                 {{ form.local }}
                                 {% if form.local.errors %}
@@ -541,7 +541,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="{{ form.vagas.id_for_label }}" class="form-label">
-                                    <i class="fas fa-users"></i> Número de Vagas
+                                    <i class="fas fa-users"></i> Número de Vagas <span class="required-asterisk">*</span>
                                 </label>
                                 {{ form.vagas }}
                                 {% if form.vagas.errors %}
@@ -560,7 +560,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="{{ form.preco.id_for_label }}" class="form-label">
-                                    <i class="fas fa-tag"></i> Tipo de Preço
+                                    <i class="fas fa-tag"></i> Tipo de Preço <span class="required-asterisk">*</span>
                                 </label>
                                 {{ form.preco }}
                                 {% if form.preco.errors %}
@@ -571,7 +571,7 @@
                             </div>
                             <div class="form-group" id="precoInfoWrapper">
                                 <label for="{{ form.preco_info.id_for_label }}" class="form-label">
-                                    <i class="fas fa-dollar-sign"></i> Valor Inicial
+                                    <i class="fas fa-dollar-sign"></i> Valor Inicial <span id="precoInfoAsterisk" class="required-asterisk" style="display:none">*</span>
                                 </label>
                                 {{ form.preco_info }}
                                 {% if form.preco_info.help_text %}
@@ -588,7 +588,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="{{ form.lugar.id_for_label }}" class="form-label">
-                                    <i class="fas fa-building"></i> Localização
+                                    <i class="fas fa-building"></i> Localização <span class="required-asterisk">*</span>
                                 </label>
                                 {{ form.lugar }}
                                 {% if form.lugar.errors %}
@@ -599,7 +599,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="{{ form.tipo_evento.id_for_label }}" class="form-label">
-                                    <i class="fas fa-video"></i> Tipo de Evento
+                                    <i class="fas fa-video"></i> Tipo de Evento <span class="required-asterisk">*</span>
                                 </label>
                                 {{ form.tipo_evento }}
                                 {% if form.tipo_evento.errors %}
@@ -613,7 +613,7 @@
 
                     <!-- Seção: Centros -->
                     <div class="form-section">
-                        <h3 class="section-title">Centros Relacionados</h3>
+                        <h3 class="section-title">Centros Relacionados <span class="required-asterisk">*</span></h3>
                         <div class="centros-section">
                             <div class="centros-checkboxes">
                                 {% for choice in form.centros %}
@@ -660,7 +660,7 @@
                             {% endif %}
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="margin-top: 2rem;">
                             <label for="{{ form.imagem.id_for_label }}" class="form-label">
                                 <i class="fas fa-image"></i> Imagem do Evento
                             </label>
@@ -737,11 +737,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Preço dinâmico
     const precoSelect = document.querySelector('select[name="preco"]');
     const precoInfoWrapper = document.getElementById('precoInfoWrapper');
+    const precoInfoAsterisk = document.getElementById('precoInfoAsterisk');
     function togglePrecoInfo() {
         if (precoSelect.value === 'pago') {
             precoInfoWrapper.style.display = 'block';
+            if (precoInfoAsterisk) precoInfoAsterisk.style.display = 'inline';
         } else {
             precoInfoWrapper.style.display = 'none';
+            if (precoInfoAsterisk) precoInfoAsterisk.style.display = 'none';
         }
     }
     
