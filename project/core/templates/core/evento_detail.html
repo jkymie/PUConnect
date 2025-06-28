@@ -2,120 +2,318 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card">
+<div class="evento-detail-container">
+    <!-- Hero Section com Imagem -->
+    <div class="evento-hero">
         {% if evento.imagem %}
-            <img src="{{ evento.imagem.url }}" class="card-img-top" alt="{{ evento.titulo }}" style="max-height: 400px; object-fit: cover;">
-        {% endif %}
-        <div class="card-body">
-            <h2 class="card-title">{{ evento.titulo }}</h2>
-            
-            {% if evento.get_proximidade_temporal %}
-                <div class="mb-3">
-                    {% if evento.get_proximidade_temporal == 'encerrado' %}
-                        <span class="evento-tag evento-tag-encerrado">Encerrado</span>
-                    {% else %}
-                        <span class="evento-tag evento-tag-proximidade {{ evento.get_proximidade_temporal }}">
-                            {% if evento.get_proximidade_temporal == 'hoje' %}
-                                Hoje
-                            {% elif evento.get_proximidade_temporal == 'amanha' %}
-                                Amanhã
-                            {% elif evento.get_proximidade_temporal == 'semana' %}
-                                Essa semana
-                            {% elif evento.get_proximidade_temporal == 'mes' %}
-                                Esse mês
-                            {% endif %}
-                        </span>
-                    {% endif %}
-                    
-                    {% if evento.esta_lotado %}
-                        <span class="evento-tag evento-tag-lotado">Lotado</span>
-                    {% endif %}
+            <div class="evento-hero-image">
+                <img src="{{ evento.imagem.url }}" alt="{{ evento.titulo }}" class="hero-img">
+                <div class="hero-overlay"></div>
+                <div class="hero-pattern"></div>
+            </div>
+        {% else %}
+            <div class="evento-hero-image">
+                <div class="hero-placeholder">
+                    <div class="placeholder-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="placeholder-text">Evento PUConnect</div>
                 </div>
-            {% endif %}
-            
-            <div class="row mt-4">
-                <div class="col-md-8">
-                    <h4>Detalhes do Evento</h4>
-                    <p class="card-text">{{ evento.descricao }}</p>
+                <div class="hero-overlay"></div>
+                <div class="hero-pattern"></div>
+            </div>
+        {% endif %}
+        
+        <div class="hero-content">
+            <div class="container">
+                <div class="hero-text">
+                    <div class="breadcrumb-nav">
+                        <a href="{% url 'index' %}" class="breadcrumb-link">
+                            <i class="fas fa-home"></i> Início
+                        </a>
+                        <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                        <a href="{% url 'eventos_list' %}" class="breadcrumb-link">Eventos</a>
+                        <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                        <span class="breadcrumb-current">{{ evento.titulo|truncatechars:30 }}</span>
+                    </div>
                     
-                    <div class="mt-4">
-                        <h5>Informações</h5>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-calendar"></i> <strong>Data e Hora:</strong> {{ evento.data_hora|date:"d/m/Y H:i" }}</li>
-                            <li><i class="fas fa-map-marker-alt"></i> <strong>Local:</strong> {{ evento.local }}</li>
-                            <li><i class="fas fa-building"></i> <strong>Centros:</strong> 
-                                {% for centro in evento.centros.all %}
-                                    <span class="badge bg-primary me-1">
-                                        <strong>{{ centro.codigo|upper }}</strong>
-                                    </span>
-                                    {% if not forloop.last %}|{% endif %}
-                                {% empty %}
-                                    <span class="text-muted">Não especificado</span>
-                                {% endfor %}
-                            </li>
-                            <li><i class="fas fa-video"></i> <strong>Tipo de Evento:</strong> {{ evento.get_tipo_evento_display }}</li>
-                            <li><i class="fas fa-money-bill"></i> <strong>Preço:</strong> 
-                                {% if evento.preco == 'gratuito' %}
-                                    Gratuito
-                                {% elif evento.preco_info %}
-                                    R$ {{ evento.preco_info|floatformat:0 }}
-                                {% else %}
-                                    Pago
-                                {% endif %}
-                            </li>
-                            {% if evento.horas_complementares %}
-                                <li><i class="fas fa-clock"></i> <strong>Horas Complementares:</strong> Sim</li>
+                    <h1 class="evento-title">{{ evento.titulo }}</h1>
+                    
+                    <!-- Tags de Status -->
+                    <div class="evento-status-tags">
+                        {% if evento.get_proximidade_temporal %}
+                            {% if evento.get_proximidade_temporal == 'encerrado' %}
+                                <span class="status-tag status-encerrado">
+                                    <i class="fas fa-times-circle"></i> Encerrado
+                                </span>
+                            {% else %}
+                                <span class="status-tag status-proximidade {{ evento.get_proximidade_temporal }}">
+                                    <i class="fas fa-clock"></i>
+                                    {% if evento.get_proximidade_temporal == 'hoje' %}
+                                        Hoje
+                                    {% elif evento.get_proximidade_temporal == 'amanha' %}
+                                        Amanhã
+                                    {% elif evento.get_proximidade_temporal == 'semana' %}
+                                        Essa semana
+                                    {% elif evento.get_proximidade_temporal == 'mes' %}
+                                        Esse mês
+                                    {% endif %}
+                                </span>
                             {% endif %}
-                            <li><i class="fas fa-users"></i> <strong>Vagas:</strong> {{ evento.vagas_disponiveis }} disponíveis de {{ evento.vagas }}</li>
-                        </ul>
+                        {% endif %}
+                        
+                        {% if evento.esta_lotado %}
+                            <span class="status-tag status-lotado">
+                                <i class="fas fa-users"></i> Lotado
+                            </span>
+                        {% endif %}
+                        
+                        <span class="status-tag status-tipo">
+                            <i class="fas fa-video"></i> {{ evento.get_tipo_evento_display }}
+                        </span>
                     </div>
                 </div>
-                
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Organizador</h5>
-                            <p class="card-text">
-                                <a href="{% url 'profile_other' evento.organizador.username %}">
-                                    {{ evento.organizador.get_full_name|default:evento.organizador.username }}
-                                </a>
-                            </p>
-                            
-                            {% if user.is_authenticated %}
-                                {% if user.tipo_usuario == 'aluno' %}
-                                    {% if esta_inscrito %}
-                                        <form method="post" action="{% url 'cancelar_inscricao' evento.pk %}">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-danger w-100">Cancelar Inscrição</button>
-                                        </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="container">
+        <div class="evento-content-wrapper">
+            <!-- Coluna Principal -->
+            <div class="evento-main-content">
+                <!-- Descrição -->
+                <div class="evento-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fas fa-info-circle"></i> Sobre o Evento
+                        </h3>
+                        <div class="section-decoration"></div>
+                    </div>
+                    <div class="evento-description">
+                        {{ evento.descricao|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Informações Detalhadas -->
+                <div class="evento-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fas fa-list-alt"></i> Informações do Evento
+                        </h3>
+                        <div class="section-decoration"></div>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>Data e Hora</h4>
+                                <p class="info-date">{{ evento.data_hora|date:"d/m/Y" }}</p>
+                                <p class="info-time">{{ evento.data_hora|date:"H:i" }}</p>
+                                <div class="info-meta">
+                                    <i class="fas fa-clock"></i> {{ evento.data_hora|date:"l"|title }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>Local</h4>
+                                <p>{{ evento.local }}</p>
+                                <div class="info-meta">
+                                    <i class="fas fa-building"></i> 
+                                    {% if evento.lugar == 'puc' %}Na PUC{% else %}Fora da PUC{% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>Centros</h4>
+                                <div class="centros-tags">
+                                    {% for centro in evento.centros.all %}
+                                        <span class="centro-tag">
+                                            <strong>{{ centro.codigo|upper }}</strong>
+                                            <span class="centro-nome">{{ centro.nome }}</span>
+                                        </span>
+                                    {% empty %}
+                                        <span class="text-muted">Não especificado</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>Preço</h4>
+                                <p class="preco-info">
+                                    {% if evento.preco == 'gratuito' %}
+                                        <span class="preco-gratuito">
+                                            <i class="fas fa-gift"></i> Gratuito
+                                        </span>
+                                    {% elif evento.preco_info %}
+                                        <span class="preco-pago">
+                                            <i class="fas fa-tag"></i> R$ {{ evento.preco_info|floatformat:0 }}
+                                        </span>
                                     {% else %}
-                                        <form method="post" action="{% url 'inscrever_evento' evento.pk %}">
-                                            {% csrf_token %}
-                                            {% if vagas_disponiveis %}
-                                                <button type="submit" class="btn btn-primary w-100">
-                                                    Inscrever-se
-                                                </button>
-                                            {% else %}
-                                                <button type="submit" class="btn btn-primary w-100" disabled>
-                                                    <i class="fas fa-ban"></i> Sem vagas
-                                                </button>
-                                            {% endif %}
-                                        </form>
+                                        <span class="preco-pago">
+                                            <i class="fas fa-tag"></i> Pago
+                                        </span>
                                     {% endif %}
-                                {% endif %}
-                                
-                                {% if pode_editar %}
-                                    <div class="mt-3">
-                                        <a href="{% url 'evento_edit' evento.pk %}" class="btn btn-warning w-100 mb-2">Editar Evento</a>
-                                        <a href="{% url 'evento_delete' evento.pk %}" class="btn btn-danger w-100">Excluir Evento</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>Vagas</h4>
+                                <p class="vagas-text">{{ evento.vagas_disponiveis }} disponíveis de {{ evento.vagas }}</p>
+                                <div class="vagas-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: {% widthratio evento.vagas_disponiveis evento.vagas 100 %}%"></div>
                                     </div>
+                                    <div class="progress-text">
+                                        {% widthratio evento.vagas_disponiveis evento.vagas 100 %}% disponível
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if evento.horas_complementares %}
+                        <div class="info-item info-item-highlight">
+                            <div class="info-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>Horas Complementares</h4>
+                                <p><span class="badge-success">
+                                    <i class="fas fa-check"></i> Sim
+                                </span></p>
+                                <div class="info-meta">
+                                    <i class="fas fa-graduation-cap"></i> Válido para horas complementares
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="evento-sidebar">
+                <!-- Card do Organizador -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-user"></i> Organizador</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="organizador-info">
+                            <div class="organizador-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="organizador-details">
+                                <h5>{{ evento.organizador.get_full_name|default:evento.organizador.username }}</h5>
+                                <p class="organizador-role">Organizador de Eventos</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card de Ações -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-tasks"></i> Ações</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if user.is_authenticated %}
+                            {% if user.tipo_usuario == 'aluno' %}
+                                {% if esta_inscrito %}
+                                    <div class="inscricao-status">
+                                        <div class="status-indicator status-inscrito">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Você está inscrito!</span>
+                                        </div>
+                                    </div>
+                                    <form method="post" action="{% url 'cancelar_inscricao' evento.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn action-btn-danger">
+                                            <i class="fas fa-times"></i> Cancelar Inscrição
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form method="post" action="{% url 'inscrever_evento' evento.pk %}">
+                                        {% csrf_token %}
+                                        {% if vagas_disponiveis %}
+                                            <button type="submit" class="action-btn action-btn-primary">
+                                                <i class="fas fa-check"></i> Inscrever-se
+                                            </button>
+                                        {% else %}
+                                            <button type="submit" class="action-btn action-btn-disabled" disabled>
+                                                <i class="fas fa-ban"></i> Sem vagas disponíveis
+                                            </button>
+                                        {% endif %}
+                                    </form>
                                 {% endif %}
-                            {% else %}
-                                <div class="alert alert-info">
-                                    <a href="{% url 'login' %}">Faça login</a> para se inscrever neste evento.
+                            {% endif %}
+                            
+                            {% if pode_editar %}
+                                <div class="action-buttons">
+                                    <a href="{% url 'evento_edit' evento.pk %}" class="action-btn action-btn-warning">
+                                        <i class="fas fa-edit"></i> Editar Evento
+                                    </a>
+                                    <a href="{% url 'evento_delete' evento.pk %}" class="action-btn action-btn-danger">
+                                        <i class="fas fa-trash"></i> Excluir Evento
+                                    </a>
                                 </div>
                             {% endif %}
+                        {% else %}
+                            <div class="login-prompt">
+                                <div class="login-icon">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <h5>Faça login para participar</h5>
+                                <p>Entre na sua conta para se inscrever neste evento</p>
+                                <a href="{% url 'login' %}" class="action-btn action-btn-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Fazer Login
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Card de Estatísticas -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-chart-bar"></i> Estatísticas</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">{{ evento.vagas_disponiveis }}</div>
+                                <div class="stat-label">Vagas Livres</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">{{ evento.inscricoes.count }}</div>
+                                <div class="stat-label">Inscritos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">{{ evento.centros.count }}</div>
+                                <div class="stat-label">Centros</div>
+                            </div>
                         </div>
                     </div>
                 </div>

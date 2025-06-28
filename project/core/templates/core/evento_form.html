@@ -20,6 +20,41 @@
         padding: 0 1rem;
     }
     
+    /* Breadcrumb styles for evento form page */
+    .breadcrumb-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+        color: #155de2;
+    }
+
+    .breadcrumb-link {
+        color: #155de2;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .breadcrumb-link:hover {
+        color: #0d47a1;
+        text-decoration: none;
+    }
+
+    .breadcrumb-separator {
+        font-size: 0.75rem;
+        color: #adb5bd;
+    }
+
+    .breadcrumb-current {
+        color: #495057;
+        font-weight: 600;
+    }
+    
     .form-card {
         background: white;
         border-radius: 20px;
@@ -472,6 +507,23 @@
 
 <div class="form-container">
     <div class="form-wrapper">
+        <!-- Breadcrumb -->
+        {% with breadcrumb_items=breadcrumb_items|default:None %}
+            {% if breadcrumb_items %}
+                {% include 'core/components/breadcrumb.html' with breadcrumb_items=breadcrumb_items %}
+            {% else %}
+                <div class="breadcrumb-nav">
+                    <a href="{% url 'index' %}" class="breadcrumb-link">
+                        <i class="fas fa-home"></i> Início
+                    </a>
+                    <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                    <a href="{% url 'meus_eventos' %}" class="breadcrumb-link">Meus Eventos</a>
+                    <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                    <span class="breadcrumb-current">{{ action|title }} Evento</span>
+                </div>
+            {% endif %}
+        {% endwith %}
+        
         <div class="form-card">
             <div class="form-header">
                 <h4>{{ action }} Evento</h4>

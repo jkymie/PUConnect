@@ -1,0 +1,29 @@
+{% comment %}
+Componente de breadcrumb reutilizável
+Uso: {% include 'core/components/breadcrumb.html' with breadcrumb_items=breadcrumb_items %}
+breadcrumb_items deve ser uma lista de dicionários com 'url', 'text' e 'active' (opcional)
+{% endcomment %}
+
+<div class="breadcrumb-nav">
+    {% if breadcrumb_items %}
+        {% for item in breadcrumb_items %}
+            {% if forloop.first %}
+                <a href="{{ item.url }}" class="breadcrumb-link">
+                    <i class="fas fa-home"></i> {{ item.text }}
+                </a>
+            {% else %}
+                <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                {% if item.active %}
+                    <span class="breadcrumb-current">{{ item.text }}</span>
+                {% else %}
+                    <a href="{{ item.url }}" class="breadcrumb-link">{{ item.text }}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <!-- Breadcrumb padrão quando não especificado -->
+        <a href="{% url 'index' %}" class="breadcrumb-link">
+            <i class="fas fa-home"></i> Início
+        </a>
+    {% endif %}
+</div> 

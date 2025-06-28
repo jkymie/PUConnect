@@ -122,25 +122,59 @@ def evento_delete(request, pk):
 @login_required
 def inscrever_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
+    
+    # Determinar para onde redirecionar
+    referer = request.META.get('HTTP_REFERER')
+    redirect_url = None
+    
+    if referer:
+        # Se veio de uma página de detalhes do evento, volta para ela
+        if 'evento/' in referer:
+            redirect_url = referer
+        # Se veio de outra página do site, volta para ela
+        else:
+            redirect_url = referer
+    
+    # Fallback para lista de eventos se não conseguir determinar o referer
+    if not redirect_url:
+        redirect_url = reverse('eventos_list')
+    
     if not evento.tem_vagas_disponiveis():
         messages.error(request, 'Desculpe, não há mais vagas disponíveis para este evento.')
-        return redirect('eventos_list')
+        return redirect(redirect_url)
     
     if evento.esta_inscrito(request.user):
         messages.warning(request, 'Você já está seguindo este evento.')
-        return redirect('eventos_list')
+        return redirect(redirect_url)
     
     Inscricao.objects.create(evento=evento, usuario=request.user)
     messages.success(request, 'Agora você está seguindo este evento!')
-    return redirect('eventos_list')
+    return redirect(redirect_url)
 
 @login_required
 def cancelar_inscricao(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     inscricao = get_object_or_404(Inscricao, evento=evento, usuario=request.user)
+    
+    # Determinar para onde redirecionar
+    referer = request.META.get('HTTP_REFERER')
+    redirect_url = None
+    
+    if referer:
+        # Se veio de uma página de detalhes do evento, volta para ela
+        if 'evento/' in referer:
+            redirect_url = referer
+        # Se veio de outra página do site, volta para ela
+        else:
+            redirect_url = referer
+    
+    # Fallback para lista de eventos se não conseguir determinar o referer
+    if not redirect_url:
+        redirect_url = reverse('eventos_list')
+    
     inscricao.delete()
     messages.success(request, 'Você deixou de seguir este evento.')
-    return redirect('eventos_list')
+    return redirect(redirect_url)
 
 @login_required
 def profile_edit(request):

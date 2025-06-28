@@ -6,6 +6,21 @@
 {% block content %}
 <div class="all meus-eventos">
     <div class="container">
+        <!-- Breadcrumb -->
+        {% with breadcrumb_items=breadcrumb_items|default:None %}
+            {% if breadcrumb_items %}
+                {% include 'core/components/breadcrumb.html' with breadcrumb_items=breadcrumb_items %}
+            {% else %}
+                <div class="breadcrumb-nav">
+                    <a href="{% url 'index' %}" class="breadcrumb-link">
+                        <i class="fas fa-home"></i> Início
+                    </a>
+                    <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                    <span class="breadcrumb-current">Meus Eventos</span>
+                </div>
+            {% endif %}
+        {% endwith %}
+        
         <h1 class="text-center">Meus Eventos</h1>
         
         <!-- Barra de pesquisa -->
