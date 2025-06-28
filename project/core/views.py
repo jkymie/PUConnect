@@ -329,16 +329,20 @@ def eventos_list(request):
         # Data filter
         data = request.GET.get('data')
         if data:
-            today = timezone.now().date()
+            today = date.today()
+            
             if data == 'hoje':
                 eventos = eventos.filter(data_hora__date=today)
             elif data == 'amanha':
                 tomorrow = today + timezone.timedelta(days=1)
                 eventos = eventos.filter(data_hora__date=tomorrow)
             elif data == 'semana':
-                start_of_week = today - timezone.timedelta(days=today.weekday())
-                end_of_week = start_of_week + timezone.timedelta(days=6)
-                eventos = eventos.filter(data_hora__date__range=[start_of_week, end_of_week])
+                # Próximos 7 dias a partir de hoje
+                end_of_week = today + timezone.timedelta(days=7)
+                eventos = eventos.filter(
+                    data_hora__date__gte=today,
+                    data_hora__date__lte=end_of_week
+                )
             elif data == 'mes':
                 start_of_month = today.replace(day=1)
                 if today.month == 12:
