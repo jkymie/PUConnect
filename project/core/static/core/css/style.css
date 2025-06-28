@@ -2409,3 +2409,70 @@ box-sizing: border-box !important;
   box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3) !important;
   transform: none !important;
 }
+
+/* Password Toggle Functionality */
+.password-field-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-field-wrapper input[type="password"],
+.password-field-wrapper input[type="text"] {
+    padding-right: 40px;
+    width: 100%;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+}
+
+.password-toggle-btn:hover {
+    color: #155de2;
+    background-color: rgba(21, 93, 226, 0.1);
+}
+
+.password-toggle-btn:focus {
+    outline: none;
+    color: #155de2;
+    background-color: rgba(21, 93, 226, 0.1);
+}
+
+.password-toggle-btn i {
+    transition: transform 0.2s ease;
+}
+
+.password-toggle-btn.showing i {
+    transform: scale(1.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .password-toggle-btn {
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    
+    .password-field-wrapper input[type="password"],
+    .password-field-wrapper input[type="text"] {
+        padding-right: 35px;
+    }
+}
