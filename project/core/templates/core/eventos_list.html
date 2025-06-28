@@ -180,6 +180,7 @@
                                         <span class="badge bg-primary me-1">
                                             <strong>{{ centro.codigo|upper }}</strong>
                                         </span>
+                                        {% if not forloop.last %}|{% endif %}
                                     {% empty %}
                                         <span class="text-muted">Não especificado</span>
                                     {% endfor %}
