@@ -9,7 +9,7 @@ from .models import Evento, Inscricao, UserProfile, Centro
 from django.contrib.auth.forms import PasswordChangeForm
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import EventoSerializer
+from .serializers import EventoSerializer, CentroSerializer
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.http import JsonResponse
@@ -416,6 +416,12 @@ def eventos_list(request):
 def eventos_api(request):
     eventos = Evento.objects.all()
     serializer = EventoSerializer(eventos, many=True, context={'request': request})
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def centros_api(request):
+    centros = Centro.objects.all()
+    serializer = CentroSerializer(centros, many=True)
     return Response(serializer.data)
 
 def password_reset_request(request):

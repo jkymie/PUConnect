@@ -31,6 +31,7 @@ urlpatterns = [
     path('evento/<int:pk>/edit/', views.evento_edit, name='evento_edit'),
     path('evento/<int:pk>/delete/', views.evento_delete, name='evento_delete'),
     path('api/eventos/', eventos_api, name='eventos_api'),
+    path('api/centros/', views.centros_api, name='centros_api'),
     # Recuperação de senha via modal
     path('password-reset/', views.password_reset_request, name='password_reset'),
     path('password-reset/verify/', views.password_reset_verify, name='password_reset_verify'),

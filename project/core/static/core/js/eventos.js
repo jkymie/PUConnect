@@ -4,6 +4,12 @@ async function buscarEventos() {
   return await resp.json();
 }
 
+async function buscarCentros() {
+  const resp = await fetch('/api/centros/');
+  if (!resp.ok) throw new Error('Erro ao buscar centros');
+  return await resp.json();
+}
+
 function formatarDataHora(dataStr) {
   const data = new Date(dataStr);
   const dia = String(data.getDate()).padStart(2, '0');
@@ -67,6 +73,44 @@ function criarCard(evento) {
   `;
 }
 
+function getCentroIcon(codigo) {
+  const icons = {
+    'ctch': 'fas fa-church',
+    'ccs': 'fas fa-users',
+    'ctc': 'fas fa-microchip',
+    'ccbs': 'fas fa-heartbeat'
+  };
+  return icons[codigo] || 'fas fa-building';
+}
+
+function criarCentroCard(centro) {
+  return `
+    <a href="/eventos/?centro=${centro.codigo}" class="centro-card">
+      <div class="centro-icon">
+        <i class="${getCentroIcon(centro.codigo)}"></i>
+      </div>
+      <div class="centro-sigla">${centro.codigo.toUpperCase()}</div>
+      <div class="centro-nome">${centro.nome}</div>
+    </a>
+  `;
+}
+
+async function renderCentros() {
+  let centros = [];
+  try {
+    centros = await buscarCentros();
+  } catch (e) {
+    const centrosGrid = document.getElementById('centrosGrid');
+    centrosGrid.innerHTML = '<p style="color:#155de2; text-align: center;">Erro ao carregar centros.</p>';
+    return;
+  }
+
+  const centrosGrid = document.getElementById('centrosGrid');
+  centrosGrid.innerHTML = centros.length
+    ? centros.map(criarCentroCard).join('')
+    : '<p style="color:#155de2; text-align: center;">Nenhum centro encontrado.</p>';
+}
+
 async function renderEventos() {
   let eventos = [];
   try {
@@ -105,4 +149,7 @@ async function renderEventos() {
     : '<p style="color:#155de2">Nenhum evento neste mês.</p>';
 }
 
-document.addEventListener('DOMContentLoaded', renderEventos);
+document.addEventListener('DOMContentLoaded', function() {
+  renderEventos();
+  renderCentros();
+});
