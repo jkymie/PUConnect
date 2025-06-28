@@ -2610,3 +2610,12 @@ box-sizing: border-box !important;
     font-weight: bold;
     margin-left: 2px;
 }
+
+/* Search section for meus eventos */
+.meus-eventos .search-section {
+    margin-bottom: 1.5rem;
+}
+
+.meus-eventos .header-actions {
+    margin-bottom: 1rem;
+}

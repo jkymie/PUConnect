@@ -4,9 +4,26 @@
 {% block title %}Meus Eventos{% endblock %}
 
 {% block content %}
-<div class="all">
+<div class="all meus-eventos">
     <div class="container">
         <h1 class="text-center">Meus Eventos</h1>
+        
+        <!-- Barra de pesquisa -->
+        <div class="search-section">
+            <form method="get" class="search-form">
+                <div class="search-input-wrapper">
+                    <input type="text" 
+                           name="q" 
+                           class="search-input" 
+                           placeholder="Pesquisar meus eventos..." 
+                           value="{{ request.GET.q|default:'' }}" 
+                           id="searchInput">
+                    <button type="submit" class="search-submit-btn" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
         
         <div class="header-actions">
             <a href="{% url 'criar_evento' %}" class="btn-criar-evento">
@@ -97,11 +114,31 @@
                 {% endfor %}
             {% else %}
                 <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Você ainda não criou nenhum evento.
+                    <i class="fas fa-info-circle"></i> 
+                    {% if request.GET.q %}
+                        Nenhum evento encontrado para "{{ request.GET.q }}".
+                    {% else %}
+                        Você ainda não criou nenhum evento.
+                    {% endif %}
                     <a href="{% url 'criar_evento' %}" class="alert-link">Criar seu primeiro evento</a>
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    
+    // Auto-submit on Enter key
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            this.form.submit();
+        }
+    });
+});
+</script>
 {% endblock %} 

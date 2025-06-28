@@ -80,6 +80,7 @@ def evento_create(request):
             evento = form.save(commit=False)
             evento.organizador = request.user
             evento.save()
+            form.save_m2m()  # Salva os campos ManyToMany como centros
             messages.success(request, 'Evento criado com sucesso!')
             return redirect('meus-eventos')
         else:
@@ -181,13 +182,25 @@ def meus_eventos(request):
     
     try:
         eventos = Evento.objects.filter(organizador=request.user).order_by('-data_hora')
+        
+        # Search by query
+        query = request.GET.get('q')
+        if query:
+            eventos = eventos.filter(
+                Q(titulo__icontains=query) |
+                Q(descricao__icontains=query) |
+                Q(local__icontains=query)
+            )
+        
         return render(request, 'core/meus_eventos.html', {
-            'eventos': eventos
+            'eventos': eventos,
+            'current_query': query
         })
     except Exception as e:
         print(f"Erro na view meus_eventos: {str(e)}")
         return render(request, 'core/meus_eventos.html', {
-            'eventos': Evento.objects.none()
+            'eventos': Evento.objects.none(),
+            'current_query': request.GET.get('q')
         })
 
 @login_required
@@ -201,6 +214,7 @@ def criar_evento(request):
             evento = form.save(commit=False)
             evento.organizador = request.user
             evento.save()
+            form.save_m2m()  # Salva os campos ManyToMany como centros
             messages.success(request, 'Evento criado com sucesso!')
             return redirect('meus_eventos')
     else:
