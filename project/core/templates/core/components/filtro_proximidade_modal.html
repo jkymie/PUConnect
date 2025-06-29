@@ -1,0 +1,102 @@
+<div class="custom-modal" id="filtroProximidadeModal">
+    <div class="custom-modal-overlay" onclick="closeCustomModal('filtroProximidadeModal')"></div>
+    <div class="custom-modal-content">
+        <div class="custom-modal-header">
+            <h3 class="custom-modal-title">
+                <i class="fas fa-clock"></i> Filtrar por Proximidade
+            </h3>
+            <button class="custom-modal-close" onclick="closeCustomModal('filtroProximidadeModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="custom-modal-body">
+            <div class="date-option">
+                <input type="radio" id="proximidadeTodos" name="proximidade" value="" class="custom-radio" {% if not current_proximidade %}checked{% endif %}>
+                <label for="proximidadeTodos" class="custom-radio-label">
+                    <div class="radio-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="radio-content">
+                        <div class="radio-title">Todos os eventos</div>
+                        <div class="radio-subtitle">Mostrar todos os eventos disponíveis</div>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input type="radio" id="proximidadeHoje" name="proximidade" value="hoje" class="custom-radio" {% if current_proximidade == 'hoje' %}checked{% endif %}>
+                <label for="proximidadeHoje" class="custom-radio-label">
+                    <div class="radio-icon" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="radio-content">
+                        <div class="radio-title">Hoje</div>
+                        <div class="radio-subtitle">Eventos acontecendo hoje</div>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input type="radio" id="proximidadeAmanha" name="proximidade" value="amanha" class="custom-radio" {% if current_proximidade == 'amanha' %}checked{% endif %}>
+                <label for="proximidadeAmanha" class="custom-radio-label">
+                    <div class="radio-icon" style="background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="radio-content">
+                        <div class="radio-title">Amanhã</div>
+                        <div class="radio-subtitle">Eventos acontecendo amanhã</div>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input type="radio" id="proximidadeSemana" name="proximidade" value="semana" class="custom-radio" {% if current_proximidade == 'semana' %}checked{% endif %}>
+                <label for="proximidadeSemana" class="custom-radio-label">
+                    <div class="radio-icon" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="radio-content">
+                        <div class="radio-title">Essa semana</div>
+                        <div class="radio-subtitle">Eventos nos próximos 7 dias</div>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input type="radio" id="proximidadeMes" name="proximidade" value="mes" class="custom-radio" {% if current_proximidade == 'mes' %}checked{% endif %}>
+                <label for="proximidadeMes" class="custom-radio-label">
+                    <div class="radio-icon" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="radio-content">
+                        <div class="radio-title">Esse mês</div>
+                        <div class="radio-subtitle">Eventos neste mês</div>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="date-option">
+                <input type="radio" id="proximidadeUrgentes" name="proximidade" value="urgentes" class="custom-radio" {% if current_proximidade == 'urgentes' %}checked{% endif %}>
+                <label for="proximidadeUrgentes" class="custom-radio-label">
+                    <div class="radio-icon" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="radio-content">
+                        <div class="radio-title">Urgentes</div>
+                        <div class="radio-subtitle">Hoje e amanhã</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        
+        <div class="custom-modal-footer">
+            <button class="custom-btn custom-btn-secondary" onclick="closeCustomModal('filtroProximidadeModal')">
+                Cancelar
+            </button>
+            <button class="custom-btn custom-btn-primary" onclick="aplicarFiltroProximidade()">
+                Aplicar Filtro
+            </button>
+        </div>
+    </div>
+</div> 

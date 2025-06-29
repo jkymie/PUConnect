@@ -411,6 +411,35 @@ def eventos_list(request):
         if local:
             eventos = eventos.filter(lugar=local)
         
+        # Proximidade temporal filter
+        proximidade = request.GET.get('proximidade')
+        if proximidade:
+            today = date.today()
+            
+            if proximidade == 'hoje':
+                eventos = eventos.filter(data_hora__date=today)
+            elif proximidade == 'amanha':
+                tomorrow = today + timezone.timedelta(days=1)
+                eventos = eventos.filter(data_hora__date=tomorrow)
+            elif proximidade == 'semana':
+                # Próximos 7 dias a partir de hoje
+                end_of_week = today + timezone.timedelta(days=7)
+                eventos = eventos.filter(
+                    data_hora__date__gte=today,
+                    data_hora__date__lte=end_of_week
+                )
+            elif proximidade == 'mes':
+                start_of_month = today.replace(day=1)
+                if today.month == 12:
+                    end_of_month = today.replace(year=today.year + 1, month=1, day=1) - timezone.timedelta(days=1)
+                else:
+                    end_of_month = today.replace(month=today.month + 1, day=1) - timezone.timedelta(days=1)
+                eventos = eventos.filter(data_hora__date__range=[start_of_month, end_of_month])
+            elif proximidade == 'urgentes':
+                # Hoje e amanhã
+                tomorrow = today + timezone.timedelta(days=1)
+                eventos = eventos.filter(data_hora__date__in=[today, tomorrow])
+        
         # Horas complementares filter
         if request.GET.get('horas') == 'true':
             eventos = eventos.filter(horas_complementares=True)
@@ -453,6 +482,7 @@ def eventos_list(request):
             'current_tipo_evento': tipo_evento,
             'current_centros': centros,
             'current_local': local,
+            'current_proximidade': proximidade,
             'current_horas': request.GET.get('horas'),
             'current_encerrados': request.GET.get('encerrados'),
             'current_ordenar': ordenar

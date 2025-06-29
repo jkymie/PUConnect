@@ -36,6 +36,9 @@
                     <button class="filter-btn" onclick="openCustomModal('filtroDataModal')">
                         <i class="fas fa-calendar"></i> Data
                     </button>
+                    <button class="filter-btn" onclick="openCustomModal('filtroProximidadeModal')">
+                        <i class="fas fa-clock"></i> Proximidade
+                    </button>
                     <button class="filter-btn" onclick="openCustomModal('filtroPrecoModal')">
                         <i class="fas fa-tag"></i> Preço
                     </button>
@@ -160,6 +163,22 @@
                     </div>
                 {% endif %}
                 
+                {% if current_proximidade %}
+                    <div class="filter-tag">
+                        <span class="filter-tag-text">Proximidade: 
+                            {% if current_proximidade == 'hoje' %}Hoje
+                            {% elif current_proximidade == 'amanha' %}Amanhã
+                            {% elif current_proximidade == 'semana' %}Essa semana
+                            {% elif current_proximidade == 'mes' %}Esse mês
+                            {% elif current_proximidade == 'urgentes' %}Urgentes
+                            {% endif %}
+                        </span>
+                        <button class="filter-tag-remove" onclick="removeFilter('proximidade')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endif %}
+                
                 {% if current_ordenar %}
                     <div class="filter-tag">
                         <span class="filter-tag-text">Ordenar: {% if current_ordenar == 'relevancia' %}Alfabética{% elif current_ordenar == 'data_proxima' %}Data (próxima){% elif current_ordenar == 'data_distante' %}Data (distante){% elif current_ordenar == 'preco_menor' %}Preço (menor){% elif current_ordenar == 'preco_maior' %}Preço (maior){% endif %}</span>
@@ -279,6 +298,7 @@
 </div>
 
 {% include 'core/components/filtro_data_modal.html' %}
+{% include 'core/components/filtro_proximidade_modal.html' %}
 {% include 'core/components/filtro_preco_modal.html' %}
 {% include 'core/components/filtro_tipo_modal.html' %}
 {% include 'core/components/filtro_centro_modal.html' %}
@@ -381,78 +401,67 @@ function aplicarFiltro(tipo) {
                 }
             }
             break;
-
+        case 'proximidade':
+            const proximidadeSelecionado = document.querySelector('input[name="proximidade"]:checked');
+            if (proximidadeSelecionado) {
+                params.set('proximidade', proximidadeSelecionado.value);
+            }
+            break;
         case 'preco':
             const precoSelecionado = document.querySelector('input[name="preco"]:checked');
             if (precoSelecionado) {
                 params.set('preco', precoSelecionado.value);
             }
             break;
-
-        case 'tipo_evento':
+        case 'tipo':
             const tipoSelecionado = document.querySelector('input[name="tipo_evento"]:checked');
             if (tipoSelecionado) {
                 params.set('tipo_evento', tipoSelecionado.value);
             }
             break;
-
         case 'centro':
             const centrosSelecionados = document.querySelectorAll('input[name="centro"]:checked');
             params.delete('centro');
-            if (centrosSelecionados.length > 0) {
-                centrosSelecionados.forEach(checkbox => {
-                    params.append('centro', checkbox.value);
-                });
-            }
+            centrosSelecionados.forEach(centro => {
+                params.append('centro', centro.value);
+            });
             break;
-
         case 'local':
             const localSelecionado = document.querySelector('input[name="local"]:checked');
             if (localSelecionado) {
                 params.set('local', localSelecionado.value);
             }
             break;
-
         case 'ordenar':
             const ordenarSelecionado = document.querySelector('input[name="ordenar"]:checked');
             if (ordenarSelecionado) {
                 params.set('ordenar', ordenarSelecionado.value);
             }
             break;
-
         case 'horas':
             const horasCheckbox = document.getElementById('horasComplementares');
-            if (horasCheckbox) {
-                if (horasCheckbox.checked) {
-                    params.set('horas', 'true');
-                } else {
-                    params.delete('horas');
-                }
+            if (horasCheckbox.checked) {
+                params.set('horas', 'true');
+            } else {
+                params.delete('horas');
             }
             break;
-
         case 'encerrados':
             const encerradosCheckbox = document.getElementById('eventosEncerrados');
-            if (encerradosCheckbox) {
-                if (encerradosCheckbox.checked) {
-                    params.set('encerrados', 'true');
-                } else {
-                    params.delete('encerrados');
-                }
+            if (encerradosCheckbox.checked) {
+                params.set('encerrados', 'true');
+            } else {
+                params.delete('encerrados');
             }
             break;
     }
 
-    // Remove empty parameters
-    for (let [key, value] of params.entries()) {
-        if (!value) {
-            params.delete(key);
-        }
-    }
+    window.location.href = url.pathname + '?' + params.toString();
+}
 
-    // Update URL and reload page
-    url.search = params.toString();
-    window.location.href = url.toString();
+function aplicarFiltroProximidade() {
+    aplicarFiltro('proximidade');
+    closeCustomModal('filtroProximidadeModal');
 }
 
 function removeFilter(filterType, valueToRemove = null) {
@@ -496,6 +505,9 @@ function removeFilter(filterType, valueToRemove = null) {
             break;
         case 'encerrados':
             params.delete('encerrados');
+            break;
+        case 'proximidade':
+            params.delete('proximidade');
             break;
     }
 
