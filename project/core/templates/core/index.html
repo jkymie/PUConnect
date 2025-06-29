@@ -43,12 +43,27 @@
             <img src="{% static 'core/assets/img/estrelinha.png' %}" alt="Estrela" class="estrela">
             <h3>Eventos em destaque</h3>
           </div>
-          <div class="eventos-btn-center">
+          <div class="eventos-btn-top">
+            <div class="carousel-arrows-group">
+              <button class="carousel-btn carousel-btn-prev" id="carouselPrev" aria-label="Eventos anteriores" aria-describedby="carousel-description">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button class="carousel-btn carousel-btn-next" id="carouselNext" aria-label="Próximos eventos" aria-describedby="carousel-description">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
             <a href="{% url 'eventos_list' %}" class="btn">Ver todos os eventos</a>
           </div>
         </div>
-        <div class="lista-eventos" id="listaEventosDestaque">
-          <!-- Os eventos serão carregados via JS -->
+        <div class="carousel-container">
+          <div class="carousel-wrapper">
+            <div class="lista-eventos carousel-track" id="listaEventosDestaque" role="region" aria-label="Eventos em destaque" aria-describedby="carousel-description">
+              <!-- Os eventos serão carregados via JS -->
+            </div>
+          </div>
+          <div id="carousel-description" class="sr-only">
+            Use as setas do teclado ou os botões para navegar pelos eventos em destaque
+          </div>
         </div>
       </section>
 
@@ -72,9 +87,24 @@
             <img src="{% static 'core/assets/img/estrelinha.png' %}" alt="Estrela" class="estrela">
             <h3>Eventos desse mês</h3>
           </div>
+          <div class="carousel-arrows-group-mes">
+            <button class="carousel-btn carousel-btn-prev" id="carouselPrevMes" aria-label="Eventos anteriores do mês" aria-describedby="carousel-description-mes">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-btn carousel-btn-next" id="carouselNextMes" aria-label="Próximos eventos do mês" aria-describedby="carousel-description-mes">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
         </div>
-        <div class="lista-eventos" id="listaEventosMes">
-          <!-- Os eventos serão carregados via JS -->
+        <div class="carousel-container-mes">
+          <div class="carousel-wrapper-mes">
+            <div class="lista-eventos carousel-track-mes" id="listaEventosMes" role="region" aria-label="Eventos desse mês" aria-describedby="carousel-description-mes">
+              <!-- Os eventos serão carregados via JS -->
+            </div>
+          </div>
+          <div id="carousel-description-mes" class="sr-only">
+            Use as setas do teclado ou os botões para navegar pelos eventos desse mês
+          </div>
         </div>
       </section>
   </div>

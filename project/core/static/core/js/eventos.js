@@ -113,6 +113,257 @@ async function renderCentros() {
     : '<p style="color:#155de2; text-align: center;">Nenhum centro encontrado.</p>';
 }
 
+// Variáveis globais para o carrossel
+let currentSlide = 0;
+let totalSlides = 0;
+let slidesPerView = 3; // Número de slides visíveis por vez
+
+// Função para calcular quantos slides cabem na tela
+function calculateSlidesPerView() {
+  const container = document.querySelector('.carousel-wrapper');
+  if (!container) return 3;
+  
+  const containerWidth = container.offsetWidth;
+  const cardWidth = 300; // Largura do card
+  const gap = 16; // Gap entre cards
+  const padding = 40; // Padding total (20px de cada lado)
+  
+  // Calcula quantos cards cabem na tela
+  const availableWidth = containerWidth - padding;
+  const cardsPerView = Math.floor(availableWidth / (cardWidth + gap));
+  return Math.max(1, cardsPerView); // Mínimo de 1 card
+}
+
+// Função para criar indicadores do carrossel
+function createIndicators() {
+  const indicatorsContainer = document.getElementById('carouselIndicators');
+  const track = document.getElementById('listaEventosDestaque');
+  
+  if (!indicatorsContainer || !track) return;
+  
+  const cards = track.querySelectorAll('.card-evento');
+  const currentSlidesPerView = calculateSlidesPerView();
+  const totalPages = Math.ceil(cards.length / currentSlidesPerView);
+  
+  // Limpa indicadores existentes
+  indicatorsContainer.innerHTML = '';
+  
+  // Cria indicadores apenas se há mais de uma página
+  if (totalPages > 1) {
+    for (let i = 0; i < totalPages; i++) {
+      const indicator = document.createElement('button');
+      indicator.className = 'carousel-indicator';
+      indicator.setAttribute('aria-label', `Ir para página ${i + 1} dos eventos`);
+      indicator.setAttribute('data-slide', i);
+      
+      indicator.addEventListener('click', () => {
+        currentSlide = i * currentSlidesPerView;
+        updateCarousel();
+      });
+      
+      indicator.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          currentSlide = i * currentSlidesPerView;
+          updateCarousel();
+        }
+      });
+      
+      indicatorsContainer.appendChild(indicator);
+    }
+  }
+}
+
+// Função para atualizar indicadores
+function updateIndicators() {
+  const indicators = document.querySelectorAll('.carousel-indicator');
+  const currentSlidesPerView = calculateSlidesPerView();
+  const currentPage = Math.floor(currentSlide / currentSlidesPerView);
+  
+  indicators.forEach((indicator, index) => {
+    if (index === currentPage) {
+      indicator.classList.add('active');
+      indicator.setAttribute('aria-current', 'true');
+    } else {
+      indicator.classList.remove('active');
+      indicator.removeAttribute('aria-current');
+    }
+  });
+}
+
+// Função para atualizar o carrossel
+function updateCarousel() {
+  const track = document.getElementById('listaEventosDestaque');
+  const prevBtn = document.getElementById('carouselPrev');
+  const nextBtn = document.getElementById('carouselNext');
+  
+  if (!track || !prevBtn || !nextBtn) return;
+  
+  // Recalcula slides por view baseado no tamanho da tela
+  slidesPerView = calculateSlidesPerView();
+  
+  // Calcula o total de slides
+  const cards = track.querySelectorAll('.card-evento');
+  totalSlides = Math.max(0, cards.length - slidesPerView);
+  
+  // Atualiza a posição do carrossel
+  const cardWidth = 300; // Largura do card
+  const gap = 16; // Gap entre cards
+  const translateX = -currentSlide * (cardWidth + gap);
+  track.style.transform = `translateX(${translateX}px)`;
+  
+  // Atualiza estado dos botões
+  prevBtn.disabled = currentSlide === 0;
+  nextBtn.disabled = currentSlide >= totalSlides;
+  
+  // Esconde os botões se não há necessidade de navegação
+  if (cards.length <= slidesPerView) {
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+  } else {
+    prevBtn.style.display = 'flex';
+    nextBtn.style.display = 'flex';
+  }
+  
+  // Atualiza indicadores
+  updateIndicators();
+}
+
+// Função para ir para o próximo slide
+function nextSlide() {
+  if (currentSlide < totalSlides) {
+    currentSlide++;
+    updateCarousel();
+  }
+}
+
+// Função para ir para o slide anterior
+function prevSlide() {
+  if (currentSlide > 0) {
+    currentSlide--;
+    updateCarousel();
+  }
+}
+
+// Função para inicializar o carrossel
+function initCarousel() {
+  const prevBtn = document.getElementById('carouselPrev');
+  const nextBtn = document.getElementById('carouselNext');
+  
+  if (prevBtn && nextBtn) {
+    // Adiciona listeners para os botões
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    
+    // Adiciona suporte para navegação por teclado
+    prevBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        prevSlide();
+      }
+    });
+    
+    nextBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      }
+    });
+    
+    // Adiciona suporte para setas do teclado quando o carrossel está em foco
+    const carouselContainer = document.querySelector('.carousel-container');
+    if (carouselContainer) {
+      carouselContainer.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          nextSlide();
+        }
+      });
+      
+      // Torna o container focável para navegação por teclado
+      carouselContainer.setAttribute('tabindex', '0');
+    }
+    
+    // Atualiza o carrossel quando a janela é redimensionada
+    window.addEventListener('resize', () => {
+      currentSlide = 0; // Volta para o início
+      updateCarousel();
+      createIndicators(); // Recria indicadores com novo tamanho
+    });
+    
+    // Inicializa o carrossel
+    updateCarousel();
+    createIndicators();
+  }
+}
+
+// --- Carrossel Eventos do Mês ---
+let currentSlideMes = 0;
+let totalSlidesMes = 0;
+let slidesPerViewMes = 3;
+
+function calculateSlidesPerViewMes() {
+  const container = document.querySelector('.carousel-wrapper-mes');
+  if (!container) return 3;
+  const containerWidth = container.offsetWidth;
+  const cardWidth = 300;
+  const gap = 16;
+  const padding = 40;
+  const availableWidth = containerWidth - padding;
+  const cardsPerView = Math.floor(availableWidth / (cardWidth + gap));
+  return Math.max(1, cardsPerView);
+}
+
+function updateCarouselMes() {
+  const track = document.getElementById('listaEventosMes');
+  const prevBtn = document.getElementById('carouselPrevMes');
+  const nextBtn = document.getElementById('carouselNextMes');
+  if (!track || !prevBtn || !nextBtn) return;
+  slidesPerViewMes = calculateSlidesPerViewMes();
+  const cards = track.querySelectorAll('.card-evento');
+  totalSlidesMes = Math.max(0, cards.length - slidesPerViewMes);
+  const cardWidth = 300;
+  const gap = 16;
+  const translateX = -currentSlideMes * (cardWidth + gap);
+  track.style.transform = `translateX(${translateX}px)`;
+  prevBtn.disabled = currentSlideMes === 0;
+  nextBtn.disabled = currentSlideMes >= totalSlidesMes;
+  // Setas SEMPRE visíveis
+  prevBtn.style.display = 'flex';
+  nextBtn.style.display = 'flex';
+}
+
+function nextSlideMes() {
+  if (currentSlideMes < totalSlidesMes) {
+    currentSlideMes++;
+    updateCarouselMes();
+  }
+}
+function prevSlideMes() {
+  if (currentSlideMes > 0) {
+    currentSlideMes--;
+    updateCarouselMes();
+  }
+}
+function initCarouselMes() {
+  const prevBtn = document.getElementById('carouselPrevMes');
+  const nextBtn = document.getElementById('carouselNextMes');
+  if (prevBtn && nextBtn) {
+    prevBtn.addEventListener('click', prevSlideMes);
+    nextBtn.addEventListener('click', nextSlideMes);
+    window.addEventListener('resize', () => {
+      currentSlideMes = 0;
+      updateCarouselMes();
+    });
+    updateCarouselMes();
+  }
+}
+
+// --- Fim Carrossel Eventos do Mês ---
+
 async function renderEventos() {
   let eventos = [];
   try {
@@ -149,6 +400,12 @@ async function renderEventos() {
   listaMes.innerHTML = eventosMes.length
     ? eventosMes.map(criarCard).join('')
     : '<p style="color:#155de2">Nenhum evento neste mês.</p>';
+    
+  // Inicializa o carrossel após carregar os eventos
+  setTimeout(() => {
+    initCarousel();
+    initCarouselMes();
+  }, 100);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
