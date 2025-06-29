@@ -409,6 +409,7 @@ footer .redes-sociais {
 
 /* Card de evento customizado --------------------------------------------------------------*/
 .card-evento {
+min-height: 320px; 
 background: #fff;
 border-radius: 16px;
 box-shadow: 0 4px 16px rgba(21, 93, 226, 0.08);
