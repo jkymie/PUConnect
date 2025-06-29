@@ -100,8 +100,11 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="alert alert-info">
-                    Você ainda não está inscrito em nenhum evento.
+                <div class="alert alert-info text-center" style="display: flex; flex-direction: column; align-items: center; gap: 18px;">
+                    Você ainda não está inscrito em nenhum evento.<br>
+                    <a href="{% url 'eventos_list' %}" class="btn btn-primary" style="margin-top: 8px; min-width: 200px;">
+                        <i class="fas fa-compass"></i> Explorar Eventos
+                    </a>
                 </div>
             {% endif %}
         </div>
