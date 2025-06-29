@@ -18,6 +18,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from django.urls import reverse
 from datetime import date
+from django.shortcuts import redirect
+from django.contrib.auth import authenticate, login as auth_login
 
 User = get_user_model()
 
@@ -55,6 +57,7 @@ def login(request):
             messages.error(request, 'Usuário ou senha inválidos.')
     else:
         form = UserLoginForm()
+
     return render(request, 'core/login.html', {'form': form})
 
 @login_required
@@ -554,7 +557,7 @@ def login_modal(request):
             return JsonResponse({'success': False, 'errors': errors})
     return JsonResponse({'success': False, 'errors': {'__all__': ['Método inválido.']}}, status=400)
 
-@login_required
+
 def evento_detail(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     esta_inscrito = evento.esta_inscrito(request.user) if request.user.is_authenticated else False

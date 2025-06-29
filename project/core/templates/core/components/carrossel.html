@@ -1,0 +1,96 @@
+{# templates/core/components/carrossel.html #}
+<style>
+  .carrossel-wrapper {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .carrossel-conteudo {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;     /* IE e Edge */
+    scrollbar-width: none;        /* Firefox */
+    justify-content: center;
+    scroll-snap-type: x mandatory;
+    position: relative;
+    z-index: 1;
+  }
+
+  .carrossel-conteudo::-webkit-scrollbar {
+    display: none;                /* Chrome, Safari e Opera */
+  }
+
+  .carrossel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: white;
+    border: 2px solid #155de2;
+    color: #155de2;
+    font-size: 22px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+    z-index: 10;
+    pointer-events: auto;
+  }
+
+  .carrossel-btn:hover {
+    background-color: #155de2;
+    color: white;
+  }
+
+  .carrossel-esquerda {
+    left: 0;
+  }
+
+  .carrossel-direita {
+    right: 0;
+  }
+</style>
+
+<div class="carrossel-wrapper">
+  {% if botoes %}
+    <button class="carrossel-btn carrossel-esquerda" onclick="scrollCarrossel('{{ id }}', -1)">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+  {% endif %}
+
+  <div id="{{ id }}" class="carrossel-conteudo">
+    {% for evento in eventos %}
+      <div class="card-evento-wrapper" style="scroll-snap-align: center;">
+        <a href="{% url 'evento_detail' pk=evento.id %}" class="card-evento card-opacidade" style="text-decoration: none;">
+          <img src="{{ evento.imagem|default:'/static/core/assets/img/placeholder.jpg' }}" class="card-evento-img" alt="{{ evento.titulo }}">
+          <div class="card-evento-body">
+            <div class="card-evento-titulo">{{ evento.titulo }}</div>
+            <div class="card-evento-info">
+              <img src="/static/core/assets/img/clock.svg" class="icon-img" alt="Horário">
+              <span>{{ evento.data_hora|date:"d/m" }} | {{ evento.data_hora|time:"H:i" }}</span>
+            </div>
+            <div class="card-evento-info">
+              <img src="/static/core/assets/img/pin.svg" class="icon-img" alt="Local">
+              <span>{{ evento.local }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if botoes %}
+    <button class="carrossel-btn carrossel-direita" onclick="scrollCarrossel('{{ id }}', 1)">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  {% endif %}
+</div>
