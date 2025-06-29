@@ -554,7 +554,6 @@ def login_modal(request):
             return JsonResponse({'success': False, 'errors': errors})
     return JsonResponse({'success': False, 'errors': {'__all__': ['Método inválido.']}}, status=400)
 
-@login_required
 def evento_detail(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     esta_inscrito = evento.esta_inscrito(request.user) if request.user.is_authenticated else False
