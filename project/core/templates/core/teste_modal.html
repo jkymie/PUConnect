@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Teste Modal - PUConnect{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 50px 20px; text-align: center;">
+    <h1>Teste dos Modais</h1>
+    <p>Clique nos botões abaixo para testar os modais:</p>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="openModal('modal-login')" style="padding: 10px 20px; margin: 10px; background: #155de2; color: white; border: none; border-radius: 8px; cursor: pointer;">
+            Abrir Modal Login
+        </button>
+        
+        <button onclick="openModal('modal-register')" style="padding: 10px 20px; margin: 10px; background: #155de2; color: white; border: none; border-radius: 8px; cursor: pointer;">
+            Abrir Modal Registro
+        </button>
+    </div>
+    
+    <div style="margin: 20px 0;">
+        <p>Ou teste clicando no ícone da pessoa no canto superior direito.</p>
+    </div>
+    
+    <div style="margin: 20px 0; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+        <h3>Debug Info:</h3>
+        <p id="debug-info">Carregando...</p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const debugInfo = document.getElementById('debug-info');
+    
+    // Verificar se as funções dos modais estão disponíveis
+    const functions = ['openModal', 'closeModal', 'gotoModal'];
+    const available = functions.filter(fn => typeof window[fn] === 'function');
+    
+    debugInfo.innerHTML = `
+        <strong>Funções disponíveis:</strong> ${available.join(', ')}<br>
+        <strong>Total:</strong> ${available.length}/${functions.length}<br>
+        <strong>Modais encontrados:</strong><br>
+        - modal-login: ${document.getElementById('modal-login') ? 'Sim' : 'Não'}<br>
+        - modal-register: ${document.getElementById('modal-register') ? 'Sim' : 'Não'}<br>
+        - modal-backdrop: ${document.querySelector('.modal-backdrop') ? 'Sim' : 'Não'}
+    `;
+    
+    // Testar se os modais podem ser abertos
+    setTimeout(() => {
+        console.log('Testando abertura de modal...');
+        if (typeof openModal === 'function') {
+            console.log('Função openModal disponível');
+        } else {
+            console.error('Função openModal não encontrada');
+        }
+    }, 1000);
+});
+</script>
+{% endblock %} 

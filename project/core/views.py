@@ -556,14 +556,35 @@ def login_modal(request):
 
 def evento_detail(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
-    esta_inscrito = evento.esta_inscrito(request.user) if request.user.is_authenticated else False
-    vagas_disponiveis = evento.vagas_disponiveis()
+    
+    # Verificar se o usuário está inscrito
+    esta_inscrito = False
+    if request.user.is_authenticated:
+        esta_inscrito = evento.esta_inscrito(request.user)
+    
+    # Verificar vagas disponíveis
+    vagas_disponiveis = evento.tem_vagas_disponiveis()
+    
+    # Verificar se o usuário pode editar o evento
+    pode_editar = request.user.is_authenticated and (request.user == evento.organizador or request.user.is_staff)
+    
+    # Preparar breadcrumb
+    breadcrumb_items = [
+        {'url': reverse('index'), 'text': 'Início'},
+        {'url': reverse('eventos_list'), 'text': 'Eventos'},
+        {'text': evento.titulo}
+    ]
     
     context = {
         'evento': evento,
         'esta_inscrito': esta_inscrito,
         'vagas_disponiveis': vagas_disponiveis,
-        'pode_editar': request.user.is_authenticated and (request.user == evento.organizador or request.user.is_staff),
+        'pode_editar': pode_editar,
+        'breadcrumb_items': breadcrumb_items,
     }
     return render(request, 'core/evento_detail.html', context)
+
+def teste_modal(request):
+    """Página de teste para verificar se os modais estão funcionando"""
+    return render(request, 'core/teste_modal.html')
  

@@ -10,6 +10,9 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('preferencias/', views.preferencias, name='preferencias'),
     
+    # Teste
+    path('teste-modal/', views.teste_modal, name='teste_modal'),
+    
     # Eventos
     path('eventos/criar/', views.criar_evento, name='criar_evento'),
     path('eventos/<int:pk>/editar/', views.editar_evento, name='editar_evento'),

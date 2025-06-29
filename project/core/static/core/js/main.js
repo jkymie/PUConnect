@@ -123,7 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Funções de modal
+  // Funções de modal - Movidas para auth.js para evitar conflitos
+  /*
   window.openModal = function(id) {
     document.getElementById(id).style.display = 'block';
     document.querySelector('.modal-backdrop').style.display = 'block';
@@ -144,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
       this.style.display = 'none';
     };
   }
+  */
 
   // --- Recuperação de senha via AJAX ---
   var forgotForm = document.querySelector('#modal-forgot form');
