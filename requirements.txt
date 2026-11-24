@@ -1,4 +1,4 @@
-Django==5.2.16
+Django==5.2.17
 django-cors-headers==4.6.0
 django-rest-passwordreset==1.5.0
 djangorestframework==3.18.2
